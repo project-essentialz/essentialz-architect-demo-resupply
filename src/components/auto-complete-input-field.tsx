@@ -1,15 +1,15 @@
-import React, { useRef, useState, useEffect } from 'react';
-import debounce from 'lodash.debounce';
-import { Item, Menu, Label, Field, Dropdown, Autocomplete } from '@zendeskgarden/react-dropdowns';
-import { Row, Col } from '@zendeskgarden/react-grid';
-import { ReactComponent as SearchIcon } from '@zendeskgarden/svg-icons/src/16/search-stroke.svg';
+import React, {useEffect, useState} from 'react';
+import {Autocomplete, Dropdown, Field, Item, Label, Menu} from '@zendeskgarden/react-dropdowns';
+import {ReactComponent as SearchIcon} from '@zendeskgarden/svg-icons/src/16/search-stroke.svg';
+import {Button} from "@zendeskgarden/react-buttons";
+import {Col, Row} from "@zendeskgarden/react-grid";
 
 
 type Props = {
     label: string;
-    options: any[]
+    options: string[]
     disabled?: boolean
-    onValueSelected?: (value: string) => void
+    onValueSelected?: (value: string | null) => void
     value?: string
 }
 export const AutocompleteInput = (props: Props) => {
@@ -17,26 +17,28 @@ export const AutocompleteInput = (props: Props) => {
 
     const [selectedItem, setSelectedItem] = useState(value || null);
     const [inputValue, setInputValue] = useState(value || '');
-    const [matchingOptions, setMatchingOptions] = useState(options);
+    const [matchingOptions, setMatchingOptions] = useState<string[]>(options);
 
-    const filterMatchingOptionsRef = useRef(
-        debounce((value: string) => {
-            const matchedOptions = options.filter(
-                option => option.trim().toLowerCase().indexOf(value.trim().toLowerCase()) !== -1
-            );
+    const filterMatchingOptions = (value: string) => {
+        const matchedOptions = options.filter(
+            option => option.trim().toLowerCase().indexOf(value.trim().toLowerCase()) !== -1
+        );
 
-            setMatchingOptions(matchedOptions);
-        }, 300)
-    );
+        setMatchingOptions(matchedOptions);
+    }
 
     useEffect(() => {
-        if (onValueSelected && selectedItem){
-            onValueSelected(selectedItem +"");
+        setMatchingOptions(options)
+    }, [options])
+
+    useEffect(() => {
+        if (onValueSelected) {
+            onValueSelected(selectedItem);
         }
     }, [selectedItem])
 
     useEffect(() => {
-        filterMatchingOptionsRef.current(inputValue);
+        filterMatchingOptions(inputValue);
     }, [inputValue]);
 
     return (
@@ -45,16 +47,28 @@ export const AutocompleteInput = (props: Props) => {
             selectedItem={selectedItem}
             onSelect={item => setSelectedItem(item)}
             onInputValueChange={value => setInputValue(value)}
-            downshiftProps={{ defaultHighlightedIndex: 0 }}
+            downshiftProps={{defaultHighlightedIndex: 0}}
         >
             <Field>
                 <Label>{label}</Label>
-                <Autocomplete disabled={disabled} start={<SearchIcon />}>{selectedItem}</Autocomplete>
+                <Autocomplete
+                    disabled={disabled}
+                    start={<SearchIcon/>}>{selectedItem}
+                </Autocomplete>
             </Field>
+            <Row style={{marginTop: 10}}>
+                <Col textAlign={'end'}>
+                    <Button
+                        onClick={() => {setSelectedItem(null)}}
+                        size={"small"}>
+                        Clear
+                    </Button>
+                </Col>
+            </Row>
             <Menu>
                 {matchingOptions.length ? (
-                    matchingOptions.map(option => (
-                        <Item key={option} value={option}>
+                    matchingOptions.map((option, index) => (
+                        <Item key={`${option}-${index + 1}`} value={option}>
                             <span>{option}</span>
                         </Item>
                     ))

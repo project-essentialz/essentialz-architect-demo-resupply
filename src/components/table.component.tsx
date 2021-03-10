@@ -1,25 +1,57 @@
 import React, {useState} from "react";
-import {Body, Cell, Head, HeaderCell, HeaderRow, Row, Table} from "@zendeskgarden/react-tables";
-import {Pagination} from "@zendeskgarden/react-pagination";
+import {Body, Cell, Head, HeaderCell, HeaderRow, Row, SortableCell, Table} from "@zendeskgarden/react-tables";
 import styled from "styled-components";
 
 type TableContainerProps = {
-    fields: { key: string, displayValue: string }[]
+    fields: { key: string, displayValue: string, sortable?: boolean, onClick?: (item: string, rowData: any) => void }[]
     onRowClicked: (rowData: any) => void
-    data: any[]
+    data: any[],
+    tableSize?: 'small' | 'medium' | 'large'
 }
+
+type Direction = 'asc' | 'desc' | undefined;
+
 export const TableComponent = (props: TableContainerProps) => {
 
-    const {fields, onRowClicked, data} = props;
+    const {fields, onRowClicked, data, tableSize = 'medium'} = props;
 
-    const pageSize = 10;
+    const pageSize = 100;
     const [currentPage, setCurrentPage] = useState(1);
+    const [sortConfig, setSortConfig] = useState<{field: string | null, direction: Direction}>({field: null, direction: undefined});
 
+    const sortData = (tableData: any[]) => {
+        if (!sortConfig.field) {
+            return tableData;
+        }
+
+        const field: string = sortConfig.field;
+        const sortValue: Direction = sortConfig.direction;
+
+        return tableData.sort((a, b) => {
+            const aValue = a[field];
+            const bValue = b[field];
+
+            if (aValue > bValue) {
+                return sortValue === 'asc' ? 1 : -1;
+            } else if (aValue < bValue) {
+                return sortValue === 'asc' ? -1 : 1;
+            }
+
+            return 0;
+        });
+    };
 
     const renderRow = (index: number, row: any) => (
         <Row key={`${index}-table-row`} onClick={() => onRowClicked(row)}>
             {fields.map(field => (
-                <Cell key={field.key}>{row[field.key]}</Cell>
+                <Cell key={field.key}>
+                    {field.onClick ? (
+                        <a style={{cursor: 'pointer'}}
+                           onClick={() => {field.onClick!(field.displayValue, row)}}>
+                            {row[field.key]}
+                        </a>)
+                        : (row[field.key])}
+                </Cell>
             ))}
         </Row>
     )
@@ -28,7 +60,25 @@ export const TableComponent = (props: TableContainerProps) => {
         <Head>
             <HeaderRow>
                 {fields.map((field) => (
-                    <HeaderCell key={field.key}>{field.displayValue}</HeaderCell>
+                    field.sortable ?
+                        (
+                            <SortableCell
+                                key={field.key}
+                                onClick={() => {
+                                    if (sortConfig.direction === 'asc') {
+                                        setSortConfig({field: field.key, direction: 'desc'});
+                                    } else if (sortConfig.direction === 'desc') {
+                                        setSortConfig({field: null, direction: undefined});
+                                    } else {
+                                        setSortConfig({field: field.key, direction: 'asc'});
+                                    }
+                                }}
+                                sort={sortConfig.direction}
+                            >
+                                {field.displayValue}
+                            </SortableCell>
+                        ) :
+                        (<HeaderCell key={field.key}>{field.displayValue}</HeaderCell>)
                 ))}
             </HeaderRow>
         </Head>
@@ -36,11 +86,11 @@ export const TableComponent = (props: TableContainerProps) => {
 
     return (
         <div style={{overflowX: 'auto'}}>
-            <StyledTable>
+            <StyledTable size={tableSize}>
                 {renderHeader()}
                 <Body>
                     {currentPage === 1
-                        ? data.slice(currentPage - 1, pageSize).map((row, index) => {
+                        ? sortData(data).slice(currentPage - 1, pageSize).map((row, index) => {
                             return renderRow(index, row)
                         })
                         : data
@@ -50,11 +100,6 @@ export const TableComponent = (props: TableContainerProps) => {
                             })}
                 </Body>
             </StyledTable>
-            {/*<Pagination*/}
-            {/*    totalPages={(data.length / pageSize) | 1}*/}
-            {/*    currentPage={currentPage}*/}
-            {/*    onChange={setCurrentPage}*/}
-            {/*/>*/}
         </div>
     );
 }

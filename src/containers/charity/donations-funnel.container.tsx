@@ -10,51 +10,59 @@ import {DrawerModal} from "@zendeskgarden/react-modals";
 import {Button} from "@zendeskgarden/react-buttons";
 import {useHistory} from "react-router-dom";
 
-const options = [
-    'Asparagus',
-    'Brussel sprouts',
-    'Cauliflower',
-    'Garlic',
-    'Jerusalem artichoke',
-    'Kale',
-    'Lettuce',
-    'Onion',
-    'Mushroom',
-    'Potato',
-    'Radish',
-    'Spinach',
-    'Tomato',
-    'Yam',
-    'Zucchini'
-];
 
-const fields = [
-    field('donationCode', 'Donation ID'),
-    field('donorName', 'Donor name'),
-    field('phone', 'phone'),
-    field('donationStatus', 'Status')
-]
 
 type Props = {}
 
 export const DonationsFunnelContainer = (props: Props) => {
     const history = useHistory();
     const {donations, actions} = useContext(DonationContext);
+    const [donors, setDonors] = useState<string[]>([])
+    const [matchedDonations, setMatchedDonations] = useState<Donation[]>(donations)
+    const [selectedDonor, setSelectedDonor] = useState<string | null>(null)
 
     const [isOpen, setIsOpen] = useState(false);
     const [selectedDonation, setSelectedDonation] = useState<Donation>()
     const open = () => setIsOpen(true);
     const close = () => setIsOpen(false);
 
-
     useEffect(() => {
         actions.getAllDonations('charity_id=af9de00f-77c8-40c0-bd80-8938fdb21d50');
     }, [])
+
+    useEffect(() => {
+        const extractedDonorNames = donations.map((donation: Donation) => donation.donorName);
+        setDonors(extractedDonorNames)
+        setMatchedDonations(donations);
+    }, [donations])
+
+    useEffect(() => {
+        if (selectedDonor){
+            setMatchedDonations(donations.filter((donation) => donation.donorName === selectedDonor))
+        }else{
+            setMatchedDonations(donations)
+
+        }
+    }, [selectedDonor])
 
     const openDonationDrawer = (data: Donation) => {
         setSelectedDonation(data);
         open();
     }
+    const onDonationIdClicked = (donationCode: string, rowData: any) => {
+        openDonationDetailsView(rowData as Donation);
+    }
+    const openDonationDetailsView = (donation: Donation) => {
+        history.push(`/donations/${donation.id}`)
+    }
+
+
+    const fields = [
+        field('donationCode', 'Donation ID', true, onDonationIdClicked),
+        field('donorName', 'Donor name'),
+        field('phone', 'phone'),
+        field('donationStatus', 'Status', true)
+    ]
 
     return (
         <BaseContainer title={'Donations funnel'} subtitle={'List of all donations in the system'}>
@@ -62,16 +70,16 @@ export const DonationsFunnelContainer = (props: Props) => {
                 <Well>
                     <Row>
                         <Col>
-                            <AutocompleteInput disabled options={options} label={"Driver filter"}/>
-                        </Col>
-                        <Col>
-                            <AutocompleteInput disabled options={options} label={"Customer filter"}/>
+                            <AutocompleteInput
+                                options={donors}
+                                onValueSelected={setSelectedDonor}
+                                label={"Search by donor"}/>
                         </Col>
                     </Row>
                 </Well>
                 <div style={{height: 30}}/>
                 <Well>
-                    <TableComponent fields={fields} onRowClicked={openDonationDrawer} data={donations}/>
+                    <TableComponent  fields={fields} onRowClicked={openDonationDrawer} data={matchedDonations}/>
                 </Well>
 
                 <DrawerModal isOpen={isOpen} onClose={close}>

@@ -1,13 +1,12 @@
 import {BaseContainer} from "./base.container";
 import React, {useContext, useEffect, useState} from "react";
-import {AutocompleteInput, DonationsTable, DonationStatusTreeComponent, TableComponent} from "../components";
+import {AutocompleteInput, DonationStatusTreeComponent, TableComponent} from "../components";
 import {Col, Row} from "@zendeskgarden/react-grid";
 import {Well} from "@zendeskgarden/react-notifications";
 import {DonationContext} from "../context";
 import {Donation} from "../services/domain";
 import {field} from "../utility/field";
 import {DrawerModal} from "@zendeskgarden/react-modals";
-import {Stepper} from "@zendeskgarden/react-accordions";
 import {Button} from "@zendeskgarden/react-buttons";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
@@ -31,7 +30,7 @@ const options = [
 ];
 
 const fields = [
-    field('id', 'Donation ID'),
+    field('donationCode', 'Donation ID'),
     field('charityName', 'Charity name'),
     field('donorName', 'Donor name'),
     field('phone', 'phone'),
@@ -87,7 +86,9 @@ export const DonationsFunnelContainer = (props: Props) => {
                     </DrawerModal.Body>
                     <DrawerModal.Footer>
                         <DrawerModal.FooterItem>
-                            <Button isBasic onClick={()=> {history.push(`/donations/${selectedDonation!.id}`)}}>
+                            <Button isBasic onClick={() => {
+                                history.push(`/donations/${selectedDonation!.id}`)
+                            }}>
                                 Show donation detailed view
                             </Button>
                         </DrawerModal.FooterItem>
@@ -100,14 +101,14 @@ export const DonationsFunnelContainer = (props: Props) => {
 }
 
 const StyledButtons = styled.div`
-margin-top: ${p => p.theme.space.sm};
-padding: ${p => p.theme.shadowWidths.md};
+  margin-top: ${p => p.theme.space.sm};
+  padding: ${p => p.theme.shadowWidths.md};
 
-& > button {
-        margin-${p => (p.theme.rtl ? 'right' : 'left')}: ${p => p.theme.space.base * 3}px;
+  & > button {
+    margin-${p => (p.theme.rtl ? 'right' : 'left')}: ${p => p.theme.space.base * 3}px;
 
     &:first-child {
-            margin-${p => (p.theme.rtl ? 'right' : 'left')}: 0;
-        }
+      margin-${p => (p.theme.rtl ? 'right' : 'left')}: 0;
     }
+  }
 `;

@@ -205,7 +205,7 @@ export const CreateCharityContainer = () => {
                                 <Input name={"closingTime"} value={charity.closingTime} onChange={updateField}/>
                             </StyledField>
                             <StyledField>
-                                <AutocompleteInput value={getZoneNameById(charity.zoneId)} onValueSelected={updateZone} options={zones.map(z => z.name)} label={"Zone"}/>
+                                <AutocompleteInput value={getZoneNameById(charity.zoneId)} options={zones.map(z => z.name)} label={"Zone"}/>
                             </StyledField>
 
                             <FormTitle>Other</FormTitle>

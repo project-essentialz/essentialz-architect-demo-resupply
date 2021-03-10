@@ -3,28 +3,9 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import '@zendeskgarden/css-bedrock';
-import {ThemeProvider} from '@zendeskgarden/react-theming';
-import DriverApp from "./DriverApp";
-import DonorApp from "./DonorApp";
-import CharityApp from "./CharityApp";
 
-const getApp = () => {
-    console.log(process.env)
-    switch (process.env.REACT_APP_SLICE) {
-        case 'driver':
-            return <DriverApp/>
-        case 'donor':
-            return <DonorApp/>
-        case 'charity':
-            return <CharityApp/>
-        default:
-            return <App/>
-    }
-}
 ReactDOM.render(
-    <ThemeProvider>
-        {getApp()}
-    </ThemeProvider>,
+    <App/>,
     document.getElementById('root')
 );
 

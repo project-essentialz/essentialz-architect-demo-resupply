@@ -1,5 +1,14 @@
 import React from 'react';
-import {Body, Chrome, Content, Header, HeaderItem, HeaderItemIcon, HeaderItemText, Main} from '@zendeskgarden/react-chrome';
+import {
+    Body,
+    Chrome,
+    Content,
+    Header,
+    HeaderItem,
+    HeaderItemIcon,
+    HeaderItemText,
+    Main
+} from '@zendeskgarden/react-chrome';
 import {DEFAULT_THEME, PALETTE} from '@zendeskgarden/react-theming';
 
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
@@ -8,10 +17,9 @@ import {ReactComponent as ProductIcon} from './assets/icons/pictogram.svg';
 import {ReactComponent as PersonIcon} from '@zendeskgarden/svg-icons/src/16/user-solo-stroke.svg';
 
 import styled from "styled-components";
-import {Driver} from './containers/driver';
-import {DonationProvider, UserProvider} from "./providers";
-import {CharityProvider} from "./providers/charity.provider";
-import Api from "./services/api.service";
+import {Driver} from '../containers/driver';
+import {DonationProvider, UserProvider} from "../providers";
+import {CharityProvider} from "../providers/charity.provider";
 
 const DriverApp = () => {
 
