@@ -1,6 +1,7 @@
 import React, {useState} from "react";
-import {Body, Cell, Head, HeaderCell, HeaderRow, Row, SortableCell, Table} from "@zendeskgarden/react-tables";
+import {Body, Cell, Head, HeaderCell, HeaderRow, OverflowButton, Row, SortableCell, Table} from "@zendeskgarden/react-tables";
 import styled from "styled-components";
+import {Dropdown, Item, Menu, Trigger} from "@zendeskgarden/react-dropdowns";
 
 type TableContainerProps = {
     fields: { key: string, displayValue: string, sortable?: boolean, onClick?: (item: string, rowData: any) => void }[]
@@ -59,7 +60,7 @@ export const TableComponent = (props: TableContainerProps) => {
     const renderHeader = () => (
         <Head>
             <HeaderRow>
-                {fields.map((field) => (
+                {fields.map((field, index) => (
                     field.sortable ?
                         (
                             <SortableCell

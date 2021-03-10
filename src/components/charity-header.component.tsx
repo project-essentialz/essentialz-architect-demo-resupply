@@ -1,8 +1,8 @@
-import React, {useContext, useRef, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 
 import {ReactComponent as ProductIcon} from '../assets/icons/pictogram.svg';
-import {ReactComponent as HelpIcon} from '@zendeskgarden/svg-icons/src/16/lifesaver-stroke.svg';
-import {ReactComponent as MenuTrayIcon} from '@zendeskgarden/svg-icons/src/16/grid-2x2-stroke.svg';
+import {ReactComponent as PlusIcon} from '../assets/icons/plus-light.svg';
+import {ReactComponent as MinusIcon} from '../assets/icons/minus-light.svg';
 import {ReactComponent as PersonIcon} from '@zendeskgarden/svg-icons/src/16/user-solo-stroke.svg';
 
 
@@ -12,30 +12,38 @@ import {TooltipModal} from "@zendeskgarden/react-modals";
 import {Anchor} from "@zendeskgarden/react-buttons";
 import {UserContext} from "../context";
 
-export const CaptainHeader = () => {
+export const CharityHeader = () => {
     const {actions} = useContext(UserContext)
     const buttonRef = useRef<HTMLButtonElement>(null);
     const [referenceElement, setReferenceElement] = useState<HTMLButtonElement | null>();
 
+    const [zoom, setZoom] = useState(100)
+
+    const zoomIn = () => {
+        setZoom(zoom * 1.1);
+    }
+    const zoomOut = () => {
+        setZoom(zoom * 0.9);
+    }
+    useEffect(() => {
+        document.getElementsByTagName('main')[0].style.zoom = `${zoom}%`;
+    }, [zoom])
     return (
         <Header isStandalone>
             <HeaderItem hasLogo>
                 <HeaderItemIcon>
                     <ProductIcon style={{color: PALETTE.red[400]}}/>
                 </HeaderItemIcon>
-                <HeaderItemText>ReSupply Captain Portal</HeaderItemText>
+                <HeaderItemText>ReSupply Charity Portal</HeaderItemText>
             </HeaderItem>
             <HeaderItem>
-                <HeaderItemIcon>
-                    <HelpIcon/>
+                <HeaderItemIcon onClick={zoomOut}>
+                    <MinusIcon/>
                 </HeaderItemIcon>
-                <HeaderItemText>Help Center</HeaderItemText>
-            </HeaderItem>
-            <HeaderItem>
-                <HeaderItemIcon>
-                    <MenuTrayIcon/>
+                <HeaderItemText onClick={() => {setZoom(100)}}>{zoom === 100 ? 'Adjust Zoom' : 'Reset Zoom'}</HeaderItemText>
+                <HeaderItemIcon onClick={zoomIn}>
+                    <PlusIcon/>
                 </HeaderItemIcon>
-                <HeaderItemText isClipped>Products</HeaderItemText>
             </HeaderItem>
             <HeaderItem isRound
                         ref={buttonRef}

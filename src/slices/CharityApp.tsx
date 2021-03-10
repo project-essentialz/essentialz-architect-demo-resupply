@@ -10,7 +10,7 @@ import {ReactComponent as HomeIcon} from '../assets/icons/parachute-box-light.sv
 
 import styled from "styled-components";
 import {DonationProvider, UserProvider, ZoneProvider} from "../providers";
-import {CaptainHeader} from "../components";
+import {CaptainHeader, CharityHeader} from "../components";
 import {CharityProvider} from "../providers/charity.provider";
 import {PartnerProvider} from "../providers/partner.provider";
 import {Charity} from '../containers/charity';
@@ -28,7 +28,7 @@ const CharityApp = () => {
                                 <Router>
                                     <StyledChrome hue={PALETTE.blue["600"]} isFluid>
                                         <Body>
-                                            <CaptainHeader/>
+                                            <CharityHeader/>
                                             <Content>
                                                 <StyledNav>
                                                     <StyledLink to={"/"}>

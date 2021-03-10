@@ -7,6 +7,7 @@ import {TrucksTable} from "./trucks-table.component";
 import {DonationCategoryTileComponent} from "./donation-category-tile.component";
 import {DonationStatusTreeComponent} from "./donation-status-tree.component";
 import {EstimateComponent} from './estimate.component'
+import { CharityHeader } from "./charity-header.component";
 
 export {
     AutocompleteInput,
@@ -15,6 +16,7 @@ export {
     TrucksTable,
     TableComponent,
     CaptainHeader,
+    CharityHeader,
     DonationCategoryTileComponent,
     DonationStatusTreeComponent,
     EstimateComponent
