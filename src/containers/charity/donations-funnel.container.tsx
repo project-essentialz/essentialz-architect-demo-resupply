@@ -9,24 +9,44 @@ import {field} from "../../utility/field";
 import {Body, Close, DrawerModal, Footer, FooterItem, Header, Modal} from "@zendeskgarden/react-modals";
 import {Button} from "@zendeskgarden/react-buttons";
 import {useHistory} from "react-router-dom";
-import {Paragraph} from "@zendeskgarden/react-typography";
-import {CSVDownload, CSVLink} from "react-csv";
+import {CSVLink} from "react-csv";
+import {Checkbox, Field, Label} from "@zendeskgarden/react-forms";
 
 
 type Props = {}
 
+const fieldsAvailableForExport = [
+    {
+        key: 'donationCode',
+        description: 'Donation ID',
+        selected: false
+    },
+    {
+        key: 'additionalInformation',
+        description: "Additional information",
+        selected: false
+    },
+    {
+        key: 'address',
+        description: "Address",
+        selected: false
+    }
+]
+
 export const DonationsFunnelContainer = (props: Props) => {
     const history = useHistory();
 
-
     const {donations, actions} = useContext(DonationContext);
-    const [donors, setDonors] = useState<string[]>([])
+
     const [matchedDonations, setMatchedDonations] = useState<Donation[]>(donations)
+    const [donors, setDonors] = useState<string[]>([])
     const [selectedDonor, setSelectedDonor] = useState<string | null>(null)
+    const [selectedDonation, setSelectedDonation] = useState<Donation>()
+    const [selectedFields, setSelectedFields] = useState(fieldsAvailableForExport)
+    const [exportData, setExportData] = useState<Partial<Donation>[]>(donations)
 
     const [exportModalVisible, setExportModalVisible] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedDonation, setSelectedDonation] = useState<Donation>()
 
     const open = () => setIsOpen(true);
     const close = () => setIsOpen(false);
@@ -34,13 +54,11 @@ export const DonationsFunnelContainer = (props: Props) => {
     useEffect(() => {
         actions.getAllDonations('charity_id=af9de00f-77c8-40c0-bd80-8938fdb21d50');
     }, [])
-
     useEffect(() => {
         const extractedDonorNames = donations.map((donation: Donation) => donation.donorName);
         setDonors(extractedDonorNames)
         setMatchedDonations(donations);
     }, [donations])
-
     useEffect(() => {
         if (selectedDonor) {
             setMatchedDonations(donations.filter((donation) => donation.donorName === selectedDonor))
@@ -60,7 +78,21 @@ export const DonationsFunnelContainer = (props: Props) => {
     const openDonationDetailsView = (donation: Donation) => {
         history.push(`/donations/${donation.id}`)
     }
-
+    const onFieldForExportChanged = (index: number) => {
+        const _selectedFields = [...selectedFields];
+        _selectedFields[index].selected = !_selectedFields[index].selected;
+        setSelectedFields(_selectedFields);
+        setExportData(donations.map((donation) => {
+            const item = {} as Donation;
+            _selectedFields.forEach((field) => {
+                if (field.selected){
+                    // @ts-ignore
+                    item[field.key] = donation[field.key]
+                }
+            })
+            return item
+        }))
+    }
 
     const fields = [
         field('donationCode', 'Donation ID', true, onDonationIdClicked),
@@ -68,7 +100,6 @@ export const DonationsFunnelContainer = (props: Props) => {
         field('phone', 'phone'),
         field('donationStatus', 'Status', true)
     ]
-
     const extraButtons: { title: string, onClick: () => void }[] = [
         {
             title: 'Export to CSV',
@@ -77,6 +108,8 @@ export const DonationsFunnelContainer = (props: Props) => {
             }
         }
     ]
+
+
 
     return (
         <BaseContainer title={'Donations funnel'} subtitle={'List of all donations in the system'}
@@ -119,14 +152,13 @@ export const DonationsFunnelContainer = (props: Props) => {
                     <Modal onClose={() => setExportModalVisible(false)}>
                         <Header>Select fields to export</Header>
                         <Body>
-                            <Paragraph>
-                                Most soil conditions across the world can provide plants adapted to that climate and
-                                soil with sufficient nutrition for a complete life cycle, without the addition of
-                                nutrients as fertilizer. However, if the soil is cropped it is necessary to
-                                artificially modify soil fertility through the addition of fertilizer to promote
-                                vigorous growth and increase or sustain yield. This is done because, even with
-                                adequate water and light, nutrient deficiency can limit growth and crop yield.
-                            </Paragraph>
+                            {selectedFields.map((field, index)=> (
+                                <Field>
+                                    <Checkbox checked={field.selected} onChange={() => {onFieldForExportChanged(index)}}>
+                                        <Label>{field.description}</Label>
+                                    </Checkbox>
+                                </Field>
+                            ))}
                         </Body>
                         <Footer>
                             <FooterItem>
@@ -135,7 +167,7 @@ export const DonationsFunnelContainer = (props: Props) => {
                                 </Button>
                             </FooterItem>
                             <FooterItem>
-                                <CSVLink filename={"resupply-data-export.csv"} data={donations} >Export data</CSVLink>
+                                <CSVLink filename={"resupply-data-export.csv"} data={exportData}>Export data</CSVLink>
                             </FooterItem>
                         </Footer>
                         <Close aria-label="Close modal"/>
