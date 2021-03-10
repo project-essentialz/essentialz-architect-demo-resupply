@@ -17,6 +17,10 @@ export class HTTPError {
 }
 
 const api = <T>(base: string, resource: string, token?: string) => {
+
+    const _camelCaseKeys = (json: any) => {
+        return camelcaseKeys(json, {deep: true})
+    }
     const _getUrl = (q?: string) => {
         if (q){
             return `${base}/${resource}${q}`;
@@ -50,7 +54,7 @@ const api = <T>(base: string, resource: string, token?: string) => {
      */
     const get = (id: string | number) => {
         return fetch(_getUrl(`/${id}`), _getOptions(method.get))
-            .then((response: Response) => response.json().then((json: any) => camelcaseKeys(json) as T))
+            .then((response: Response) => response.json().then((json: any) => _camelCaseKeys(json) as T))
     }
 
     /**
@@ -68,17 +72,17 @@ const api = <T>(base: string, resource: string, token?: string) => {
      */
     const getAll = (q?: string) => {
         return fetch(_getUrl(q ? `?${q} `: ''), _getOptions(method.get))
-            .then((response: Response) => response.json().then((json: any) => camelcaseKeys(json) as T[]))
+            .then((response: Response) => response.json().then((json: any) => _camelCaseKeys(json) as T[]))
     }
 
     const create = (body: T) => {
         return fetch(_getUrl(), _getOptions(method.post, body))
-            .then((response: Response) => response.json().then((json: any) => camelcaseKeys(json) as T))
+            .then((response: Response) => response.json().then((json: any) => _camelCaseKeys(json) as T))
     }
 
     const update = (id: string, data: T) => {
         return fetch(_getUrl(`/${id}`), _getOptions(method.update, data))
-            .then((response: Response) => response.json().then((json: any) => camelcaseKeys(json) as T))
+            .then((response: Response) => response.json().then((json: any) => _camelCaseKeys(json) as T))
     }
 
     /**
@@ -92,7 +96,7 @@ const api = <T>(base: string, resource: string, token?: string) => {
             _getOptions(method, body)
         ).then((response: Response) => {
             if (response.ok) {
-                return response.json().then((json: any) => camelcaseKeys(json) as T)
+                return response.json().then((json: any) => _camelCaseKeys(json) as T)
             } else {
                 throw new HTTPError(response.status);
             }
@@ -109,7 +113,7 @@ const api = <T>(base: string, resource: string, token?: string) => {
             },
             body: formData
         }).then(response => response.json())
-            .then(json => camelcaseKeys(json))
+            .then(json => _camelCaseKeys(json))
     }
 
     return {

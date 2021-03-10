@@ -1,3 +1,5 @@
+import {Partner} from "./partner";
+
 export type Donation = {
     id: string
     donationCode: string;
@@ -37,4 +39,5 @@ export type Donation = {
     primaryDrop: {url: string, selected: false}[]
     pocName: string
     pocPhone: string
+    partner: Partner
 }

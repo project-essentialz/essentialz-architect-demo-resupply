@@ -11,52 +11,29 @@ import {Button} from "@zendeskgarden/react-buttons";
 import {useHistory} from "react-router-dom";
 import styled from "styled-components";
 
-const options = [
-    'Asparagus',
-    'Brussel sprouts',
-    'Cauliflower',
-    'Garlic',
-    'Jerusalem artichoke',
-    'Kale',
-    'Lettuce',
-    'Onion',
-    'Mushroom',
-    'Potato',
-    'Radish',
-    'Spinach',
-    'Tomato',
-    'Yam',
-    'Zucchini'
-];
-
-const fields = [
-    field('donationCode', 'Donation ID'),
-    field('charityName', 'Charity name'),
-    field('donorName', 'Donor name'),
-    field('phone', 'phone'),
-    field('donationStatus', 'Status')
-]
-
 type Props = {}
 
 export const DonationsFunnelContainer = (props: Props) => {
     const history = useHistory();
     const {donations, actions} = useContext(DonationContext);
 
-    const [isOpen, setIsOpen] = useState(false);
-    const [selectedDonation, setSelectedDonation] = useState<Donation>()
-    const open = () => setIsOpen(true);
-    const close = () => setIsOpen(false);
-
-
     useEffect(() => {
         actions.getAllDonations();
     }, [])
 
-    const openDonationDrawer = (data: Donation) => {
-        setSelectedDonation(data);
-        open();
+    const openDonationDetailsView = (data: Donation) => {
+        history.push(`/donations/${data!.id}`)
     }
+    const onDonationIdClicked = (donationCode: string, data: Donation) => {
+    }
+
+    const fields = [
+        field('donationCode', 'Donation ID', true, onDonationIdClicked),
+        field('charityName', 'Charity name'),
+        field('donorName', 'Donor name'),
+        field('phone', 'phone'),
+        field('donationStatus', 'Status', true)
+    ]
 
     return (
         <BaseContainer title={'Donations funnel'} subtitle={'List of all donations in the system'}>
@@ -64,37 +41,20 @@ export const DonationsFunnelContainer = (props: Props) => {
                 <Well>
                     <Row>
                         <Col>
-                            <AutocompleteInput options={options} label={"Charity filter"}/>
+                            <AutocompleteInput disabled options={[]} label={"Charity filter"}/>
                         </Col>
                         <Col>
-                            <AutocompleteInput options={options} label={"Driver filter"}/>
+                            <AutocompleteInput disabled options={[]} label={"Driver filter"}/>
                         </Col>
                         <Col>
-                            <AutocompleteInput options={options} label={"Customer filter"}/>
+                            <AutocompleteInput disabled options={[]} label={"Donor filter"}/>
                         </Col>
                     </Row>
                 </Well>
                 <div style={{height: 30}}/>
                 <Well>
-                    <TableComponent fields={fields} onRowClicked={openDonationDrawer} data={donations}/>
+                    <TableComponent fields={fields} onRowClicked={openDonationDetailsView} data={donations}/>
                 </Well>
-
-                <DrawerModal isOpen={isOpen} onClose={close}>
-                    <DrawerModal.Header>Donation ID #45 | Tracking</DrawerModal.Header>
-                    <DrawerModal.Body>
-                        <DonationStatusTreeComponent donation={selectedDonation!}/>
-                    </DrawerModal.Body>
-                    <DrawerModal.Footer>
-                        <DrawerModal.FooterItem>
-                            <Button isBasic onClick={() => {
-                                history.push(`/donations/${selectedDonation!.id}`)
-                            }}>
-                                Show donation detailed view
-                            </Button>
-                        </DrawerModal.FooterItem>
-                    </DrawerModal.Footer>
-                    <DrawerModal.Close/>
-                </DrawerModal>
             </>
         </BaseContainer>
     )

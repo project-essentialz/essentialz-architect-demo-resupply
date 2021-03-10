@@ -25,18 +25,6 @@ export const CaptainHeader = () => {
                 </HeaderItemIcon>
                 <HeaderItemText>ReSupply Captain Portal</HeaderItemText>
             </HeaderItem>
-            <HeaderItem>
-                <HeaderItemIcon>
-                    <HelpIcon/>
-                </HeaderItemIcon>
-                <HeaderItemText>Help Center</HeaderItemText>
-            </HeaderItem>
-            <HeaderItem>
-                <HeaderItemIcon>
-                    <MenuTrayIcon/>
-                </HeaderItemIcon>
-                <HeaderItemText isClipped>Products</HeaderItemText>
-            </HeaderItem>
             <HeaderItem isRound
                         ref={buttonRef}
                         onClick={() => {setReferenceElement(buttonRef.current)}}>
