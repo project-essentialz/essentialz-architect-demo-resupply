@@ -44,7 +44,7 @@ export const TrucksContainer = (props: Props) => {
 
     const extraButtons:{title: string, onClick: () => void}[] = [
         {
-            title: 'Create new partner',
+            title: 'Add a driver',
             onClick: () => {history.push('create-partner')}
         }
     ]
@@ -53,7 +53,7 @@ export const TrucksContainer = (props: Props) => {
         history.push(`/partners/${partner.id}`)
     }
     return (
-        <BaseContainer title={"Third Party Logistics"} subtitle={"List of all partners"} extraButtons={extraButtons}>
+        <BaseContainer title={"Drivers"} subtitle={"List of all partners"} extraButtons={extraButtons}>
             <>
                 <Well>
                     <Row>

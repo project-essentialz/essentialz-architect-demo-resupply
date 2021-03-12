@@ -12,6 +12,7 @@ const emptyCharity = {
     id: '',
     charityNumber: '',
     charityName: '',
+    charityEin: '',
     logoUrl: '',
     address: '',
     city: '',

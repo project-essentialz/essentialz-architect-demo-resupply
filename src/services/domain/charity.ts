@@ -2,6 +2,7 @@ export type Charity = {
     id: string
     charityName: string
     charityNumber: string
+    charityEin: string
     logoUrl: string
     address: string
     city: string

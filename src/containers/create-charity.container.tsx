@@ -138,6 +138,14 @@ export const CreateCharityContainer = () => {
                                     </StyledField>
                                 </Col>
                             </Row>
+                            <Row>
+                                <Col>
+                                    <StyledField>
+                                        <Label>EIN</Label>
+                                        <Input type={"number"} name={"charityEin"} onChange={updateField} value={charity.charityEin}/>
+                                    </StyledField>
+                                </Col>
+                            </Row>
 
                             <StyledField>
                                 <Label>Charity logo</Label>

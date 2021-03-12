@@ -11,9 +11,10 @@ type Props = {
     disabled?: boolean
     onValueSelected?: (value: string | null) => void
     value?: string
+    hasClear?: boolean
 }
 export const AutocompleteInput = (props: Props) => {
-    const {label, options, disabled, onValueSelected, value} = props;
+    const {label, options, disabled, onValueSelected, value, hasClear} = props;
 
     const [selectedItem, setSelectedItem] = useState(value || null);
     const [inputValue, setInputValue] = useState(value || '');
@@ -56,15 +57,19 @@ export const AutocompleteInput = (props: Props) => {
                     start={<SearchIcon/>}>{selectedItem}
                 </Autocomplete>
             </Field>
-            <Row style={{marginTop: 10}}>
-                <Col textAlign={'end'}>
-                    <Button
-                        onClick={() => {setSelectedItem(null)}}
-                        size={"small"}>
-                        Clear
-                    </Button>
-                </Col>
-            </Row>
+            {hasClear && (
+                <Row style={{marginTop: 10}}>
+                    <Col textAlign={'end'}>
+                        <Button
+                            onClick={() => {
+                                setSelectedItem(null)
+                            }}
+                            size={"small"}>
+                            Clear
+                        </Button>
+                    </Col>
+                </Row>
+            )}
             <Menu>
                 {matchingOptions.length ? (
                     matchingOptions.map((option, index) => (
