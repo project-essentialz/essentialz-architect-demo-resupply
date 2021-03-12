@@ -1,7 +1,7 @@
 import React, {useState} from "react";
-import {Body, Cell, Head, HeaderCell, HeaderRow, OverflowButton, Row, SortableCell, Table} from "@zendeskgarden/react-tables";
+import {Body, Cell, Head, HeaderCell, HeaderRow, Row, SortableCell, Table} from "@zendeskgarden/react-tables";
 import styled from "styled-components";
-import {Dropdown, Item, Menu, Trigger} from "@zendeskgarden/react-dropdowns";
+import _ from 'lodash'
 
 type TableContainerProps = {
     fields: { key: string, displayValue: string, sortable?: boolean, onClick?: (item: string, rowData: any) => void }[]
@@ -18,7 +18,10 @@ export const TableComponent = (props: TableContainerProps) => {
 
     const pageSize = 100;
     const [currentPage, setCurrentPage] = useState(1);
-    const [sortConfig, setSortConfig] = useState<{field: string | null, direction: Direction}>({field: null, direction: undefined});
+    const [sortConfig, setSortConfig] = useState<{ field: string | null, direction: Direction }>({
+        field: null,
+        direction: undefined
+    });
 
     const sortData = (tableData: any[]) => {
         if (!sortConfig.field) {
@@ -47,11 +50,10 @@ export const TableComponent = (props: TableContainerProps) => {
             {fields.map(field => (
                 <Cell key={field.key}>
                     {field.onClick ? (
-                        <a style={{cursor: 'pointer'}}
-                           onClick={() => {field.onClick!(field.displayValue, row)}}>
-                            {row[field.key]}
-                        </a>)
-                        : (row[field.key])}
+                            <a style={{cursor: 'pointer'}}>
+                                {_.get(row, field.key)}
+                            </a>)
+                        : (_.get(row, field.key))}
                 </Cell>
             ))}
         </Row>

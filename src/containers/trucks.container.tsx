@@ -7,6 +7,7 @@ import {useHistory} from "react-router-dom";
 import {PartnerContext} from "../context";
 import {field} from "../utility/field";
 import {Partner} from "../services/domain";
+import _ from "lodash";
 
 const options = [
     'Asparagus',
@@ -31,8 +32,9 @@ const fields = [
     field('organizationName', '3PL'),
     field('phone', 'Phone'),
     field('startRating', 'Star rating'),
-    field('zoneId', 'Zone'),
-    field('accountManager', 'Account Manager')
+    field('zone.name', 'Zone'),
+    field('accountManager', 'Account Manager'),
+    field('numberOfCompletedJobs', 'Completed Jobs')
 ]
 
 type Props = {};

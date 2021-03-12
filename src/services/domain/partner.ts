@@ -12,5 +12,6 @@ export type Partner = {
     zone?: Zone
     certificateOfInsurance: string
     driversLicence: string
-    accountManager: string
+    accountManager: string,
+    numberOfCompletedJobs: number
 }
