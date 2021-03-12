@@ -1,5 +1,6 @@
 export type Charity = {
     id: string
+    refId: string
     charityName: string
     charityNumber: string
     charityEin: string

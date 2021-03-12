@@ -1,10 +1,9 @@
-import React, {ChangeEvent, useContext, useEffect, useState} from "react";
+import React, {ChangeEvent, useContext, useState} from "react";
 import {BaseContainer} from "./base.container";
 import {Well} from "@zendeskgarden/react-notifications";
-import { Col, Row } from "@zendeskgarden/react-grid";
+import {Col, Row} from "@zendeskgarden/react-grid";
 import styled from "styled-components";
-import {mediaQuery} from "@zendeskgarden/react-theming";
-import {Field, FileUpload, Hint, Input, Label, Tiles} from "@zendeskgarden/react-forms";
+import {Field, FileUpload, Hint, Input, Label} from "@zendeskgarden/react-forms";
 import {LG} from "@zendeskgarden/react-typography";
 import {useDropzone} from "react-dropzone";
 import {AutocompleteInput} from "../components";
@@ -12,6 +11,7 @@ import {Button} from "@zendeskgarden/react-buttons";
 import {PartnerContext} from "../context";
 import {useHistory} from "react-router-dom";
 import {Partner} from "../services/domain";
+import ReactInputMask from "react-input-mask";
 
 const options = [
     'Asparagus',
@@ -62,7 +62,8 @@ export const CreateTruckContainer = () => {
     });
 
     return (
-        <BaseContainer showBackButton title={"Add new delivery partner"} subtitle={"Provide details in order to create new partner in the system"}>
+        <BaseContainer showBackButton title={"Add a driver"}
+                       subtitle={"Provide necessary details in order to add a driver to the system"}>
             <Row>
                 <Col lg={6}>
                     <Well>
@@ -72,12 +73,18 @@ export const CreateTruckContainer = () => {
                             <Input name={"organizationName"} onChange={updateField}/>
                         </StyledField>
                         <StyledField>
+                            <Label>Account manager</Label>
+                            <Input name={"accountManager"} onChange={updateField}/>
+                        </StyledField>
+                        <StyledField>
                             <Label>Driver name</Label>
                             <Input name={"driverName"} onChange={updateField}/>
                         </StyledField>
                         <StyledField>
                             <Label>Phone number</Label>
-                            <Input name={"phone"} onChange={updateField}/>
+                            <ReactInputMask mask={'+19999999999'} name={"phone"} onChange={updateField}>
+                                <Input />
+                            </ReactInputMask>
                         </StyledField>
                         <StyledField>
                             <Label>Email</Label>

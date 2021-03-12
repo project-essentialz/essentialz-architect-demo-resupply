@@ -10,6 +10,7 @@ type Props = {
 
 const emptyCharity = {
     id: '',
+    refId: '',
     charityNumber: '',
     charityName: '',
     charityEin: '',

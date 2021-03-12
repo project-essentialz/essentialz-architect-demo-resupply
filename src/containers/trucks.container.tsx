@@ -28,9 +28,11 @@ const options = [
 
 const fields = [
     field('driverName', 'Driver name'),
-    field('organizationName', 'Organization name'),
+    field('organizationName', '3PL'),
     field('phone', 'Phone'),
-    field('startRating', 'Star rating')
+    field('startRating', 'Star rating'),
+    field('zoneId', 'Zone'),
+    field('accountManager', 'Account Manager')
 ]
 
 type Props = {};

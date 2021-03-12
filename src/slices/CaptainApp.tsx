@@ -10,6 +10,7 @@ import {ReactComponent as HomeIcon} from '../assets/icons/parachute-box-light.sv
 import {ReactComponent as PartnersIcon} from '../assets/icons/truck-light.svg';
 import {ReactComponent as CharitiesIcon} from '../assets/icons/warehouse-alt-light.svg';
 import {ReactComponent as ZonesIcon} from '../assets/icons/map-light.svg';
+import {ReactComponent as UsersIcon} from '../assets/icons/user-friends-light.svg';
 
 import styled from "styled-components";
 import {
@@ -31,8 +32,20 @@ import {EmptyContainer} from "../containers/empty.container";
 import {CharityProvider} from "../providers/charity.provider";
 import {PartnerProvider} from "../providers/partner.provider";
 import {captainTheme} from "../themes";
+import {Menu} from "@zendeskgarden/react-dropdowns";
 
 const CaptainApp = () => {
+
+    const MenuItem = (link: string, Icon: any, label: string) => (
+        <StyledLink to={link}>
+            <StyledNavItm>
+                <NavItemIcon>
+                    <Icon style={{color: '#ffffff'}}/>
+                </NavItemIcon>
+                <NavItemText>{label}</NavItemText>
+            </StyledNavItm>
+        </StyledLink>
+    )
 
     return (
         <ThemeProvider focusVisibleRef={null} theme={captainTheme as any}>
@@ -48,41 +61,11 @@ const CaptainApp = () => {
                                                 <CaptainHeader/>
                                                 <Content>
                                                     <StyledNav>
-                                                        <StyledLink to={"/"}>
-                                                            <StyledNavItm>
-                                                                <NavItemIcon>
-                                                                    <HomeIcon style={{color: '#ffffff'}}/>
-                                                                </NavItemIcon>
-                                                                <NavItemText>Home</NavItemText>
-
-                                                            </StyledNavItm>
-                                                        </StyledLink>
-                                                        <StyledLink to={"/partners"}>
-                                                            <StyledNavItm>
-                                                                <NavItemIcon>
-                                                                    <PartnersIcon style={{color: '#ffffff'}}/>
-                                                                </NavItemIcon>
-                                                                <NavItemText>Partners</NavItemText>
-                                                            </StyledNavItm>
-                                                        </StyledLink>
-
-                                                        <StyledLink to={"/charities"}>
-                                                            <StyledNavItm>
-                                                                <NavItemIcon>
-                                                                    <CharitiesIcon style={{color: '#ffffff'}}/>
-                                                                </NavItemIcon>
-                                                                <NavItemText>Charities</NavItemText>
-                                                            </StyledNavItm>
-                                                        </StyledLink>
-
-                                                        <StyledLink to={"/zones"}>
-                                                            <StyledNavItm>
-                                                                <NavItemIcon>
-                                                                    <ZonesIcon style={{color: '#ffffff'}}/>
-                                                                </NavItemIcon>
-                                                                <NavItemText>Zones</NavItemText>
-                                                            </StyledNavItm>
-                                                        </StyledLink>
+                                                        {MenuItem('/', HomeIcon, 'Home')}
+                                                        {MenuItem('/partners', PartnersIcon, 'Partners')}
+                                                        {MenuItem('/charities', CharitiesIcon, 'Charities')}
+                                                        {MenuItem('/zones', ZonesIcon, 'Zones')}
+                                                        {MenuItem('/users', UsersIcon, 'Users')}
 
                                                         <NavItem hasBrandmark title="ReSupply">
                                                             <NavItemIcon>

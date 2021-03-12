@@ -1,3 +1,5 @@
+import {Zone} from "./zone";
+
 export type Partner = {
     id: string;
     organizationName: string
@@ -7,6 +9,8 @@ export type Partner = {
     vehicleType: string
     licencePlace: string
     zoneId: string
+    zone?: Zone
     certificateOfInsurance: string
     driversLicence: string
+    accountManager: string
 }

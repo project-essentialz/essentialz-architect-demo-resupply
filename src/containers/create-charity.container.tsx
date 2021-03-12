@@ -6,8 +6,6 @@ import {Well} from "@zendeskgarden/react-notifications";
 import {AutocompleteInput} from "../components";
 import {Button} from "@zendeskgarden/react-buttons";
 import {useDropzone} from "react-dropzone";
-import {ReactComponent as PartnerIcon} from '../assets/icons/handshake-light.svg';
-import {ReactComponent as RandomStoreIcon} from '../assets/icons/box-light.svg';
 import styled from "styled-components";
 import {mediaQuery} from "@zendeskgarden/react-theming";
 import {LG} from "@zendeskgarden/react-typography";
@@ -15,6 +13,7 @@ import {CharityContext, ZoneContext} from "../context";
 import {useHistory, useParams} from "react-router-dom";
 import * as _ from 'lodash';
 import {Zone} from "../services/domain";
+import ReactInputMask from "react-input-mask";
 
 type DayString = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun';
 const weekDays: DayString[] = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
@@ -42,13 +41,15 @@ export const CreateCharityContainer = () => {
         zoneContext.actions.getAllZones();
     }, [])
 
-    const updateField = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const {value, name} = e.target;
-
+    const updateCharityEntry = (value: string, name: string) => {
         setCharity({
             ...charity,
             [name]: value
         })
+    }
+    const updateField = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const {value, name} = e.target;
+        updateCharityEntry(value, name);
     }
     const updatePartner = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setCharity({
@@ -68,6 +69,7 @@ export const CreateCharityContainer = () => {
         }
 
     }
+
     const createStore = () => {
         actions.createCharity(charity)
             .then(result => {
@@ -118,156 +120,154 @@ export const CreateCharityContainer = () => {
         return (<>/</>)
     }
     return (
-        <BaseContainer showBackButton title={mode === 'new' ? "Create Charity" : "Edit Charity"} subtitle={"Please specify charity information"}>
-            <>
-                <Row>
-                    <Col xs={12} xl={6}>
-                        <Well>
-                            <FormTitle>Basic information</FormTitle>
-                            <Row>
-                                <Col xs={10}>
-                                    <StyledField>
-                                        <Label>Charity name</Label>
-                                        <Input name={"charityName"} onChange={updateField} value={charity.charityName}/>
-                                    </StyledField>
-                                </Col>
-                                <Col>
-                                    <StyledField>
-                                        <Label>CODE</Label>
-                                        <Input type={"number"} name={"charityNumber"} onChange={updateField} value={charity.charityNumber}/>
-                                    </StyledField>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    <StyledField>
-                                        <Label>EIN</Label>
-                                        <Input type={"number"} name={"charityEin"} onChange={updateField} value={charity.charityEin}/>
-                                    </StyledField>
-                                </Col>
-                            </Row>
+        <BaseContainer showBackButton title={mode === 'new' ? "Create Charity" : "Edit Charity"}
+                       subtitle={"Please specify charity information"}>
+            <Row style={{marginTop: 10}}>
+                <Col xs={12} xl={8}>
+                    <Well>
+                        <FormTitle>Basic information</FormTitle>
+                        <Row>
+                            <Col xs={10}>
+                                <StyledField>
+                                    <Label>Charity name</Label>
+                                    <Input name={"charityName"} onChange={updateField} value={charity.charityName}/>
+                                </StyledField>
+                            </Col>
+                            <Col>
+                                <StyledField>
+                                    <Label>CODE</Label>
+                                    <Input type={"number"} name={"charityNumber"} onChange={updateField}
+                                           value={charity.charityNumber}/>
+                                </StyledField>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <StyledField>
+                                    <Label>EIN</Label>
+                                    <ReactInputMask mask={'99-9999999'} name={"charityEin"} onChange={updateField}
+                                                    value={charity.charityEin}>
+                                        <Input/>
+                                    </ReactInputMask>
+                                </StyledField>
+                            </Col>
+                        </Row>
 
-                            <StyledField>
-                                <Label>Charity logo</Label>
-                                <Hint>
-                                    Drag the photo from your computer or click here to pick. Acceptable formats are JPG and PNG.
-                                </Hint>
-                                <FileUpload {...getRootProps()} isDragging={isDragActive}>
-                                    {isDragActive ? (
-                                        <span>Drop files here</span>
-                                    ) : (
-                                        <span>Choose a file or drag and drop here</span>
-                                    )}
-                                    <Input {...getInputProps()} />
-                                </FileUpload>
-                            </StyledField>
-                            <StyledField>
-                                <Label>Point of contact</Label>
-                                <Input name={"pointOfContact"} value={charity.pointOfContact} onChange={updateField}/>
-                            </StyledField>
-                            <StyledField>
-                                <Label>Phone number</Label>
-                                <Input name={"phone"} value={charity.phone} onChange={updateField}/>
-                            </StyledField>
-                            <StyledField>
-                                <Label>Email address</Label>
-                                <Input name={"email"} value={charity.email} onChange={updateField}/>
-                            </StyledField>
-                            <StyledField>
-                                <Label>Address</Label>
-                                <Input name={"address"} value={charity.address} onChange={updateField}/>
-                            </StyledField>
-                            <Row>
-                                <Col>
-                                    <StyledField>
-                                        <Label>City</Label>
-                                        <Input name={"city"} value={charity.city} onChange={updateField}/>
-                                    </StyledField>
-                                </Col>
-                                <Col>
-                                    <StyledField>
-                                        <Label>State</Label>
-                                        <Input name={"state"} value={charity.state} onChange={updateField}/>
-                                    </StyledField>
-                                </Col>
-                                <Col>
-                                    <StyledField>
-                                        <Label>Zip</Label>
-                                        <Input name={"zip"} value={charity.zip} onChange={updateField}/>
-                                    </StyledField>
-                                </Col>
-                            </Row>
+                        <StyledField>
+                            <Label>Charity logo</Label>
+                            <Hint>
+                                Drag the photo from your computer or click here to pick. Acceptable formats are JPG and
+                                PNG.
+                            </Hint>
+                            <FileUpload {...getRootProps()} isDragging={isDragActive}>
+                                {isDragActive ? (
+                                    <span>Drop files here</span>
+                                ) : (
+                                    <span>Choose a file or drag and drop here</span>
+                                )}
+                                <Input {...getInputProps()} />
+                            </FileUpload>
+                        </StyledField>
+                        <StyledField>
+                            <Label>Point of contact</Label>
+                            <Input name={"pointOfContact"} value={charity.pointOfContact} onChange={updateField}/>
+                        </StyledField>
+                        <StyledField>
+                            <Label>Phone number</Label>
+                            <ReactInputMask mask={'+19999999999'} name={"phone"} value={charity.phone}
+                                            onChange={updateField}>
+                                <Input/>
+                            </ReactInputMask>
+                        </StyledField>
+                        <StyledField>
+                            <Label>Email address</Label>
+                            <Input name={"email"} value={charity.email} onChange={updateField}/>
+                        </StyledField>
+                        <StyledField>
+                            <Label>Address</Label>
+                            <Input name={"address"} value={charity.address} onChange={updateField}/>
+                        </StyledField>
+                        <Row>
+                            <Col>
+                                <StyledField>
+                                    <Label>City</Label>
+                                    <Input name={"city"} value={charity.city} onChange={updateField}/>
+                                </StyledField>
+                            </Col>
+                            <Col>
+                                <StyledField>
+                                    <Label>State</Label>
+                                    <ReactInputMask mask={'aa'} name={"state"} value={charity.state}
+                                                    onChange={updateField}>
+                                        <Input/>
+                                    </ReactInputMask>
+                                </StyledField>
+                            </Col>
+                            <Col>
+                                <StyledField>
+                                    <Label>Zip</Label>
+                                    <ReactInputMask mask={'99999'} name={"zip"} value={charity.zip}
+                                                    onChange={updateField}>
+                                        <Input/>
+                                    </ReactInputMask>
+                                </StyledField>
+                            </Col>
+                        </Row>
 
-                            <FormTitle>Operations information</FormTitle>
-                            <StyledField>
-                                <Label>Days of operation</Label>
-                            </StyledField>
-                            <Row>
-                                {weekDays.map(renderDayToggle)}
-                            </Row>
-                            <StyledField>
-                                <Label>Closing time</Label>
-                                <Hint>
-                                    Enter the time when this store stops accepting pickups at the loading dock
-                                </Hint>
-                                <Input name={"closingTime"} value={charity.closingTime} onChange={updateField}/>
-                            </StyledField>
-                            <StyledField>
-                                <AutocompleteInput value={getZoneNameById(charity.zoneId)} options={zones.map(z => z.name)} label={"Zone"}/>
-                            </StyledField>
+                        <FormTitle>Operations information</FormTitle>
+                        <StyledField>
+                            <Label>Days of operation</Label>
+                        </StyledField>
+                        <Row>
+                            {weekDays.map(renderDayToggle)}
+                        </Row>
+                        <StyledField>
+                            <Label>Closing time</Label>
+                            <Hint>
+                                Enter the time when this store stops accepting pickups at the loading dock
+                            </Hint>
+                            <Input name={"closingTime"} value={charity.closingTime} onChange={updateField}/>
+                        </StyledField>
+                        <StyledField>
+                            <AutocompleteInput value={getZoneNameById(charity.zoneId)} options={zones.map(z => z.name)}
+                                               label={"Zone"}/>
+                        </StyledField>
 
-                            <FormTitle>Other</FormTitle>
-                            <StyledField>
-                                <Label>Notes</Label>
-                                <Textarea name={"notes"} value={charity.notes} onChange={updateField}/>
-                            </StyledField>
-                            <StyledField>
-                                <Label>Secondary Drop-Off Location Info</Label>
-                                <Textarea name={"secondaryDropLocation"} value={charity.secondaryDropLocation} onChange={updateField}/>
-                            </StyledField>
-                            <StyledField>
-                                <Label>Salesforce ID</Label>
-                                <Hint>
-                                    Enter the Account ID displayed at the end of the Salesforce Account URL
-                                </Hint>
-                                <Input name={"salesforceId"} value={charity.salesforceId} onChange={updateField}/>
-                            </StyledField>
-                            <StyledTiles name="parent" onChange={updatePartner} value={charity.partner} aria-label="Partner Selector">
-                                <Row>
-                                    <StyledCol sm={6}>
-                                        <Tiles.Tile value={'yes'}>
-                                            <Tiles.Icon>
-                                                <PartnerIcon/>
-                                            </Tiles.Icon>
-                                            <Tiles.Label>Partner store</Tiles.Label>
-                                            <Tiles.Description>
-                                                This charity is a partner with ReSupply
-                                            </Tiles.Description>
-                                        </Tiles.Tile>
-                                    </StyledCol>
-                                    <StyledCol sm={6}>
-                                        <Tiles.Tile value={'no'}>
-                                            <Tiles.Icon>
-                                                <RandomStoreIcon/>
-                                            </Tiles.Icon>
-                                            <Tiles.Label>Third party store</Tiles.Label>
-                                            <Tiles.Description>
-                                                This store is not a ReSupply partner store
-                                            </Tiles.Description>
-                                        </Tiles.Tile>
-                                    </StyledCol>
-                                </Row>
-                            </StyledTiles>
+                        <FormTitle>Other</FormTitle>
+                        <StyledField>
+                            <Label>Notes</Label>
+                            <Textarea name={"notes"} value={charity.notes} onChange={updateField}/>
+                        </StyledField>
+                        <StyledField>
+                            <Label>Secondary Drop-Off Location Info</Label>
+                            <Textarea name={"secondaryDropLocation"} value={charity.secondaryDropLocation}
+                                      onChange={updateField}/>
+                        </StyledField>
+                        <StyledField>
+                            <Label>Salesforce ID</Label>
+                            <Hint>
+                                Enter the Account ID displayed at the end of the Salesforce Account URL
+                            </Hint>
+                            <Input name={"salesforceId"} value={charity.salesforceId} onChange={updateField}/>
+                        </StyledField>
 
-                            <StyledButtonWrapper>
-                                <Button onClick={mode === 'new' ? createStore : editStore}>{mode === 'new' ? 'Create charity' : 'Edit charity'}</Button>
-                            </StyledButtonWrapper>
+                        <StyledField>
+                            <Label>Reference ID</Label>
+                            <Hint>
+                                Enter the Charity ID from the existing system
+                            </Hint>
+                            <Input name={"refId"} onChange={updateField} value={charity.refId}/>
+                        </StyledField>
 
-                        </Well>
-                    </Col>
+                        <StyledButtonWrapper>
+                            <Button
+                                onClick={mode === 'new' ? createStore : editStore}>{mode === 'new' ? 'Create charity' : 'Edit charity'}</Button>
+                        </StyledButtonWrapper>
 
-                </Row>
-            </>
+                    </Well>
+                </Col>
+
+            </Row>
         </BaseContainer>
     )
 }

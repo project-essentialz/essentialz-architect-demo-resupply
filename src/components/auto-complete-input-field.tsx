@@ -12,9 +12,10 @@ type Props = {
     onValueSelected?: (value: string | null) => void
     value?: string
     hasClear?: boolean
+    hideLabel?: boolean
 }
 export const AutocompleteInput = (props: Props) => {
-    const {label, options, disabled, onValueSelected, value, hasClear} = props;
+    const {label, options, disabled, onValueSelected, value, hasClear, hideLabel} = props;
 
     const [selectedItem, setSelectedItem] = useState(value || null);
     const [inputValue, setInputValue] = useState(value || '');
@@ -51,7 +52,7 @@ export const AutocompleteInput = (props: Props) => {
             downshiftProps={{defaultHighlightedIndex: 0}}
         >
             <Field>
-                <Label>{label}</Label>
+                {!hideLabel && (<Label>{label}</Label>)}
                 <Autocomplete
                     disabled={disabled}
                     start={<SearchIcon/>}>{selectedItem}
