@@ -1,11 +1,11 @@
-import {BaseContainer} from "./base.container";
+import {BaseContainer} from "../base.container";
 import {Col, Row} from "@zendeskgarden/react-grid";
 import {Well} from "@zendeskgarden/react-notifications";
 import {Field, Input, Label, Textarea} from "@zendeskgarden/react-forms";
 import React, {ChangeEvent, useContext, useEffect, useState} from "react";
 import styled from "styled-components";
 import {LG} from "@zendeskgarden/react-typography";
-import {ZoneContext} from "../context";
+import {ZoneContext} from "../../context";
 import {useHistory} from "react-router-dom";
 import {Tag} from "@zendeskgarden/react-tags";
 import {PALETTE} from "@zendeskgarden/react-theming";

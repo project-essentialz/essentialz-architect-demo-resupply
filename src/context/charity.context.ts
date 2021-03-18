@@ -1,5 +1,5 @@
 import {createContext} from "react";
-import {Charity} from "../services/domain";
+import {Charity, User} from "../services/domain";
 
 export type CharityContextType = {
     charity: Charity
@@ -15,6 +15,8 @@ export type CharityContextType = {
         getAllCharities: () => Promise<void>
         getCharity: (id:string) => Promise<Charity>
         removeCharity: (id:string) => Promise<void>
+        getUsers: () => Promise<User[]>
+        addUser: (user: User) => Promise<void>
     }
 
 }

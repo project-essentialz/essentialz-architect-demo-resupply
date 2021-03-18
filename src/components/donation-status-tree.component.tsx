@@ -11,6 +11,7 @@ type Props = {
 }
 export const DonationStatusTreeComponent = (props: Props) => {
     const statusIndex = donationStatus.indexOf(props.donation.donationStatus) + 1;
+
     return (
         <>
             <Stepper activeIndex={statusIndex}>
@@ -21,13 +22,16 @@ export const DonationStatusTreeComponent = (props: Props) => {
                     </Stepper.Content>
                 </Stepper.Step>
                 <Stepper.Step key="step-2">
-                    <Stepper.Label>Service request dispatched</Stepper.Label>
+                    <Stepper.Label>{statusIndex === 1 ? 'Service request pending' : 'Service request dispatched'}</Stepper.Label>
                     <Stepper.Content>
                         Waiting for the system to dispatch a service request to the eligible drivers
+                        <StyledButtons>
+                            <Button>Dispatch service request</Button>
+                        </StyledButtons>
                     </Stepper.Content>
                 </Stepper.Step>
                 <Stepper.Step key="step-3">
-                    <Stepper.Label>{statusIndex > 3 ? 'Awaiting driver' : 'Driver Assigned'}</Stepper.Label>
+                    <Stepper.Label>{statusIndex === 2 ? 'Awaiting driver' : 'Driver Assigned'}</Stepper.Label>
                     <Stepper.Content>
                         Service request is dispatched to all the drivers in the specified area.
                         You can still define driver manually.

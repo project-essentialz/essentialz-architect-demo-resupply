@@ -3,6 +3,7 @@ import {AuthRequest} from './auth-request'
 import {Charity} from './charity'
 import {Donation} from './donation'
 import {Partner} from './partner'
+import { User } from './user'
 import {Zone} from './zone'
 
 export type {
@@ -11,5 +12,6 @@ export type {
     Donation,
     Charity,
     Partner,
-    Zone
+    Zone,
+    User
 }

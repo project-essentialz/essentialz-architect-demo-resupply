@@ -1,13 +1,12 @@
-import {BaseContainer} from "./base.container";
+import {BaseContainer} from "../base.container";
 import {Well} from "@zendeskgarden/react-notifications";
 import {Col, Row} from "@zendeskgarden/react-grid";
-import {AutocompleteInput, TableComponent, TrucksTable} from "../components";
+import {AutocompleteInput, TableComponent} from "../../components";
 import React, {useContext, useEffect} from "react";
 import {useHistory} from "react-router-dom";
-import {PartnerContext} from "../context";
-import {field} from "../utility/field";
-import {Partner} from "../services/domain";
-import _ from "lodash";
+import {PartnerContext} from "../../context";
+import {field} from "../../utility/field";
+import {Partner} from "../../services/domain";
 
 const options = [
     'Asparagus',
@@ -46,10 +45,12 @@ export const TrucksContainer = (props: Props) => {
         actions.getAllPartners();
     }, [])
 
-    const extraButtons:{title: string, onClick: () => void}[] = [
+    const extraButtons: { title: string, onClick: () => void }[] = [
         {
             title: 'Add a driver',
-            onClick: () => {history.push('create-partner')}
+            onClick: () => {
+                history.push('create-partner')
+            }
         }
     ]
 

@@ -1,12 +1,12 @@
-import {BaseContainer} from "./base.container";
-import {AutocompleteInput, TableComponent} from "../components";
+import {BaseContainer} from "../base.container";
+import {AutocompleteInput, TableComponent} from "../../components";
 import {Well} from "@zendeskgarden/react-notifications";
 import {Col, Row} from "@zendeskgarden/react-grid";
 import React, {useContext, useEffect} from "react";
 import {useHistory} from "react-router-dom";
-import {CharityContext} from "../context";
-import {field} from "../utility/field";
-import {Charity} from "../services/domain";
+import {CharityContext} from "../../context";
+import {field} from "../../utility/field";
+import {Charity} from "../../services/domain";
 
 const options = [
     'Asparagus',
@@ -27,7 +27,7 @@ const options = [
 ];
 
 const fields = [
-    field('id', 'Charity ID'),
+    field('charityNumber', 'Charity ID'),
     field('charityName', 'Charity name'),
     field('pointOfContact', 'Point of contact'),
     field('phone', 'Phone number'),

@@ -1,5 +1,7 @@
 export const routes = {
     authenticate: 'authenticate',
+    users: 'users',
+
     donations: 'api/donations',
     charities: 'api/charities',
     partners: 'api/partners',

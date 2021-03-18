@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Charity} from "../services/domain";
+import {Charity, User} from "../services/domain";
 import {CharityContext} from "../context/";
 import Api, {method} from "../services/api.service";
 import {routes} from "../services/api.routes";
@@ -71,6 +71,28 @@ export const CharityProvider = (props: Props) => {
     const resetCharity = () => {
         setCharity(emptyCharity)
     }
+
+    const getUsers = () => {
+        return Api.$<User>(routes.users).getAll().then(users => {
+            return users.filter((user) => {
+                return user.details && user.details.charityId === charity.id
+            })
+        })
+    }
+
+    const addUser = (user: User) => {
+        return Api.$<User>(routes.users).create({
+            ...user,
+            role: 'charity_user',
+            details: {
+                ...user.details,
+                charityId: charity.id
+            }
+        } as User).then(_ => {
+            return
+        })
+    }
+
     return (
         <CharityContext.Provider value={
             {
@@ -84,7 +106,9 @@ export const CharityProvider = (props: Props) => {
                     getAllCharities,
                     getCharity,
                     removeCharity,
-                    resetCharity
+                    resetCharity,
+                    getUsers,
+                    addUser
                 }
             }
         }>

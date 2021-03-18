@@ -3,9 +3,9 @@ import styled from "styled-components";
 import {XXXL} from "@zendeskgarden/react-typography";
 import {Field, Input, InputGroup, Label} from "@zendeskgarden/react-forms";
 import {Button} from "@zendeskgarden/react-buttons";
-import {ReactComponent as Logo} from "../assets/images/logo.svg";
-import {AuthRequest} from "../services/domain";
-import {UserContext} from "../context";
+import {ReactComponent as Logo} from "../../assets/images/logo.svg";
+import {AuthRequest} from "../../services/domain";
+import {UserContext} from "../../context";
 import {useHistory} from "react-router-dom";
 import {Inline} from "@zendeskgarden/react-loaders";
 

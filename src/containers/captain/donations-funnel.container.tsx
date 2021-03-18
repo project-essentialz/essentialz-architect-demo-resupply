@@ -1,15 +1,13 @@
-import {BaseContainer} from "./base.container";
-import React, {useContext, useEffect, useState} from "react";
-import {AutocompleteInput, DonationStatusTreeComponent, TableComponent} from "../components";
+import {BaseContainer} from "../base.container";
+import React, {useContext, useEffect} from "react";
+import {AutocompleteInput, TableComponent} from "../../components";
 import {Col, Row} from "@zendeskgarden/react-grid";
 import {Well} from "@zendeskgarden/react-notifications";
-import {DonationContext} from "../context";
-import {Donation} from "../services/domain";
-import {field} from "../utility/field";
-import {DrawerModal} from "@zendeskgarden/react-modals";
-import {Button} from "@zendeskgarden/react-buttons";
+import {DonationContext} from "../../context";
+import {Donation} from "../../services/domain";
+import {field} from "../../utility/field";
 import {useHistory} from "react-router-dom";
-import styled from "styled-components";
+import {extraButton} from "../../utility/extraButton";
 
 type Props = {}
 
@@ -27,6 +25,8 @@ export const DonationsFunnelContainer = (props: Props) => {
     const onDonationIdClicked = (donationCode: string, data: Donation) => {
     }
 
+    const openAddDonation = () => history.push('create-donation');
+
     const fields = [
         field('donationCode', 'Donation ID', true, onDonationIdClicked),
         field('charityName', 'Charity name'),
@@ -35,8 +35,16 @@ export const DonationsFunnelContainer = (props: Props) => {
         field('donationStatus', 'Status', true)
     ]
 
+    const extraButtons = [
+        extraButton('Add donation', openAddDonation)
+    ]
+
     return (
-        <BaseContainer title={'Donations funnel'} subtitle={'List of all donations in the system'}>
+        <BaseContainer
+            title={'Donations funnel'}
+            subtitle={'List of all donations in the system'}
+            extraButtons={extraButtons}
+        >
             <>
                 <Well>
                     <Row>
@@ -59,16 +67,3 @@ export const DonationsFunnelContainer = (props: Props) => {
         </BaseContainer>
     )
 }
-
-const StyledButtons = styled.div`
-  margin-top: ${p => p.theme.space.sm};
-  padding: ${p => p.theme.shadowWidths.md};
-
-  & > button {
-    margin-${p => (p.theme.rtl ? 'right' : 'left')}: ${p => p.theme.space.base * 3}px;
-
-    &:first-child {
-      margin-${p => (p.theme.rtl ? 'right' : 'left')}: 0;
-    }
-  }
-`;

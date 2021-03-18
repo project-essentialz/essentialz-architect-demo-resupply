@@ -1,16 +1,16 @@
 import React, {ChangeEvent, useContext, useState} from "react";
-import {BaseContainer} from "./base.container";
+import {BaseContainer} from "../base.container";
 import {Well} from "@zendeskgarden/react-notifications";
 import {Col, Row} from "@zendeskgarden/react-grid";
 import styled from "styled-components";
 import {Field, FileUpload, Hint, Input, Label} from "@zendeskgarden/react-forms";
 import {LG} from "@zendeskgarden/react-typography";
 import {useDropzone} from "react-dropzone";
-import {AutocompleteInput} from "../components";
+import {AutocompleteInput} from "../../components";
 import {Button} from "@zendeskgarden/react-buttons";
-import {PartnerContext} from "../context";
+import {PartnerContext} from "../../context";
 import {useHistory} from "react-router-dom";
-import {Partner} from "../services/domain";
+import {Partner} from "../../services/domain";
 import ReactInputMask from "react-input-mask";
 
 const options = [

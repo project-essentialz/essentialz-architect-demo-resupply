@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {BaseContainer} from "./base.container";
+import {BaseContainer} from "../base.container";
 import {Col, Row} from "@zendeskgarden/react-grid";
 import {Title, Well} from '@zendeskgarden/react-notifications';
 import {Anchor} from "@zendeskgarden/react-buttons";
@@ -8,12 +8,13 @@ import {Body, Cell, GroupRow, Row as TRow, Table} from '@zendeskgarden/react-tab
 
 import {Tag} from '@zendeskgarden/react-tags';
 import {MD, Paragraph} from "@zendeskgarden/react-typography";
-import {CharityContext, DonationContext} from "../context";
-import {Charity, Donation} from "../services/domain";
+import {CharityContext, DonationContext} from "../../context";
+import {Charity, Donation} from "../../services/domain";
 import {useParams} from "react-router-dom";
-import {DonationStatusTreeComponent, EstimateComponent} from "../components";
+import {DonationStatusTreeComponent, EstimateComponent} from "../../components";
 
 import { Tabs, TabList, Tab, TabPanel } from '@zendeskgarden/react-tabs';
+import {PALETTE} from "@zendeskgarden/react-theming";
 
 type Props = {};
 export const DonationContainer = (props: Props) => {
@@ -204,7 +205,7 @@ export const DonationContainer = (props: Props) => {
                                         </Table>
                                     </Row>
 
-                                    <TableCaption>Address</TableCaption>
+                                    <TableCaption color={PALETTE.black}>Address</TableCaption>
                                     <Paragraph>{donation.address} {donation.city} <br/> {donation.state} {donation.zip}
                                     </Paragraph>
                                     <TableCaption>Special instructions</TableCaption>

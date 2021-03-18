@@ -1,18 +1,18 @@
 import {Col, Row} from "@zendeskgarden/react-grid";
 import {Field, FileUpload, Hint, Input, Label, Textarea, Tiles, Toggle} from "@zendeskgarden/react-forms";
 import React, {ChangeEvent, useContext, useEffect, useState} from "react";
-import {BaseContainer} from "./base.container";
+import {BaseContainer} from "../base.container";
 import {Well} from "@zendeskgarden/react-notifications";
-import {AutocompleteInput} from "../components";
+import {AutocompleteInput} from "../../components";
 import {Button} from "@zendeskgarden/react-buttons";
 import {useDropzone} from "react-dropzone";
 import styled from "styled-components";
 import {mediaQuery} from "@zendeskgarden/react-theming";
 import {LG} from "@zendeskgarden/react-typography";
-import {CharityContext, ZoneContext} from "../context";
+import {CharityContext, ZoneContext} from "../../context";
 import {useHistory, useParams} from "react-router-dom";
 import * as _ from 'lodash';
-import {Zone} from "../services/domain";
+import {Zone} from "../../services/domain";
 import ReactInputMask from "react-input-mask";
 
 type DayString = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun';

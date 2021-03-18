@@ -11,6 +11,7 @@ import {PALETTE} from "@zendeskgarden/react-theming";
 import {TooltipModal} from "@zendeskgarden/react-modals";
 import {Anchor} from "@zendeskgarden/react-buttons";
 import {UserContext} from "../context";
+import styled from "styled-components";
 
 export const CaptainHeader = () => {
     const {actions} = useContext(UserContext)
@@ -47,3 +48,6 @@ export const CaptainHeader = () => {
         </Header>
     )
 }
+
+
+

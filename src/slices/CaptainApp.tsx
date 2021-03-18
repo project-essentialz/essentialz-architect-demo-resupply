@@ -18,21 +18,22 @@ import {
     CharityContainer,
     CreateCharityContainer,
     CreateTruckContainer,
+    CreateUserContainer,
     CreateZoneContainer,
     DonationContainer,
     DonationsFunnelContainer,
     LoginContainer,
-    Navigation,
     TrucksContainer,
-    ZonesContainer
-} from "../containers";
+    UsersContainer,
+    ZonesContainer,
+    CreateDonationContainer
+} from "../containers/captain";
 import {DonationProvider, UserProvider, ZoneProvider} from "../providers";
 import {CaptainHeader} from "../components";
-import {EmptyContainer} from "../containers/empty.container";
 import {CharityProvider} from "../providers/charity.provider";
 import {PartnerProvider} from "../providers/partner.provider";
 import {captainTheme} from "../themes";
-import {Menu} from "@zendeskgarden/react-dropdowns";
+import {Navigation} from '../containers/navigation';
 
 const CaptainApp = () => {
 
@@ -83,6 +84,9 @@ const CaptainApp = () => {
                                                                 <Route exact path={'/donations/:id'}>
                                                                     <DonationContainer/>
                                                                 </Route>
+                                                                <Route exact path={'/create-donation'}>
+                                                                    <CreateDonationContainer/>
+                                                                </Route>
                                                                 <Route exact path={'/partners'}>
                                                                     <TrucksContainer/>
                                                                 </Route>
@@ -107,8 +111,14 @@ const CaptainApp = () => {
                                                                 <Route exact path={'/create-zone'}>
                                                                     <CreateZoneContainer/>
                                                                 </Route>
-                                                                <Route exact path={'/paul'}>
-                                                                    <EmptyContainer/>
+                                                                <Route exact path={'/users'}>
+                                                                    <UsersContainer/>
+                                                                </Route>
+                                                                <Route exact path={'/create-user'}>
+                                                                    <CreateUserContainer/>
+                                                                </Route>
+                                                                <Route exact path={'/edit-user/:id'}>
+                                                                    <CreateUserContainer/>
                                                                 </Route>
                                                             </Switch>
                                                         </div>
