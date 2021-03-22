@@ -10,9 +10,9 @@ import {Tag} from '@zendeskgarden/react-tags';
 import {MD, Paragraph} from "@zendeskgarden/react-typography";
 import {TooltipModal} from '@zendeskgarden/react-modals';
 import {DonationContext} from "../../context";
-import {Donation} from "../../services/domain";
 import {useParams} from "react-router-dom";
 import {DonationStatusTreeComponent} from "../../components";
+import {Donation} from "../../domain/Donation";
 
 type Props = {};
 export const DonationContainer = (props: Props) => {
@@ -39,7 +39,7 @@ export const DonationContainer = (props: Props) => {
                                 <StiledTitle>Client info</StiledTitle>
                                 <Row>
                                     <Col>
-                                        <Paragraph>{donation.donorName}</Paragraph>
+                                        <Paragraph>{donation.donor.name}</Paragraph>
                                     </Col>
                                 </Row>
                                 <Row>
@@ -47,19 +47,19 @@ export const DonationContainer = (props: Props) => {
                                         <Body>
                                             <TRowNoBorder isReadOnly>
                                                 <Cell>Phone number</Cell>
-                                                <Cell><Anchor href={`tel:${donation.phone}`}>{donation.phone}</Anchor></Cell>
+                                                <Cell><Anchor href={`tel:${donation.donor.phone}`}>{donation.donor.phone}</Anchor></Cell>
                                             </TRowNoBorder>
                                             <TRowNoBorder isReadOnly>
                                                 <Cell>Email</Cell>
-                                                <Cell><Anchor href={`mailto:${donation.email}`}>{donation.email}</Anchor></Cell>
+                                                <Cell><Anchor href={`mailto:${donation.donor.email}`}>{donation.donor.email}</Anchor></Cell>
                                             </TRowNoBorder>
                                             <TRowNoBorder isReadOnly>
                                                 <Cell>Address</Cell>
                                                 <Cell>
                                                     <Anchor href={"https://www.google.rs/maps/place/TX-123,+Seguin,+TX,+USA/@29.5872806,-97.9470873,17z/data=!3m1!4b1!4m5!3m4!1s0x865cd0271896901b:0xad152987c9e8e7fe!8m2!3d29.5872806!4d-97.9448986"}>123 Random Rd, Seguin, TX, USA</Anchor>
-                                                    <Row><Col>{donation.city}</Col></Row>
-                                                    <Row><Col>{donation.state}</Col></Row>
-                                                    <Row><Col>{donation.zip}</Col></Row>
+                                                    <Row><Col>{donation.donor.city}</Col></Row>
+                                                    <Row><Col>{donation.donor.state}</Col></Row>
+                                                    <Row><Col>{donation.donor.zip}</Col></Row>
                                                 </Cell>
                                             </TRowNoBorder>
                                         </Body>
@@ -79,27 +79,27 @@ export const DonationContainer = (props: Props) => {
                                             </GroupRow>
                                             <TRow isReadOnly>
                                                 <Cell>Large items</Cell>
-                                                <Cell style={{textAlign: "right"}}>{parseFloat((donation.largeItems || 0) + "")}</Cell>
+                                                <Cell style={{textAlign: "right"}}>{parseFloat((donation.spec.largeItems || 0) + "")}</Cell>
                                             </TRow>
                                             <TRow isReadOnly>
                                                 <Cell>Small items</Cell>
-                                                <Cell style={{textAlign: "right"}}>{parseFloat((donation.smallItems || 0) + "")}</Cell>
+                                                <Cell style={{textAlign: "right"}}>{parseFloat((donation.spec.smallItems || 0) + "")}</Cell>
                                             </TRow>
                                             <TRow isReadOnly>
                                                 <Cell>Bags</Cell>
-                                                <Cell style={{textAlign: "right"}}>{parseFloat((donation.bags || 0) + "")}</Cell>
+                                                <Cell style={{textAlign: "right"}}>{parseFloat((donation.spec.bags || 0) + "")}</Cell>
                                             </TRow>
                                             <TRow isReadOnly>
                                                 <Cell>Boxes</Cell>
-                                                <Cell style={{textAlign: "right"}}>{parseFloat((donation.boxes || 0) + "")}</Cell>
+                                                <Cell style={{textAlign: "right"}}>{parseFloat((donation.spec.boxes || 0) + "")}</Cell>
                                             </TRow>
                                             <TRow isReadOnly>
                                                 <Cell>Appliances</Cell>
-                                                <Cell style={{textAlign: "right"}}>{parseFloat((donation.appliances || 0) + "")}</Cell>
+                                                <Cell style={{textAlign: "right"}}>{parseFloat((donation.spec.appliances || 0) + "")}</Cell>
                                             </TRow>
                                             <TRow isReadOnly>
                                                 <Cell>Hazardous</Cell>
-                                                <Cell style={{textAlign: "right"}}>{parseFloat((donation.hazardous || 0) + "")}</Cell>
+                                                <Cell style={{textAlign: "right"}}>{parseFloat((donation.spec.hazardous || 0) + "")}</Cell>
                                             </TRow>
                                         </Body>
                                     </Table>
@@ -110,66 +110,66 @@ export const DonationContainer = (props: Props) => {
                                         <Body>
                                             <TRow isReadOnly>
                                                 <Cell>Are items above or below the ground floor?</Cell>
-                                                <Cell style={{textAlign: "right"}}><TTag value={donation.aboveTheGroundFloor === 'no' ? 'No' : 'Yes'}/></Cell>
+                                                <Cell style={{textAlign: "right"}}><TTag value={donation.spec.aboveTheGroundFloor === 'no' ? 'No' : 'Yes'}/></Cell>
                                             </TRow>
                                             <TRow isReadOnly>
                                                 <Cell>Is elevator present?</Cell>
-                                                <Cell style={{textAlign: "right"}}><TTag value={donation.aboveTheGroundFloor === 'yes-elevator' ? 'Yes' : 'No'}/></Cell>
+                                                <Cell style={{textAlign: "right"}}><TTag value={donation.spec.aboveTheGroundFloor === 'yes-elevator' ? 'Yes' : 'No'}/></Cell>
                                             </TRow>
                                             <TRow isReadOnly>
                                                 <Cell>Will client move items to ground floor?</Cell>
-                                                <Cell style={{textAlign: "right"}}><TTag value={donation.aboveTheGroundFloor === 'yes-curbside' ? 'Yes' : 'No'}/></Cell>
+                                                <Cell style={{textAlign: "right"}}><TTag value={donation.spec.aboveTheGroundFloor === 'yes-curbside' ? 'Yes' : 'No'}/></Cell>
                                             </TRow>
                                             <TRow isReadOnly>
                                                 <Cell>How many staircases we will need to take?</Cell>
-                                                <Cell style={{textAlign: "right"}}>{parseFloat(donation.staircases + "")}</Cell>
+                                                <Cell style={{textAlign: "right"}}>{parseFloat(donation.spec.staircases + "")}</Cell>
                                             </TRow>
                                             <TRow isReadOnly>
                                                 <Cell>Disassembly required?</Cell>
-                                                <Cell style={{textAlign: "right"}}><TTag value={donation.disassembly > 0 ? 'Yes' : 'No'}/></Cell>
+                                                <Cell style={{textAlign: "right"}}><TTag value={donation.spec.disassembly > 0 ? 'Yes' : 'No'}/></Cell>
                                             </TRow>
                                             <TRow isReadOnly>
                                                 <Cell>How many items need disassembly?</Cell>
-                                                <Cell style={{textAlign: "right"}}>{parseFloat(donation.disassembly + "")}</Cell>
+                                                <Cell style={{textAlign: "right"}}>{parseFloat(donation.spec.disassembly + "")}</Cell>
                                             </TRow>
                                         </Body>
                                     </Table>
                                 </Row>
                             </Well>
-                            {donation.primaryDrop && (
-                                <Well>
-                                    <StiledTitle>Accepted items</StiledTitle>
-                                    <Row>
-                                    {donation.primaryDrop.map((drop) => {
-                                        if (drop.selected){
-                                            return (
-                                                <DropImage xs={4}>
-                                                    <img src={drop.url}/>
-                                                </DropImage>
-                                            )
-                                        }else{
-                                            return null
-                                        }
-                                    })}
-                                    </Row>
-                                    <Row>
-                                        <TableCaption>Accepted by</TableCaption>
-                                        <Table>
-                                            <Body>
-                                                <TRow isReadOnly>
-                                                    <Cell>Name:</Cell>
-                                                    <Cell style={{textAlign: "right"}}>{donation.pocName}</Cell>
-                                                </TRow>
-                                                <TRow isReadOnly>
-                                                    <Cell>Phone</Cell>
-                                                    <Cell style={{textAlign: "right"}}>{donation.pocPhone}</Cell>
-                                                </TRow>
-                                            </Body>
-                                        </Table>
-                                    </Row>
+                            {/*{donation.primaryDrop && (*/}
+                            {/*    <Well>*/}
+                            {/*        <StiledTitle>Accepted items</StiledTitle>*/}
+                            {/*        <Row>*/}
+                            {/*        {donation.primaryDrop.map((drop) => {*/}
+                            {/*            if (drop.selected){*/}
+                            {/*                return (*/}
+                            {/*                    <DropImage xs={4}>*/}
+                            {/*                        <img src={drop.url}/>*/}
+                            {/*                    </DropImage>*/}
+                            {/*                )*/}
+                            {/*            }else{*/}
+                            {/*                return null*/}
+                            {/*            }*/}
+                            {/*        })}*/}
+                            {/*        </Row>*/}
+                            {/*        <Row>*/}
+                            {/*            <TableCaption>Accepted by</TableCaption>*/}
+                            {/*            <Table>*/}
+                            {/*                <Body>*/}
+                            {/*                    <TRow isReadOnly>*/}
+                            {/*                        <Cell>Name:</Cell>*/}
+                            {/*                        <Cell style={{textAlign: "right"}}>{donation.pocName}</Cell>*/}
+                            {/*                    </TRow>*/}
+                            {/*                    <TRow isReadOnly>*/}
+                            {/*                        <Cell>Phone</Cell>*/}
+                            {/*                        <Cell style={{textAlign: "right"}}>{donation.pocPhone}</Cell>*/}
+                            {/*                    </TRow>*/}
+                            {/*                </Body>*/}
+                            {/*            </Table>*/}
+                            {/*        </Row>*/}
 
-                                </Well>
-                            )}
+                            {/*    </Well>*/}
+                            {/*)}*/}
                         </Col>
                         <Col xs={4}>
                             <Well>

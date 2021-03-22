@@ -1,5 +1,5 @@
 import {createContext} from "react";
-import {Zone} from "../services/domain";
+import {Zone} from "../domain/Zone";
 
 export type ZoneContextType = {
     zoneData: Zone
@@ -10,7 +10,10 @@ export type ZoneContextType = {
 
     actions: {
         getAllZones: () => Promise<void>
-        submitZone: (data: Zone) => Promise<void>
+        getZone: (id: string) => Promise<void>
+
+        createZone: (data: Zone) => Promise<void>
+        updateZone: (data: Zone) => Promise<void>
     }
 
 }

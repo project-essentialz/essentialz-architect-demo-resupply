@@ -14,10 +14,10 @@ export const ConfirmDonationContainer = () => {
     const {donationData, setDonationData, actions} = useContext(DonorContext)
     const history = useHistory();
     const updateDonation = (key: string, value: any) => {
-        setDonationData({
-            ...donationData,
-            [key]: value
-        })
+        // setDonationData({
+        //     ...donationData,
+        //     [key]: value
+        // })
     }
 
     const fieldChanged = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

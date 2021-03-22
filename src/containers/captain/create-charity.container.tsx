@@ -12,8 +12,9 @@ import {LG} from "@zendeskgarden/react-typography";
 import {CharityContext, ZoneContext} from "../../context";
 import {useHistory, useParams} from "react-router-dom";
 import * as _ from 'lodash';
-import {Zone} from "../../services/domain";
 import ReactInputMask from "react-input-mask";
+import {Zone} from "../../domain/Zone";
+import {Charity} from "../../domain/Charity";
 
 type DayString = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun';
 const weekDays: DayString[] = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
@@ -35,49 +36,45 @@ export const CreateCharityContainer = () => {
             setMode('edit')
             actions.getCharity(id).then(setCharity);
         } else {
-            actions.resetCharity();
+            setCharity(new Charity());
         }
 
         zoneContext.actions.getAllZones();
     }, [])
 
+
     const updateCharityEntry = (value: string, name: string) => {
-        setCharity({
-            ...charity,
-            [name]: value
-        })
+        const c = new Charity();
+        Object.assign(c, charity);
+        _.set(c, name, value);
+        setCharity(c);
     }
     const updateField = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const {value, name} = e.target;
         updateCharityEntry(value, name);
     }
-    const updatePartner = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setCharity({
-            ...charity,
-            partner: e.target.value
-        })
-    }
+
     const updateZone = (zoneName: string) => {
-        const zone = _.find<Zone>(zones, (zone: Zone) => {
-            return zone.name === zoneName
-        })
-        if (zone) {
-            setCharity({
-                ...charity,
-                zoneId: zone.id
-            })
-        }
+        // const zone = _.find<Zone>(zones, (zone: Zone) => {
+        //     return zone.name === zoneName
+        // })
+        // if (zone) {
+        //     setCharity({
+        //         ...charity,
+        //         zoneId: zone.id!
+        //     })
+        // }
 
     }
 
-    const createStore = () => {
+    const createCharity = () => {
         actions.createCharity(charity)
             .then(result => {
                 history.push("/charities")
             })
     }
 
-    const editStore = () => {
+    const updateCharity = () => {
         actions.updateCharity(charity)
             .then(result => {
                 history.push("/charities")
@@ -130,14 +127,22 @@ export const CreateCharityContainer = () => {
                             <Col xs={10}>
                                 <StyledField>
                                     <Label>Charity name</Label>
-                                    <Input name={"charityName"} onChange={updateField} value={charity.charityName}/>
+                                    <Input
+                                        name={"name"}
+                                        onChange={updateField}
+                                        value={charity.name || ''}
+                                    />
                                 </StyledField>
                             </Col>
                             <Col>
                                 <StyledField>
                                     <Label>CODE</Label>
-                                    <Input type={"number"} name={"charityNumber"} onChange={updateField}
-                                           value={charity.charityNumber}/>
+                                    <Input
+                                        type={"number"}
+                                        name={"code"}
+                                        onChange={updateField}
+                                        value={charity.code || ''}
+                                    />
                                 </StyledField>
                             </Col>
                         </Row>
@@ -145,8 +150,12 @@ export const CreateCharityContainer = () => {
                             <Col>
                                 <StyledField>
                                     <Label>EIN</Label>
-                                    <ReactInputMask mask={'99-9999999'} name={"charityEin"} onChange={updateField}
-                                                    value={charity.charityEin}>
+                                    <ReactInputMask
+                                        mask={'99-9999999'}
+                                        name={"charityEin"}
+                                        onChange={updateField}
+                                        value={charity.ein || ''}
+                                    >
                                         <Input/>
                                     </ReactInputMask>
                                 </StyledField>
@@ -170,34 +179,34 @@ export const CreateCharityContainer = () => {
                         </StyledField>
                         <StyledField>
                             <Label>Point of contact</Label>
-                            <Input name={"pointOfContact"} value={charity.pointOfContact} onChange={updateField}/>
+                            <Input name={"pocName"} value={charity.pocName} onChange={updateField}/>
                         </StyledField>
                         <StyledField>
                             <Label>Phone number</Label>
-                            <ReactInputMask mask={'+19999999999'} name={"phone"} value={charity.phone}
+                            <ReactInputMask mask={'+19999999999'} name={"phone"} value={charity.phone || ''}
                                             onChange={updateField}>
                                 <Input/>
                             </ReactInputMask>
                         </StyledField>
                         <StyledField>
                             <Label>Email address</Label>
-                            <Input name={"email"} value={charity.email} onChange={updateField}/>
+                            <Input name={"email"} value={charity.email || ''} onChange={updateField}/>
                         </StyledField>
                         <StyledField>
                             <Label>Address</Label>
-                            <Input name={"address"} value={charity.address} onChange={updateField}/>
+                            <Input name={"address"} value={charity.address || ''} onChange={updateField}/>
                         </StyledField>
                         <Row>
                             <Col>
                                 <StyledField>
                                     <Label>City</Label>
-                                    <Input name={"city"} value={charity.city} onChange={updateField}/>
+                                    <Input name={"city"} value={charity.city || ''} onChange={updateField}/>
                                 </StyledField>
                             </Col>
                             <Col>
                                 <StyledField>
                                     <Label>State</Label>
-                                    <ReactInputMask mask={'aa'} name={"state"} value={charity.state}
+                                    <ReactInputMask mask={'aa'} name={"state"} value={charity.state || ''}
                                                     onChange={updateField}>
                                         <Input/>
                                     </ReactInputMask>
@@ -206,7 +215,7 @@ export const CreateCharityContainer = () => {
                             <Col>
                                 <StyledField>
                                     <Label>Zip</Label>
-                                    <ReactInputMask mask={'99999'} name={"zip"} value={charity.zip}
+                                    <ReactInputMask mask={'99999'} name={"zip"} value={charity.zip || ''}
                                                     onChange={updateField}>
                                         <Input/>
                                     </ReactInputMask>
@@ -226,11 +235,11 @@ export const CreateCharityContainer = () => {
                             <Hint>
                                 Enter the time when this store stops accepting pickups at the loading dock
                             </Hint>
-                            <Input name={"closingTime"} value={charity.closingTime} onChange={updateField}/>
+                            <Input name={"closingBy"} value={charity.closingBy} onChange={updateField}/>
                         </StyledField>
                         <StyledField>
-                            <AutocompleteInput value={getZoneNameById(charity.zoneId)} options={zones.map(z => z.name)}
-                                               label={"Zone"}/>
+                            {/*<AutocompleteInput value={getZoneNameById(charity.zoneId)} options={zones.map(z => z.name!)}*/}
+                            {/*                   label={"Zone"}/>*/}
                         </StyledField>
 
                         <FormTitle>Other</FormTitle>
@@ -240,8 +249,8 @@ export const CreateCharityContainer = () => {
                         </StyledField>
                         <StyledField>
                             <Label>Secondary Drop-Off Location Info</Label>
-                            <Textarea name={"secondaryDropLocation"} value={charity.secondaryDropLocation}
-                                      onChange={updateField}/>
+                            {/*<Textarea name={"secondaryDropLocation"} value={charity.secondaryDropLocation}*/}
+                            {/*          onChange={updateField}/>*/}
                         </StyledField>
                         <StyledField>
                             <Label>Salesforce ID</Label>
@@ -261,7 +270,7 @@ export const CreateCharityContainer = () => {
 
                         <StyledButtonWrapper>
                             <Button
-                                onClick={mode === 'new' ? createStore : editStore}>{mode === 'new' ? 'Create charity' : 'Edit charity'}</Button>
+                                onClick={mode === 'new' ? createCharity : updateCharity}>{mode === 'new' ? 'Create charity' : 'Edit charity'}</Button>
                         </StyledButtonWrapper>
 
                     </Well>

@@ -8,12 +8,14 @@ import {Dropdown, Item, Menu, Trigger} from '@zendeskgarden/react-dropdowns';
 import {Col, Row} from "@zendeskgarden/react-grid";
 import {CharityContext, DonationContext} from "../../context";
 import {useHistory, useParams} from "react-router-dom";
-import {Charity, Donation} from "../../services/domain";
+
 import {EstimateComponent} from "../../components";
 import {totalItems, totalPrice} from "../../components/estimate.component";
 import {PALETTE} from "@zendeskgarden/react-theming";
 import {donationActions, nextState} from "../../utility/donation-status";
 import {Body, Close, Footer, FooterItem, Header, Modal} from "@zendeskgarden/react-modals";
+import {Donation} from "../../domain/Donation";
+import {Charity} from "../../domain/Charity";
 
 export const DonationContainer = () => {
     const history = useHistory()
@@ -34,16 +36,16 @@ export const DonationContainer = () => {
 
     useEffect(() => {
         if (donation){
-            cContext.actions.getCharity(donation.charityId).then(setCharity)
+            cContext.actions.getCharity(donation.charity?.id!).then(setCharity)
         }
     }, [donation])
 
     const progressPickup = () => {
         if (donation) {
             if (donation.donationStatus !== 'completed') {
-                const nextDonationStatus = nextState(donation.donationStatus);
-                actions.updateDonation({...donation, donationStatus: nextDonationStatus, eventType: 'donation_' + nextDonationStatus})
-                    .then(setDonation);
+                const nextDonationStatus = nextState(donation.donationStatus!);
+                // actions.updateDonation({...donation, donationStatus: nextDonationStatus, eventType: 'donation_' + nextDonationStatus})
+                //     .then(setDonation);
             } else {
                 setModalVisible(true)
             }
@@ -56,14 +58,14 @@ export const DonationContainer = () => {
     }
 
     const progressDisabled = () => {
-        if (donation) {
-            return donation.donationStatus === 'quote_sent' ||
-                donation.donationStatus === 'driver_arrived' ||
-                donation.driverId !== '4737eb58-542e-42fe-b46e-3cdd0db78d99' ||
-                (donation.donationStatus === 'payment_successful' && (!donation.photos || donation.photos.length === 0))
-        } else {
-            return false
-        }
+        // if (donation) {
+        //     return donation.donationStatus === 'quote_sent' ||
+        //         donation.donationStatus === 'driver_arrived' ||
+        //         donation.driverId !== '4737eb58-542e-42fe-b46e-3cdd0db78d99' ||
+        //         (donation.donationStatus === 'payment_successful' && (!donation.photos || donation.photos.length === 0))
+        // } else {
+        //     return false
+        // }
     }
 
     const extraButton = () => [
@@ -78,24 +80,24 @@ export const DonationContainer = () => {
     if (donation) {
         return (
             <>
-                <BaseContainer showBackButton title={donation.donationCode} subtitle={"Donation details"}>
+                <BaseContainer showBackButton title={donation.donationCode!} subtitle={"Donation details"}>
                     <Row>
                         <Col>
                             <StyledWell>
                                 <StyledTitle>Contact information</StyledTitle>
                                 <SM>Name: </SM>
-                                <Paragraph>{donation.donorName}</Paragraph>
+                                <Paragraph>{donation.donor.name}</Paragraph>
                                 <SM>Phone number: </SM>
-                                <Paragraph>{donation.phone}</Paragraph>
+                                <Paragraph>{donation.donor.phone}</Paragraph>
                             </StyledWell>
 
                             <StyledWell>
                                 <StyledTitle>Donation information</StyledTitle>
                                 <Paragraph>Number of items : <Span isBold>{totalItems(donation)}</Span></Paragraph>
                                 <SM>Address: </SM>
-                                <Paragraph>{donation.address}</Paragraph>
+                                <Paragraph>{donation.donor.address}</Paragraph>
                                 <SM>Special instructions: </SM>
-                                <Paragraph>{donation.additionalInformation}</Paragraph>
+                                <Paragraph>{donation.spec.additionalInformation}</Paragraph>
                             </StyledWell>
                             <StyledWell>
                                 <Row>
@@ -118,7 +120,7 @@ export const DonationContainer = () => {
                                 <StyledWell>
                                     <Paragraph>Take photos</Paragraph>
                                     <SM style={{marginBottom: 10}}>Take photos of all donation items</SM>
-                                    <SM style={{marginBottom: 10}}>{donation.photos ? donation.photos.length : 0} photos uploaded</SM>
+                                    {/*<SM style={{marginBottom: 10}}>{donation.photos ? donation.photos.length : 0} photos uploaded</SM>*/}
                                     <Button isStretched onClick={() => {
                                         history.push(`/donations/${donation.id}/photos`)
                                     }}>Take photos</Button>
@@ -140,7 +142,7 @@ export const DonationContainer = () => {
 
                             <BottomControls>
                                 <StyledSplitButton>
-                                    <Button isStretched disabled={progressDisabled()} onClick={progressPickup}>{getDonationAction()}</Button>
+                                    {/*<Button isStretched disabled={progressDisabled()} onClick={progressPickup}>{getDonationAction()}</Button>*/}
                                     <Dropdown
                                         onStateChange={options =>
                                             Object.prototype.hasOwnProperty.call(options, 'isOpen') && setRotated(options.isOpen)
@@ -163,8 +165,8 @@ export const DonationContainer = () => {
                     <StyledModal onClose={() => setModalVisible(false)}>
                         <Header>Final instruction</Header>
                         <Body>
-                            Congratulations! Your donation for {donation.donorName} has been completed! Payment is being transferred now.
-                            {charity ? ` If there are any items left please drop them off at: ${charity.secondaryDropLocation}.` : 'Please contact ReSupply for further instructions.'}
+                            Congratulations! Your donation for {donation.donor.name} has been completed! Payment is being transferred now.
+                            {/*{charity ? ` If there are any items left please drop them off at: ${charity.secondaryDropLocation}.` : 'Please contact ReSupply for further instructions.'}*/}
                         </Body>
                         <Footer>
                             <FooterItem>

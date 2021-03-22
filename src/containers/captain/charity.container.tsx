@@ -5,7 +5,7 @@ import styled from "styled-components";
 import {LG, Paragraph} from "@zendeskgarden/react-typography";
 import {useHistory, useParams} from "react-router-dom";
 import {CharityContext, DonationContext} from "../../context";
-import {Donation, User} from "../../services/domain";
+
 import {field} from "../../utility/field";
 import {Tab, TabList, TabPanel, Tabs} from "@zendeskgarden/react-tabs";
 import {Col, Row} from "@zendeskgarden/react-grid";
@@ -13,6 +13,8 @@ import {Well} from "@zendeskgarden/react-notifications";
 import {TableComponent} from "../../components";
 import {Body, Close, Footer, FooterItem, Header, Modal} from "@zendeskgarden/react-modals";
 import {Button} from "@zendeskgarden/react-buttons";
+import {User} from "../../domain/User";
+import {Donation} from "../../services/domain";
 
 const fields = [
     field('donationCode', 'Donation ID'),
@@ -77,7 +79,9 @@ export const CharityContainer = () => {
                 ...user,
                 details: {
                     ...user.details,
-                    name: value
+                    name: value,
+                    phone: '',
+                    email: ''
                 }
             })
         } else {
@@ -98,7 +102,7 @@ export const CharityContainer = () => {
     }
     if (charity.id) {
         return (
-            <BaseContainer showBackButton title={charity.charityName} subtitle={"Charity details"}
+            <BaseContainer showBackButton title={charity.name!} subtitle={"Charity details"}
                            extraButtons={extraButtons}>
 
                 <Tabs selectedItem={selectedTab} onChange={setSelectedTab}>
@@ -112,18 +116,18 @@ export const CharityContainer = () => {
                                 <Col xs={12} xl={4}>
                                     <Well>
                                         <FormTitle>Basic information</FormTitle>
-                                        {infoField(charity.charityName, "Charity name")}
+                                        {infoField(charity.name!, "Charity name")}
                                         {infoField(charity.id, "Charity ID")}
-                                        {infoField(charity.address, "Address")}
+                                        {infoField(charity.address!, "Address")}
                                         <Row>
                                             <Col>
-                                                {infoField(charity.city, "City")}
+                                                {infoField(charity.city!, "City")}
                                             </Col>
                                             <Col>
-                                                {infoField(charity.state, "State")}
+                                                {infoField(charity.state!, "State")}
                                             </Col>
                                             <Col>
-                                                {infoField(charity.zip, "Zip")}
+                                                {infoField(charity.zip!, "Zip")}
                                             </Col>
                                         </Row>
                                         <StyledField>
@@ -144,8 +148,8 @@ export const CharityContainer = () => {
                                                 - {charity.daysOfOperation.sun ? 'OPEN' : 'CLOSED'}</Paragraph>
                                         </StyledField>
 
-                                        {infoField(charity.closingTime, "Closing by")}
-                                        {infoField(charity.salesforceId, "Salesforce ID")}
+                                        {infoField(charity.closingBy!, "Closing by")}
+                                        {infoField(charity.salesforceId!, "Salesforce ID")}
                                         {infoField(charity.notes, "Notes")}
                                     </Well>
                                 </Col>
@@ -174,7 +178,7 @@ export const CharityContainer = () => {
                                         </FooterItem>
                                         <FooterItem>
                                             <Button isPrimary isDanger onClick={() => {
-                                                actions.removeCharity(charity.id)
+                                                actions.removeCharity(charity.id!)
                                                     .then(r => {
                                                         setVisible(false)
                                                         history.goBack()

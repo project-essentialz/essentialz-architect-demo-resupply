@@ -15,15 +15,15 @@ type Direction = 'asc' | 'desc' | undefined;
 export const TableComponent = (props: TableContainerProps) => {
 
     const {fields, onRowClicked, data, tableSize = 'medium'} = props;
-
-    const pageSize = 100;
-    const [currentPage, setCurrentPage] = useState(1);
     const [sortConfig, setSortConfig] = useState<{ field: string | null, direction: Direction }>({
         field: null,
         direction: undefined
     });
 
-    const sortData = (tableData: any[]) => {
+    const sortData = (tableData: any[]): any[] => {
+        if (!tableData || tableData.length === 0) {
+            return []
+        }
         if (!sortConfig.field) {
             return tableData;
         }
@@ -31,7 +31,7 @@ export const TableComponent = (props: TableContainerProps) => {
         const field: string = sortConfig.field;
         const sortValue: Direction = sortConfig.direction;
 
-        return tableData.sort((a, b) => {
+        const sorted = tableData.sort((a, b) => {
             const aValue = a[field];
             const bValue = b[field];
 
@@ -42,7 +42,9 @@ export const TableComponent = (props: TableContainerProps) => {
             }
 
             return 0;
-        });
+        })
+        console.log(sorted);
+        return sorted;
     };
 
     const renderRow = (index: number, row: any) => (
@@ -92,15 +94,13 @@ export const TableComponent = (props: TableContainerProps) => {
             <StyledTable size={tableSize}>
                 {renderHeader()}
                 <Body>
-                    {currentPage === 1
-                        ? sortData(data).slice(currentPage - 1, pageSize).map((row, index) => {
-                            return renderRow(index, row)
-                        })
-                        : data
-                            .slice(currentPage * pageSize - pageSize, currentPage * pageSize)
-                            .map((row, index) => {
+                    {
+                        data ? (
+                            sortData(data).map((row, index) => {
                                 return renderRow(index, row)
-                            })}
+                            })
+                        ) : (<></>)
+                    }
                 </Body>
             </StyledTable>
         </div>

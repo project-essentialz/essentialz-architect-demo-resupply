@@ -6,86 +6,107 @@ import React, {ChangeEvent, useContext, useEffect, useState} from "react";
 import styled from "styled-components";
 import {LG} from "@zendeskgarden/react-typography";
 import {ZoneContext} from "../../context";
-import {useHistory} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import {Tag} from "@zendeskgarden/react-tags";
 import {PALETTE} from "@zendeskgarden/react-theming";
 import {Button} from "@zendeskgarden/react-buttons";
+import {Zone} from "../../domain/Zone";
+import _ from "lodash";
 
 export const CreateZoneContainer = () => {
     const history = useHistory()
     const {zoneData, setZoneData, actions} = useContext(ZoneContext)
 
-    const [zips, setZips] = useState<string[]>([])
-
-    const updateZips = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        const {value} = e.target;
-        setZips(value.split(','))
-    }
+    const [mode, setMode] = useState('new')
+    const params = useParams<{ id: string }>()
+    const {id} = params;
 
     useEffect(() => {
-        setZoneData({
-            ...zoneData,
-            zips: [...zips]
-        })
-    }, [zips])
+        if (id){
+            setMode('edit');
+            actions.getZone(id);
+        }else{
+            setMode('new');
+            setZoneData(new Zone());
+        }
+    }, [])
 
-    const removeZip = (index: number) => {
-        let _zips = [...zips]
-        _zips.splice(index,1);
-        setZips([..._zips])
+    const updateZone = (field: string, data: any) => {
+        const z = new Zone();
+        Object.assign(z, zoneData);
+        _.set(z, field, data);
+        setZoneData(z);
     }
-
+    const updateZips = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        const {value} = e.target;
+        const zips = value.split(",");
+        updateZone("zips", zips)
+    }
+    const removeZip = (index: number) => {
+        let zips = [...zoneData.zips]
+        zips.splice(index,1);
+        updateZone('zips', zips)
+    }
     const updateField = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const {value, name} = e.target;
-        setZoneData({
-            ...zoneData,
-            [name]: value
-        })
+        updateZone(name, value);
     }
 
     const submitZone = () => {
-        actions.submitZone(zoneData).then(
-            _ => history.goBack()
-        )
+        if (mode === 'new'){
+            actions.createZone(zoneData).then(
+                _ => history.goBack()
+            )
+        }else{
+            actions.updateZone(zoneData).then(
+                _ => history.goBack()
+            )
+        }
     }
 
-    return <BaseContainer title={"Create zone"} subtitle={"Specify zip codes for new zone"}>
-        <Row>
-            <Col lg={6}>
-                <Well>
-                    <FormTitle>Zone information</FormTitle>
-                    <StyledField>
-                        <Label>Zone name</Label>
-                        <Input name={"name"} onChange={updateField}/>
-                    </StyledField>
+    const getTitle = () => {
+        return mode === 'new' ? 'Create zone' : 'Update zone'
+    }
 
-                    <Row>
-                        <Col>
-                            <StyledField>
-                                <Label>Zip codes CSV</Label>
-                                <Textarea value={zips.join(',')} onChange={updateZips}/>
-                            </StyledField>
-                        </Col>
-                        <Col>
-                            <StyledField>
-                                <Label>Zip codes</Label>
-                                <TagContainer>
-                                    {zips.map((zip, index) => (
-                                        <StyledTag onClick={() => removeZip(index)} key={`${zip}-${index}`}>
-                                            <span>{zip}</span>
-                                        </StyledTag>
-                                    ))}
-                                </TagContainer>
-                            </StyledField>
-                        </Col>
-                    </Row>
+    return <BaseContainer showBackButton title={getTitle()} subtitle={"Specify zip codes for your zone"}>
+        {zoneData && (
+            <Row>
+                <Col lg={6}>
+                    <Well>
+                        <FormTitle>Zone information</FormTitle>
+                        <StyledField>
+                            <Label>Zone name</Label>
+                            <Input value={zoneData.name || ''} name={"name"} onChange={updateField}/>
+                        </StyledField>
 
-                    <StyledButtonWrapper>
-                        <Button onClick={submitZone}>Create zone</Button>
-                    </StyledButtonWrapper>
-                </Well>
-            </Col>
-        </Row>
+                        <Row>
+                            <Col>
+                                <StyledField>
+                                    <Label>Zip codes CSV</Label>
+                                    <Textarea value={zoneData.zips.join(',') || ''} onChange={updateZips}/>
+                                </StyledField>
+                            </Col>
+                            <Col>
+                                <StyledField>
+                                    <Label>Zip codes</Label>
+                                    <TagContainer>
+                                        {zoneData.zips.map((zip, index) => (
+                                            <StyledTag onClick={() => removeZip(index)} key={`${zip}-${index}`}>
+                                                <span>{zip}</span>
+                                            </StyledTag>
+                                        ))}
+                                    </TagContainer>
+                                </StyledField>
+                            </Col>
+                        </Row>
+
+                        <StyledButtonWrapper>
+                            <Button onClick={submitZone}>{getTitle()}</Button>
+                        </StyledButtonWrapper>
+                    </Well>
+                </Col>
+            </Row>
+        )}
     </BaseContainer>
 }
 

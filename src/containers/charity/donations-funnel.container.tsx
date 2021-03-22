@@ -4,13 +4,13 @@ import {AutocompleteInput, TableComponent} from "../../components";
 import {Col, Row} from "@zendeskgarden/react-grid";
 import {Well} from "@zendeskgarden/react-notifications";
 import {DonationContext} from "../../context";
-import {Donation} from "../../services/domain";
 import {field} from "../../utility/field";
 import {Body, Close, Footer, FooterItem, Header, Modal} from "@zendeskgarden/react-modals";
 import {Button} from "@zendeskgarden/react-buttons";
 import {useHistory} from "react-router-dom";
 import {CSVLink} from "react-csv";
 import {Checkbox, Field, Label} from "@zendeskgarden/react-forms";
+import {Donation} from "../../domain/Donation";
 
 
 type Props = {}
@@ -51,13 +51,13 @@ export const DonationsFunnelContainer = (props: Props) => {
         actions.getAllDonations('charity_id=af9de00f-77c8-40c0-bd80-8938fdb21d50');
     }, [])
     useEffect(() => {
-        const extractedDonorNames = donations.map((donation: Donation) => donation.donorName);
+        const extractedDonorNames = donations.map((donation: Donation) => donation.donor.name!);
         setDonors(extractedDonorNames)
         setMatchedDonations(donations);
     }, [donations])
     useEffect(() => {
         if (selectedDonor) {
-            setMatchedDonations(donations.filter((donation) => donation.donorName === selectedDonor))
+            setMatchedDonations(donations.filter((donation) => donation.donor.name === selectedDonor))
         } else {
             setMatchedDonations(donations)
 

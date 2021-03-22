@@ -3,6 +3,10 @@ export class User{
     username?: string
     password?: string
     details?: {
-        name: string
+        name: string,
+        phone?: string,
+        email?: string
     }
+
+
 }

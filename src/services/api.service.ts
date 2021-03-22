@@ -67,19 +67,33 @@ const api = <T>(base: string, resource: string, token?: string) => {
     }
 
     /**
-     * Perform HTTP GET request to retrieve all resources
-     * from the given type
+     * Performs HTTP GET request to retrieve all resources from the given type
+     * @param q: string
      */
     const getAll = (q?: string) => {
         return fetch(_getUrl(q ? `?${q} `: ''), _getOptions(method.get))
-            .then((response: Response) => response.json().then((json: any) => _camelCaseKeys(json) as T[]))
+            .then((response: Response) => {
+                if (response.ok){
+                    return response.json().then((json: any) => _camelCaseKeys(json) as T[])
+                }
+                return [];
+            })
     }
 
+    /**
+     *
+     * @param body: Generic Type
+     */
     const create = (body: T) => {
         return fetch(_getUrl(), _getOptions(method.post, body))
             .then((response: Response) => response.json().then((json: any) => _camelCaseKeys(json) as T))
     }
 
+    /**
+     * Performs HTTP PUT request against the id with the given target data to update
+     * @param id: string
+     * @param data: Generic Type
+     */
     const update = (id: string, data: T) => {
         return fetch(_getUrl(`/${id}`), _getOptions(method.update, data))
             .then((response: Response) => response.json().then((json: any) => _camelCaseKeys(json) as T))
@@ -104,6 +118,10 @@ const api = <T>(base: string, resource: string, token?: string) => {
         })
     }
 
+    /**
+     *
+     * @param formData: FormData
+     */
     const upload = (formData: FormData): Promise<any> => {
         return fetch(_getUrl(), {
             method: method.post,

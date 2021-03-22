@@ -8,9 +8,9 @@ import {Col, Row} from "@zendeskgarden/react-grid";
 import {PALETTE} from "@zendeskgarden/react-theming";
 import {useHistory, useParams} from "react-router-dom";
 import {DonationContext} from "../../context";
-import {Donation} from "../../services/domain";
 import {Skeleton} from "@zendeskgarden/react-loaders";
 import moment from "moment";
+import {Donation} from "../../domain/Donation";
 
 export const DonationsContainer = () => {
     const params = useParams()
@@ -96,18 +96,18 @@ export const DonationsContainer = () => {
                                     <WellHeader>
                                         <p>{donation.donationCode}</p>
                                     </WellHeader>
-                                    <CharityName>{donation.charityName}</CharityName>
+                                    <CharityName>{donation.charity?.name}</CharityName>
                                     <Span isBold>Donation status:</Span>
                                     <Address
                                         style={{color: donation.donationStatus === 'completed' ? PALETTE.crimson.M600 : "black"}}
                                     >{donation.donationStatus}</Address>
                                     <Span isBold>Pickup location:</Span>
-                                    <Address>{donation.address}</Address>
+                                    <Address>{donation.donor.address}</Address>
                                     <Date><Span isBold>Pickup date: </Span>{moment(donation.date).format("dddd MM/DD/yyyy")}</Date>
                                     <Time><Span isBold>Pickup time: </Span>{donation.timeSlot}</Time>
                                 </StyledWellTop>
                                 <BottomControls>
-                                    {donation.driverId ? (
+                                    {donation.driver ? (
                                         <>
                                             <Button onClick={() => {
                                                 history.push(`/donations/${donation.id}`)

@@ -9,12 +9,13 @@ import {Body, Cell, GroupRow, Row as TRow, Table} from '@zendeskgarden/react-tab
 import {Tag} from '@zendeskgarden/react-tags';
 import {MD, Paragraph} from "@zendeskgarden/react-typography";
 import {CharityContext, DonationContext} from "../../context";
-import {Charity, Donation} from "../../services/domain";
 import {useParams} from "react-router-dom";
 import {DonationStatusTreeComponent, EstimateComponent} from "../../components";
 
 import { Tabs, TabList, Tab, TabPanel } from '@zendeskgarden/react-tabs';
 import {PALETTE} from "@zendeskgarden/react-theming";
+import {Donation} from "../../domain/Donation";
+import {Charity} from "../../domain/Charity";
 
 type Props = {};
 export const DonationContainer = (props: Props) => {
@@ -35,7 +36,7 @@ export const DonationContainer = (props: Props) => {
 
     useEffect(() => {
         if (donation) {
-            charityContext.actions.getCharity(donation.charityId).then(setCharity);
+            charityContext.actions.getCharity(donation.charity?.id!).then(setCharity);
         }
     }, [donation])
 
@@ -59,23 +60,23 @@ export const DonationContainer = (props: Props) => {
                                         <Table>
                                             <Body>
                                                 <TRowNoBorder isReadOnly>
-                                                    <Cell><Paragraph>{donation.donorName}</Paragraph></Cell>
+                                                    <Cell><Paragraph>{donation.donor.name}</Paragraph></Cell>
                                                 </TRowNoBorder>
                                                 <TRowNoBorder isReadOnly>
                                                     <Cell>Phone number</Cell>
                                                     <Cell><Anchor
-                                                        href={`tel:${donation.phone}`}>{donation.phone}</Anchor></Cell>
+                                                        href={`tel:${donation.donor.phone}`}>{donation.donor.phone}</Anchor></Cell>
                                                 </TRowNoBorder>
                                                 <TRowNoBorder isReadOnly>
                                                     <Cell>Email</Cell>
                                                     <Cell><Anchor
-                                                        href={`mailto:${donation.email}`}>{donation.email}</Anchor></Cell>
+                                                        href={`mailto:${donation.donor.email}`}>{donation.donor.email}</Anchor></Cell>
                                                 </TRowNoBorder>
                                                 <TRowNoBorder isReadOnly>
                                                     <Cell>Address</Cell>
                                                     <Cell>
-                                                        <Row><Col>{donation.address} {donation.city}</Col></Row>
-                                                        <Row><Col>{donation.state} {donation.zip}</Col></Row>
+                                                        <Row><Col>{donation.donor.address} {donation.donor.city}</Col></Row>
+                                                        <Row><Col>{donation.donor.state} {donation.donor.zip}</Col></Row>
                                                     </Cell>
                                                 </TRowNoBorder>
                                             </Body>
@@ -88,11 +89,11 @@ export const DonationContainer = (props: Props) => {
                                         <Table>
                                             <Body>
                                                 <TRowNoBorder isReadOnly>
-                                                    <Cell colSpan={2}><Paragraph>{charity.charityName}</Paragraph></Cell>
+                                                    <Cell colSpan={2}><Paragraph>{charity.name}</Paragraph></Cell>
                                                 </TRowNoBorder>
                                                 <TRowNoBorder isReadOnly>
                                                     <Cell>Point of contact</Cell>
-                                                    <Cell>{charity.pointOfContact}</Cell>
+                                                    <Cell>{charity.pocName}</Cell>
                                                 </TRowNoBorder>
                                                 <TRowNoBorder isReadOnly>
                                                     <Cell>Phone number</Cell>
@@ -113,7 +114,7 @@ export const DonationContainer = (props: Props) => {
                                                 </TRowNoBorder>
                                                 <TRowNoBorder isReadOnly>
                                                     <Cell>Closing time</Cell>
-                                                    <Cell>{charity.closingTime}</Cell>
+                                                    <Cell>{charity.closingBy}</Cell>
                                                 </TRowNoBorder>
                                                 <TRowNoBorder isReadOnly>
                                                     <Cell>Notes</Cell>
@@ -137,32 +138,32 @@ export const DonationContainer = (props: Props) => {
                                                 <TRow isReadOnly>
                                                     <Cell>Large items</Cell>
                                                     <Cell
-                                                        style={{textAlign: "right"}}>{parseFloat((donation.largeItems || 0) + "")}</Cell>
+                                                        style={{textAlign: "right"}}>{parseFloat((donation.spec.largeItems || 0) + "")}</Cell>
                                                 </TRow>
                                                 <TRow isReadOnly>
                                                     <Cell>Small items</Cell>
                                                     <Cell
-                                                        style={{textAlign: "right"}}>{parseFloat((donation.smallItems || 0) + "")}</Cell>
+                                                        style={{textAlign: "right"}}>{parseFloat((donation.spec.smallItems || 0) + "")}</Cell>
                                                 </TRow>
                                                 <TRow isReadOnly>
                                                     <Cell>Bags</Cell>
                                                     <Cell
-                                                        style={{textAlign: "right"}}>{parseFloat((donation.bags || 0) + "")}</Cell>
+                                                        style={{textAlign: "right"}}>{parseFloat((donation.spec.bags || 0) + "")}</Cell>
                                                 </TRow>
                                                 <TRow isReadOnly>
                                                     <Cell>Boxes</Cell>
                                                     <Cell
-                                                        style={{textAlign: "right"}}>{parseFloat((donation.boxes || 0) + "")}</Cell>
+                                                        style={{textAlign: "right"}}>{parseFloat((donation.spec.boxes || 0) + "")}</Cell>
                                                 </TRow>
                                                 <TRow isReadOnly>
                                                     <Cell>Appliances</Cell>
                                                     <Cell
-                                                        style={{textAlign: "right"}}>{parseFloat((donation.appliances || 0) + "")}</Cell>
+                                                        style={{textAlign: "right"}}>{parseFloat((donation.spec.appliances || 0) + "")}</Cell>
                                                 </TRow>
                                                 <TRow isReadOnly>
                                                     <Cell>Hazardous</Cell>
                                                     <Cell
-                                                        style={{textAlign: "right"}}>{parseFloat((donation.hazardous || 0) + "")}</Cell>
+                                                        style={{textAlign: "right"}}>{parseFloat((donation.spec.hazardous || 0) + "")}</Cell>
                                                 </TRow>
                                             </Body>
                                         </Table>
@@ -174,43 +175,43 @@ export const DonationContainer = (props: Props) => {
                                                 <TRow isReadOnly>
                                                     <Cell>Are items above or below the ground floor?</Cell>
                                                     <Cell style={{textAlign: "right"}}><TTag
-                                                        value={donation.aboveTheGroundFloor === 'no' ? 'No' : 'Yes'}/></Cell>
+                                                        value={donation.spec.aboveTheGroundFloor === 'no' ? 'No' : 'Yes'}/></Cell>
                                                 </TRow>
                                                 <TRow isReadOnly>
                                                     <Cell>Is elevator present?</Cell>
                                                     <Cell style={{textAlign: "right"}}><TTag
-                                                        value={donation.aboveTheGroundFloor === 'yes-elevator' ? 'Yes' : 'No'}/></Cell>
+                                                        value={donation.spec.aboveTheGroundFloor === 'yes-elevator' ? 'Yes' : 'No'}/></Cell>
                                                 </TRow>
                                                 <TRow isReadOnly>
                                                     <Cell>Will client move items to ground floor?</Cell>
                                                     <Cell style={{textAlign: "right"}}><TTag
-                                                        value={donation.aboveTheGroundFloor === 'yes-curbside' ? 'Yes' : 'No'}/></Cell>
+                                                        value={donation.spec.aboveTheGroundFloor === 'yes-curbside' ? 'Yes' : 'No'}/></Cell>
                                                 </TRow>
                                                 <TRow isReadOnly>
                                                     <Cell>How many staircases we will need to take?</Cell>
                                                     <Cell
-                                                        style={{textAlign: "right"}}>{parseFloat(donation.staircases + "")}</Cell>
+                                                        style={{textAlign: "right"}}>{parseFloat(donation.spec.staircases + "")}</Cell>
                                                 </TRow>
                                                 <TRow isReadOnly>
                                                     <Cell>Disassembly required?</Cell>
                                                     <Cell style={{textAlign: "right"}}><TTag
-                                                        value={donation.disassembly > 0 ? 'Yes' : 'No'}/></Cell>
+                                                        value={donation.spec.disassembly > 0 ? 'Yes' : 'No'}/></Cell>
                                                 </TRow>
                                                 <TRow isReadOnly>
                                                     <Cell>How many items need disassembly?</Cell>
                                                     <Cell
-                                                        style={{textAlign: "right"}}>{parseFloat(donation.disassembly + "")}</Cell>
+                                                        style={{textAlign: "right"}}>{parseFloat(donation.spec.disassembly + "")}</Cell>
                                                 </TRow>
                                             </Body>
                                         </Table>
                                     </Row>
 
                                     <TableCaption color={PALETTE.black}>Address</TableCaption>
-                                    <Paragraph>{donation.address} {donation.city} <br/> {donation.state} {donation.zip}
+                                    <Paragraph>{donation.donor.address} {donation.donor.city} <br/> {donation.donor.state} {donation.donor.zip}
                                     </Paragraph>
                                     <TableCaption>Special instructions</TableCaption>
                                     <Paragraph>
-                                        {donation.additionalInformation || 'No special instructions provided by the donor'}
+                                        {donation.spec.additionalInformation || 'No special instructions provided by the donor'}
                                     </Paragraph>
                                     <TableCaption>Initial estimate</TableCaption>
                                     <Row>
@@ -219,22 +220,22 @@ export const DonationContainer = (props: Props) => {
                                 </Well>
                             </Col>
                             <Col xs={4}>
-                                {donation.partner && (<Well style={{marginBottom: 10}}>
+                                {donation.driver && (<Well style={{marginBottom: 10}}>
                                     <StiledTitle>Driver information</StiledTitle>
                                     <Row>
                                         <Table>
                                             <Body>
                                                 <TRowNoBorder isReadOnly>
-                                                    <Cell><Paragraph>{donation.partner.driverName || 'Name is unavailable'}</Paragraph></Cell>
+                                                    <Cell><Paragraph>{donation.driver.details?.name || 'Name is unavailable'}</Paragraph></Cell>
                                                 </TRowNoBorder>
                                                 <TRowNoBorder isReadOnly>
                                                     <Cell>Organization</Cell>
-                                                    <Cell>{donation.partner.organizationName}</Cell>
+                                                    <Cell>{donation.driver.organization?.name}</Cell>
                                                 </TRowNoBorder>
                                                 <TRowNoBorder isReadOnly>
                                                     <Cell>Phone number</Cell>
                                                     <Cell><Anchor
-                                                        href={`tel:${donation.partner.phone}`}>{donation.partner.phone}</Anchor></Cell>
+                                                        href={`tel:${donation.driver.details?.phone}`}>{donation.driver.details?.phone}</Anchor></Cell>
                                                 </TRowNoBorder>
                                             </Body>
                                         </Table>

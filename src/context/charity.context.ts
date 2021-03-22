@@ -1,5 +1,6 @@
 import {createContext} from "react";
-import {Charity, User} from "../services/domain";
+import {Charity} from "../domain/Charity";
+import {User} from "../domain/User";
 
 export type CharityContextType = {
     charity: Charity

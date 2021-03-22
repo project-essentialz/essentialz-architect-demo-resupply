@@ -1,7 +1,6 @@
 import {useHistory, useParams} from "react-router-dom";
 import React, {ChangeEvent, useContext, useEffect, useState} from "react";
 import {DonationContext} from "../../context";
-import {Donation} from "../../services/domain";
 import {BaseContainer} from "./base.container";
 import {Field, Input, Label} from "@zendeskgarden/react-forms";
 import styled from "styled-components";
@@ -9,6 +8,7 @@ import {Button} from "@zendeskgarden/react-buttons";
 import {Col, Row} from "@zendeskgarden/react-grid";
 import {Body, Close, Footer, FooterItem, Header, Modal} from "@zendeskgarden/react-modals";
 import {EstimateComponent} from "../../components";
+import {Donation} from "../../domain/Donation";
 
 export const ValidateDonationContainer = () => {
     const params = useParams<{ id: string }>()
@@ -46,7 +46,7 @@ export const ValidateDonationContainer = () => {
     const sendTheQuote = () => {
         if (donation) {
             setEstimateVisible(false)
-            setDonation({...donation, donationStatus: 'quote_sent', eventType: "donation_quote_sent"})
+            // setDonation({...donation, donationStatus: 'quote_sent', eventType: "donation_quote_sent"})
         }
     }
 
@@ -58,13 +58,13 @@ export const ValidateDonationContainer = () => {
                         <Col>
                             <StyledField>
                                 <Label>Large items</Label>
-                                <Input name={'largeItems'} onChange={updateField} type={'number'} value={parseInt((donation.largeItems) + '', 10)}/>
+                                <Input name={'largeItems'} onChange={updateField} type={'number'} value={parseInt((donation.spec.largeItems) + '', 10)}/>
                             </StyledField>
                         </Col>
                         <Col>
                             <StyledField>
                                 <Label>Small items</Label>
-                                <Input name={'smallItems'} onChange={updateField} type={'number'} value={parseInt((donation.smallItems) + '', 10)}/>
+                                <Input name={'smallItems'} onChange={updateField} type={'number'} value={parseInt((donation.spec.smallItems) + '', 10)}/>
                             </StyledField>
                         </Col>
                     </Row>
@@ -72,13 +72,13 @@ export const ValidateDonationContainer = () => {
                         <Col>
                             <StyledField>
                                 <Label>Boxes</Label>
-                                <Input name={'boxes'} onChange={updateField} type={'number'} value={parseInt((donation.boxes) + '', 10)}/>
+                                <Input name={'boxes'} onChange={updateField} type={'number'} value={parseInt((donation.spec.boxes) + '', 10)}/>
                             </StyledField>
                         </Col>
                         <Col>
                             <StyledField>
                                 <Label>Bags</Label>
-                                <Input name={'bags'} onChange={updateField} type={'number'} value={parseInt((donation.bags) + '', 10)}/>
+                                <Input name={'bags'} onChange={updateField} type={'number'} value={parseInt((donation.spec.bags) + '', 10)}/>
                             </StyledField>
                         </Col>
                     </Row>
@@ -86,13 +86,13 @@ export const ValidateDonationContainer = () => {
                         <Col>
                             <StyledField>
                                 <Label>Appliances</Label>
-                                <Input name={'appliances'} onChange={updateField} type={'number'} value={parseInt((donation.appliances) + '', 10)}/>
+                                <Input name={'appliances'} onChange={updateField} type={'number'} value={parseInt((donation.spec.appliances) + '', 10)}/>
                             </StyledField>
                         </Col>
                         <Col>
                             <StyledField>
                                 <Label>Hazardous</Label>
-                                <Input name={'hazardous'} onChange={updateField} type={'number'} value={parseInt((donation.hazardous) + '', 10)}/>
+                                <Input name={'hazardous'} onChange={updateField} type={'number'} value={parseInt((donation.spec.hazardous) + '', 10)}/>
                             </StyledField>
                         </Col>
                     </Row>
@@ -100,13 +100,13 @@ export const ValidateDonationContainer = () => {
                         <Col>
                             <StyledField>
                                 <Label>Disassembly</Label>
-                                <Input name={'disassembly'} onChange={updateField} type={'number'} value={parseInt((donation.disassembly) + '', 10)}/>
+                                <Input name={'disassembly'} onChange={updateField} type={'number'} value={parseInt((donation.spec.disassembly) + '', 10)}/>
                             </StyledField>
                         </Col>
                         <Col>
                             <StyledField>
                                 <Label>Staircases</Label>
-                                <Input name={'staircases'} onChange={updateField} type={'number'} value={parseInt((donation.staircases) + '', 10)}/>
+                                <Input name={'staircases'} onChange={updateField} type={'number'} value={parseInt((donation.spec.staircases) + '', 10)}/>
                             </StyledField>
                         </Col>
                     </Row>

@@ -10,8 +10,8 @@ import {Button} from "@zendeskgarden/react-buttons";
 import Api from "../../services/api.service";
 import {DonationContext} from "../../context";
 import {useHistory, useParams} from "react-router-dom";
-import {Donation} from "../../services/domain";
 import {Inline} from "@zendeskgarden/react-loaders";
+import {Donation} from "../../domain/Donation";
 
 
 export const DonationPhotosContainer = () => {
@@ -50,10 +50,10 @@ export const DonationPhotosContainer = () => {
         Api.$('files/bulk').upload(formData).then(
             result => {
                 if (donation){
-                    actions.updateDonation({
-                        ...donation,
-                        photos: result
-                    } as Donation).then(() => history.replace(`/donations/${donation.id}`))
+                    // actions.updateDonation({
+                    //     ...donation,
+                    //     photos: result
+                    // } as Donation).then(() => history.replace(`/donations/${donation.id}`))
                 }
             }
         )

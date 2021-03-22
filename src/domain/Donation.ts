@@ -35,7 +35,7 @@ class DonationSpec {
     appliances: number = 0
     hazardous: number = 0
 
-    aboveTheGroundFloor: boolean = false // Todo: Do we need this at all?
+    aboveTheGroundFloor: string = ''
     staircases: number = 0
     disassembly: number = 0
 

@@ -1,8 +1,8 @@
 import React, {useState} from "react";
-import {Donation} from "../services/domain";
 import {DonationContext} from "../context/";
 import Api, {method} from "../services/api.service";
 import {routes} from "../services/api.routes";
+import {Donation} from "../domain/Donation";
 
 type Props = {
     children: any
@@ -30,7 +30,7 @@ export const DonationProvider = (props: Props) => {
     }
 
     const updateDonation = (donation: Donation) => {
-        return Api.$<Donation>(routes.donations).update(donation.id, donation)
+        return Api.$<Donation>(routes.donations).update(donation.id!, donation)
     }
 
     return (

@@ -2,7 +2,6 @@ import {BaseContainer} from "./base.container";
 import {useContext, useEffect, useState} from "react";
 import {DonationContext} from "../../context";
 import {useParams} from "react-router-dom";
-import {Donation} from "../../services/domain";
 import {EstimateComponent} from "../../components";
 import styled from "styled-components";
 import {Anchor, Button} from "@zendeskgarden/react-buttons";
@@ -11,6 +10,7 @@ import {SM} from "@zendeskgarden/react-typography";
 import Api from "../../services/api.service";
 import {useStripe} from "@stripe/react-stripe-js";
 import {donationStatus} from "../../utility/donation-status";
+import {Donation} from "../../domain/Donation";
 
 export const PaymentContainer = () => {
     const stripe = useStripe();
@@ -57,7 +57,7 @@ export const PaymentContainer = () => {
 
     const isPaymentCompleted = () => {
         if (donation){
-            return donationStatus.indexOf(donation.donationStatus) >= donationStatus.indexOf('payment_successful')
+            return donationStatus.indexOf(donation.donationStatus!) >= donationStatus.indexOf('payment_successful')
         }
         return false
     }

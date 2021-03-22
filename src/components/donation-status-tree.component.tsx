@@ -4,13 +4,13 @@ import {Button} from "@zendeskgarden/react-buttons";
 import {Title} from "@zendeskgarden/react-notifications";
 import React from "react";
 import styled from "styled-components";
-import {Donation} from "../services/domain";
+import {Donation} from "../domain/Donation";
 
 type Props = {
     donation: Donation
 }
 export const DonationStatusTreeComponent = (props: Props) => {
-    const statusIndex = donationStatus.indexOf(props.donation.donationStatus) + 1;
+    const statusIndex = donationStatus.indexOf(props.donation.donationStatus!) + 1;
 
     return (
         <>

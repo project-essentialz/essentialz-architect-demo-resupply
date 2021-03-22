@@ -111,6 +111,9 @@ const CaptainApp = () => {
                                                                 <Route exact path={'/create-zone'}>
                                                                     <CreateZoneContainer/>
                                                                 </Route>
+                                                                <Route exact path={'/edit-zone/:id'}>
+                                                                    <CreateZoneContainer/>
+                                                                </Route>
                                                                 <Route exact path={'/users'}>
                                                                     <UsersContainer/>
                                                                 </Route>

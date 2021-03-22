@@ -1,8 +1,11 @@
 import React, {useState} from "react";
-import {Charity, User} from "../services/domain";
+
 import {CharityContext} from "../context/";
 import Api, {method} from "../services/api.service";
 import {routes} from "../services/api.routes";
+import {Charity} from "../domain/Charity";
+import {User} from "../domain/User";
+import {CharityAdmin} from "../domain/CharityAdmin";
 
 type Props = {
     children: any
@@ -50,7 +53,7 @@ export const CharityProvider = (props: Props) => {
         )
     }
     const updateCharity = (data: Charity): Promise<void> => {
-        return Api.$<Charity>(routes.charities).update(data.id, data).then(
+        return Api.$<Charity>(routes.charities).update(data.id!, data).then(
             result => {
                 return
             }
@@ -73,9 +76,9 @@ export const CharityProvider = (props: Props) => {
     }
 
     const getUsers = () => {
-        return Api.$<User>(routes.users).getAll().then(users => {
+        return Api.$<CharityAdmin>(routes.users).getAll().then(users => {
             return users.filter((user) => {
-                return user.details && user.details.charityId === charity.id
+                return user.details && user.details.charity.id === charity.id
             })
         })
     }

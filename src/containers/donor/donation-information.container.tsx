@@ -47,10 +47,10 @@ export const DonationInformationContainer = () => {
     }, [donationData])
 
     const updateDonation = (key: string, value: any) => {
-        setDonationData({
-            ...donationData,
-            [key]: value
-        })
+        // setDonationData({
+        //     ...donationData,
+        //     [key]: value
+        // })
     }
 
     const fieldChanged = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -70,12 +70,12 @@ export const DonationInformationContainer = () => {
     }, [height])
 
     useEffect(() => {
-        if (disassembleOptionSelected.value === 'no'){
-            setDonationData({
-                ...donationData,
-                'disassembly': 0
-            })
-        }
+        // if (disassembleOptionSelected.value === 'no'){
+        //     setDonationData({
+        //         ...donationData,
+        //         'disassembly': 0
+        //     })
+        // }
     }, [disassembleOptionSelected])
 
 

@@ -1,5 +1,6 @@
 import {createContext} from "react";
-import {Donation} from "../services/domain";
+import {Donation} from "../domain/Donation";
+
 
 export type DonorContextType = {
     donationData: Donation

@@ -1,6 +1,5 @@
 import {useHistory, useParams} from "react-router-dom";
 import React, {ChangeEvent, useContext, useEffect, useState} from "react";
-import {Donation} from "../../services/domain";
 import {BaseContainer} from "./base.container";
 import {DonationContext} from "../../context";
 import styled from "styled-components";
@@ -9,6 +8,7 @@ import {Col, Row} from "@zendeskgarden/react-grid";
 import {Button} from "@zendeskgarden/react-buttons";
 import {Field, Input, Label} from "@zendeskgarden/react-forms";
 import {Title} from "@zendeskgarden/react-notifications";
+import {Donation} from "../../domain/Donation";
 
 
 export const DropOffContainer = () => {
@@ -27,8 +27,7 @@ export const DropOffContainer = () => {
 
     useEffect(() => {
         if (donation) {
-            console.log(donation.photos.map(p => ({url: p.url, selected: false})));
-            setAvailableItems(donation.photos.map(p => ({url: p.url, selected: false})))
+            // setAvailableItems(donation.photos.map(p => ({url: p.url, selected: false})))
         }
     }, [donation])
 
@@ -48,13 +47,13 @@ export const DropOffContainer = () => {
     }
 
     const sendConfirmation = () => {
-        actions.updateDonation({
-            ...donation,
-            primaryDrop: availableItems,
-            donationStatus: 'completed',
-            eventType: 'donation_completed'} as Donation).then(
-            r => history.goBack()
-        )
+        // actions.updateDonation({
+        //     ...donation,
+        //     primaryDrop: availableItems,
+        //     donationStatus: 'completed',
+        //     eventType: 'donation_completed'} as Donation).then(
+        //     r => history.goBack()
+        // )
     }
 
 
@@ -95,7 +94,7 @@ export const DropOffContainer = () => {
                     </Row>
                     <Row style={{marginTop: 30}}>
                         <Button
-                            disabled={!donation || !donation.pocName || !donation.pocPhone}
+                            // disabled={!donation || !donation.pocName || !donation.pocPhone}
                             onClick={sendConfirmation}
                             isPrimary
                             isStretched

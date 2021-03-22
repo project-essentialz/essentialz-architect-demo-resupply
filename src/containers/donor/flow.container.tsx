@@ -22,9 +22,10 @@ import {Button} from "@zendeskgarden/react-buttons";
 import {useHistory, useParams} from "react-router-dom";
 import {DonorContext} from "../../context/donor.context";
 import {CharityContext} from "../../context";
-import {Charity} from "../../services/domain";
+
 import {getDonationCode} from "../../utility/donation-code";
 import moment from "moment";
+import {Charity} from "../../domain/Charity";
 
 interface IItem {
     label: string;
@@ -61,12 +62,12 @@ export const FlowContainer = () => {
 
     useEffect(() => {
         if (charity) {
-            setDonationData({
-                ...donationData,
-                charityName: charity.charityName,
-                charityId: charity.id,
-                donationCode: getDonationCode(charity.state, charity.charityNumber)
-            })
+            // setDonationData({
+            //     ...donationData,
+            //     charityName: charity.name,
+            //     charityId: charity.id,
+            //     donationCode: getDonationCode(charity.state, charity.charityNumber)
+            // })
         }
     }, [charity])
 
@@ -80,10 +81,10 @@ export const FlowContainer = () => {
     }, [date])
 
     const updateDonation = (key: string, value: any) => {
-        setDonationData({
-            ...donationData,
-            [key]: value
-        })
+        // setDonationData({
+        //     ...donationData,
+        //     [key]: value
+        // })
     }
 
     const fieldChanged = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -96,7 +97,7 @@ export const FlowContainer = () => {
             <StyledRow>
                 <Col xs={12}>
                     <Question>What would you like to donate to
-                        {charity && (<Span isBold> {charity.charityName}</Span>)}
+                        {charity && (<Span isBold> {charity.name}</Span>)}
                     </Question>
                 </Col>
                 <Col xs={6}>
