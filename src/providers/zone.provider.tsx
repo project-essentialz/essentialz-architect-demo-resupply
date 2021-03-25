@@ -1,8 +1,8 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {ZoneContext} from "../context";
 import Api from "../services/api.service";
 import {routes} from "../services/api.routes";
-import {Zone} from "../domain/Zone";
+import {Zone} from "../domain";
 
 type Props = {
     children: any
@@ -11,6 +11,9 @@ export const ZoneProvider = (props: Props) => {
     const [zoneData, setZoneData] = useState<Zone>(new Zone())
     const [zones, setZones] = useState<Zone[]>([] as Zone[])
 
+    useEffect(() => {
+        getAllZones()
+    }, [])
 
     const createZone = (data: Zone): Promise<void> => {
         return Api.$<Zone>(routes.zones).create(data).then(

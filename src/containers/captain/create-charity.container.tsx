@@ -1,49 +1,56 @@
-import {Col, Row} from "@zendeskgarden/react-grid";
-import {Field, FileUpload, Hint, Input, Label, Textarea, Tiles, Toggle} from "@zendeskgarden/react-forms";
 import React, {ChangeEvent, useContext, useEffect, useState} from "react";
-import {BaseContainer} from "../base.container";
-import {Well} from "@zendeskgarden/react-notifications";
-import {AutocompleteInput} from "../../components";
-import {Button} from "@zendeskgarden/react-buttons";
-import {useDropzone} from "react-dropzone";
-import styled from "styled-components";
-import {mediaQuery} from "@zendeskgarden/react-theming";
-import {LG} from "@zendeskgarden/react-typography";
-import {CharityContext, ZoneContext} from "../../context";
 import {useHistory, useParams} from "react-router-dom";
-import * as _ from 'lodash';
+
+import styled from "styled-components";
+
+import {Col, Row} from "@zendeskgarden/react-grid";
+import {LG} from "@zendeskgarden/react-typography";
+import {Field, FileUpload, Hint, Input, Label, Textarea, Toggle} from "@zendeskgarden/react-forms";
+import {Well} from "@zendeskgarden/react-notifications";
+import {Button} from "@zendeskgarden/react-buttons";
+
 import ReactInputMask from "react-input-mask";
-import {Zone} from "../../domain/Zone";
-import {Charity} from "../../domain/Charity";
 
-type DayString = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun';
+import {BaseContainer} from "../base.container";
+import {useDropzone} from "react-dropzone";
+
+import {CharityContext, ZoneContext} from "../../context";
+import {Charity, Zone} from "../../domain";
+
+import * as _ from 'lodash';
+import {AutocompleteField} from "../../components/auto-complete-field";
+import {DayString, EntityRouteParams} from "../../types";
+
 const weekDays: DayString[] = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-
 
 export const CreateCharityContainer = () => {
     const history = useHistory()
-    const {charity, setCharity, actions} = useContext(CharityContext)
-    const zoneContext = useContext(ZoneContext);
-    const {zones} = zoneContext
+    const {charity, setCharity, charities, actions} = useContext(CharityContext)
+    const {zones} = useContext(ZoneContext);
 
     // Used if Component is in EDIT mode
     const [mode, setMode] = useState('new')
-    const params = useParams<{ id: string }>()
+    const params = useParams<EntityRouteParams>()
     const {id} = params;
+
+
+    useEffect(() => {
+        console.log("CHARITY", charity);
+    }, [charity])
 
     useEffect(() => {
         if (id) {
             setMode('edit')
-            actions.getCharity(id).then(setCharity);
+            actions.getCharity(id)
         } else {
             setCharity(new Charity());
         }
-
-        zoneContext.actions.getAllZones();
     }, [])
 
+    const goBack = () => history.goBack();
 
-    const updateCharityEntry = (value: string, name: string) => {
+
+    const updateCharityEntry = (value: any, name: string) => {
         const c = new Charity();
         Object.assign(c, charity);
         _.set(c, name, value);
@@ -53,50 +60,31 @@ export const CreateCharityContainer = () => {
         const {value, name} = e.target;
         updateCharityEntry(value, name);
     }
-
-    const updateZone = (zoneName: string) => {
-        // const zone = _.find<Zone>(zones, (zone: Zone) => {
-        //     return zone.name === zoneName
-        // })
-        // if (zone) {
-        //     setCharity({
-        //         ...charity,
-        //         zoneId: zone.id!
-        //     })
-        // }
-
+    const updateDaysOfOperation = (e: ChangeEvent<HTMLInputElement>) => {
+        const {name, checked} = e.target;
+        updateCharityEntry(checked, name)
+    }
+    const updateZone = (zone: Zone) => {
+        updateCharityEntry(zone, 'zone')
+    }
+    const updateSecondaryDropOff = (charity: Charity) => {
+        updateCharityEntry(charity, 'secondaryDropOff')
     }
 
-    const createCharity = () => {
-        actions.createCharity(charity)
-            .then(result => {
-                history.push("/charities")
-            })
-    }
+    const createCharity = () => actions.createCharity(charity).then(goBack)
+    const updateCharity = () => actions.updateCharity(charity).then(goBack)
 
-    const updateCharity = () => {
-        actions.updateCharity(charity)
-            .then(result => {
-                history.push("/charities")
-            })
-    }
+    const getTitle = () => mode === 'new' ? 'Create charity' : 'Update charity'
 
-    const getZoneNameById = (zoneId: string) => {
-        return _.find<Zone>(zones, (zone: Zone) => zone.id === zoneId)?.name
-    }
+    const resolveZoneName = (value: Zone) => value ? (value.name ? value.name : '') : ''
+    const resolveCharityName = (value: Charity) => value ? (value.name ? value.name : '') : ''
 
-    // @ts-ignore
-    const renderDayToggle = (day: 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun') => (
+
+    const renderDayToggle = (day: DayString) => (
         <Col key={day}>
             <StyledField>
-                <Toggle checked={charity.daysOfOperation[day]} onChange={(event) => {
-                    setCharity({
-                        ...charity, daysOfOperation: {
-                            ...charity.daysOfOperation,
-                            [day]: event.target.checked
-                        }
-                    })
-                }}>
+                <Toggle name={`daysOfOperation.${day}`} checked={charity.daysOfOperation[day]}
+                        onChange={updateDaysOfOperation}>
                     <StyledLabel>{day}
                     </StyledLabel>
                 </Toggle>
@@ -113,11 +101,8 @@ export const CreateCharityContainer = () => {
         onDrop
     });
 
-    if (id && !charity.id) {
-        return (<>/</>)
-    }
-    return (
-        <BaseContainer showBackButton title={mode === 'new' ? "Create Charity" : "Edit Charity"}
+    return charity ? (
+        <BaseContainer showBackButton title={getTitle()}
                        subtitle={"Please specify charity information"}>
             <Row style={{marginTop: 10}}>
                 <Col xs={12} xl={8}>
@@ -130,7 +115,7 @@ export const CreateCharityContainer = () => {
                                     <Input
                                         name={"name"}
                                         onChange={updateField}
-                                        value={charity.name || ''}
+                                        value={charity.name}
                                     />
                                 </StyledField>
                             </Col>
@@ -141,7 +126,7 @@ export const CreateCharityContainer = () => {
                                         type={"number"}
                                         name={"code"}
                                         onChange={updateField}
-                                        value={charity.code || ''}
+                                        value={charity.code}
                                     />
                                 </StyledField>
                             </Col>
@@ -152,9 +137,9 @@ export const CreateCharityContainer = () => {
                                     <Label>EIN</Label>
                                     <ReactInputMask
                                         mask={'99-9999999'}
-                                        name={"charityEin"}
+                                        name={"ein"}
                                         onChange={updateField}
-                                        value={charity.ein || ''}
+                                        value={charity.ein}
                                     >
                                         <Input/>
                                     </ReactInputMask>
@@ -183,30 +168,30 @@ export const CreateCharityContainer = () => {
                         </StyledField>
                         <StyledField>
                             <Label>Phone number</Label>
-                            <ReactInputMask mask={'+19999999999'} name={"phone"} value={charity.phone || ''}
+                            <ReactInputMask mask={'+19999999999'} name={"phone"} value={charity.phone}
                                             onChange={updateField}>
                                 <Input/>
                             </ReactInputMask>
                         </StyledField>
                         <StyledField>
                             <Label>Email address</Label>
-                            <Input name={"email"} value={charity.email || ''} onChange={updateField}/>
+                            <Input name={"email"} value={charity.email} onChange={updateField}/>
                         </StyledField>
                         <StyledField>
                             <Label>Address</Label>
-                            <Input name={"address"} value={charity.address || ''} onChange={updateField}/>
+                            <Input name={"address"} value={charity.address} onChange={updateField}/>
                         </StyledField>
                         <Row>
                             <Col>
                                 <StyledField>
                                     <Label>City</Label>
-                                    <Input name={"city"} value={charity.city || ''} onChange={updateField}/>
+                                    <Input name={"city"} value={charity.city} onChange={updateField}/>
                                 </StyledField>
                             </Col>
                             <Col>
                                 <StyledField>
                                     <Label>State</Label>
-                                    <ReactInputMask mask={'aa'} name={"state"} value={charity.state || ''}
+                                    <ReactInputMask mask={'aa'} name={"state"} value={charity.state}
                                                     onChange={updateField}>
                                         <Input/>
                                     </ReactInputMask>
@@ -215,7 +200,7 @@ export const CreateCharityContainer = () => {
                             <Col>
                                 <StyledField>
                                     <Label>Zip</Label>
-                                    <ReactInputMask mask={'99999'} name={"zip"} value={charity.zip || ''}
+                                    <ReactInputMask mask={'99999'} name={"zip"} value={charity.zip}
                                                     onChange={updateField}>
                                         <Input/>
                                     </ReactInputMask>
@@ -238,8 +223,13 @@ export const CreateCharityContainer = () => {
                             <Input name={"closingBy"} value={charity.closingBy} onChange={updateField}/>
                         </StyledField>
                         <StyledField>
-                            {/*<AutocompleteInput value={getZoneNameById(charity.zoneId)} options={zones.map(z => z.name!)}*/}
-                            {/*                   label={"Zone"}/>*/}
+                            <AutocompleteField
+                                label={"Zone"}
+                                options={zones}
+                                value={charity.zone}
+                                valueResolver={resolveZoneName}
+                                onValueSelected={updateZone}
+                            />
                         </StyledField>
 
                         <FormTitle>Other</FormTitle>
@@ -248,9 +238,13 @@ export const CreateCharityContainer = () => {
                             <Textarea name={"notes"} value={charity.notes} onChange={updateField}/>
                         </StyledField>
                         <StyledField>
-                            <Label>Secondary Drop-Off Location Info</Label>
-                            {/*<Textarea name={"secondaryDropLocation"} value={charity.secondaryDropLocation}*/}
-                            {/*          onChange={updateField}/>*/}
+                            <AutocompleteField
+                                label={"Secondary Drop-Off location"}
+                                options={charities}
+                                value={charity.secondaryDropOff}
+                                valueResolver={resolveCharityName}
+                                onValueSelected={updateSecondaryDropOff}
+                            />
                         </StyledField>
                         <StyledField>
                             <Label>Salesforce ID</Label>
@@ -278,14 +272,9 @@ export const CreateCharityContainer = () => {
 
             </Row>
         </BaseContainer>
-    )
+    ) : (<></>)
 }
 
-const StyledCol = styled(Col)`
-  ${p => mediaQuery('down', 'xs', p.theme)} {
-    margin-top: ${p => p.theme.space.sm};
-  }
-`;
 
 const StyledField = styled(Field)`
   margin-bottom: 15px;
@@ -293,9 +282,6 @@ const StyledField = styled(Field)`
 
 const StyledLabel = styled(Label)`
   text-transform: capitalize;
-`
-const StyledTiles = styled(Tiles)`
-  margin-bottom: 10px
 `
 
 const FormTitle = styled(LG)`
@@ -306,21 +292,8 @@ const FormTitle = styled(LG)`
     margin-top: 0;
   }
 `
-
 const StyledButtonWrapper = styled(StyledField)`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
 `
-
-/*
-* Name
-* Different roles and points of contact
-* Closing by / last drop-off time
-* Address
-* Zone
-* Logo
-* Days of operation -> Exceptions
-* Donation list / sum
-* Secondary drop point
-*/

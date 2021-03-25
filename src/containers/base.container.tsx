@@ -1,24 +1,25 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {Col, Grid, Row} from "@zendeskgarden/react-grid";
 import {MD, XXL} from "@zendeskgarden/react-typography";
 import styled from "styled-components";
 import {Button, IconButton} from "@zendeskgarden/react-buttons";
-import { ReactComponent as BackIcon } from '../assets/icons/long-arrow-left-light.svg';
+import {ReactComponent as BackIcon} from '../assets/icons/long-arrow-left-light.svg';
 import {useHistory} from "react-router-dom";
 
 type Props = {
     title: string;
     subtitle: string;
-    children: JSX.Element;
+    children: any;
     showBackButton?: boolean;
-    extraButtons?: {title: string, onClick: () => void}[]
+    extraButtons?: { title: string, onClick: () => void }[]
+    innerContainerTopSpacing?: number
 }
 export const BaseContainer = (props: Props) => {
     const history = useHistory();
-    const {title, subtitle, children, extraButtons, showBackButton} = props;
+    const {title, subtitle, children, extraButtons, showBackButton, innerContainerTopSpacing = 50} = props;
 
     const renderExtraButtons = () => {
-        if (extraButtons){
+        if (extraButtons) {
             return extraButtons.map(button => (
                 <StyledButton key={`button-${button.title}`} onClick={button.onClick}>
                     {button.title}
@@ -38,7 +39,7 @@ export const BaseContainer = (props: Props) => {
                         <IconButton
                             onClick={goBack}
                             aria-label="square back" isBasic={false} isPill={false}>
-                            <BackIcon />
+                            <BackIcon/>
                         </IconButton>
                     )}
                     <ContainerTitle>
@@ -54,7 +55,7 @@ export const BaseContainer = (props: Props) => {
             </Row>
             <Row>
                 <Col>
-                    <InnerContainer>
+                    <InnerContainer style={{marginTop: innerContainerTopSpacing}}>
                         {children}
                     </InnerContainer>
                 </Col>
@@ -64,10 +65,10 @@ export const BaseContainer = (props: Props) => {
 }
 
 const InnerContainer = styled.div`
-  margin-top: 50px;
+  //margin-top: 50px;
 `
 const ContainerTitle = styled.div`
-    margin-left: 20px;
+  margin-left: 20px;
 `
 
 const HorizontalOrientedColumn = styled(Col)`

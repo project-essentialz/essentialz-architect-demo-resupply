@@ -1,12 +1,15 @@
 export class User{
-    id?: string
     username?: string
     password?: string
+    role?: string
+
     details?: {
         name: string,
         phone?: string,
         email?: string
     }
 
-
+    authorization?: {
+        token: string
+    }
 }

@@ -1,9 +1,9 @@
-import React, {ChangeEvent, useState} from "react";
+import React, {ChangeEvent, useContext, useEffect, useState} from "react";
 import {BaseContainer} from "../base.container";
 import {Well} from "@zendeskgarden/react-notifications";
 import {Col, Row} from "@zendeskgarden/react-grid";
 import styled from "styled-components";
-import {Field, Label, MediaInput} from "@zendeskgarden/react-forms";
+import {Field, Label} from "@zendeskgarden/react-forms";
 import {LG} from "@zendeskgarden/react-typography";
 import {
     Dropdown,
@@ -13,13 +13,15 @@ import {
     Menu,
     Select
 } from '@zendeskgarden/react-dropdowns';
-import {AutocompleteInput} from "../../components";
-import {Button} from "@zendeskgarden/react-buttons";
-import {Donation} from "../../domain/Donation";
 import _ from 'lodash'
+import {Charity, Donation} from "../../domain";
+import {Button} from "@zendeskgarden/react-buttons";
 import {FormField} from "../../components/form-field.c";
 import {CounterItem} from "../../components/counter-item.c";
 import {DatePicker} from "../../components/date-picker.c";
+import {CharityContext, DonationContext} from "../../context";
+import {AutocompleteField} from "../../components/auto-complete-field";
+import {useHistory} from "react-router-dom";
 
 const items = [
     {label: '08 am - 10 am', value: '08 am - 10 am'},
@@ -30,11 +32,17 @@ const items = [
 ];
 
 export const CreateDonationContainer = () => {
-    const [donation, setDonation] = useState<Donation>(new Donation())
+    const {charities} = useContext(CharityContext);
+    const {actions, donation, setDonation} = useContext(DonationContext);
+    const [selectedItem, setSelectedItem] = useState(items[0]);
+    const history = useHistory();
 
-    const [date, setDate] = useState<Date>(new Date())
+    useEffect(() => {
+        console.log(donation);
+    }, [donation])
 
-    const updateField = (field: string, value: string | number) => {
+
+    const updateField = (field: string, value: any) => {
         const d = new Donation();
         Object.assign(d, donation);
         _.set(d, field, value);
@@ -48,7 +56,10 @@ export const CreateDonationContainer = () => {
         updateField(`spec.${field}`, count);
     }
 
-    const [selectedItem, setSelectedItem] = useState(items[0]);
+    const goBack = () => history.goBack();
+    const resolveCharityName = (c: Charity) => c ? c.name : 'No charity specified';
+    const updateCharityField = (c: Charity) => updateField('charity', c)
+    const createDonation = () => actions.createDonation(donation).then(goBack);
 
     return (
         <BaseContainer
@@ -82,7 +93,11 @@ export const CreateDonationContainer = () => {
                         <Row>
                             <Col>
                                 <Label>Date</Label>
-                                <DatePicker/>
+                                <DatePicker
+                                    value={donation.date}
+                                    name={'date'}
+                                    onChange={updateField}
+                                />
                             </Col>
                             <Col>
                                 <Dropdown
@@ -109,7 +124,12 @@ export const CreateDonationContainer = () => {
 
                 <Col md={5}>
                     <Well>
-                        <AutocompleteInput label={"Pick a charity"} options={[]}/>
+                        <AutocompleteField
+                            label={"Pick a charity"}
+                            options={charities}
+                            valueResolver={resolveCharityName}
+                            onValueSelected={updateCharityField}
+                        />
                         <FormTitle>Create the estimate</FormTitle>
 
                         <CounterItem title={"Large items"} field={'largeItems'} onChange={updateEstimate}/>
@@ -122,11 +142,10 @@ export const CreateDonationContainer = () => {
                         <CounterItem title={"Hazardous items"} field={'hazardous'} onChange={updateEstimate}/>
 
                         <hr/>
-                        <FormTitle>Estimated cost ${donation.getEstimate(donation.spec)}</FormTitle>
+                        <FormTitle>Estimated cost ${Donation.getEstimate(donation.spec)}</FormTitle>
 
                         <StyledButtonWrapper>
-                            <Button isStretched onClick={() => {
-                            }}>Create donation</Button>
+                            <Button isStretched onClick={createDonation}>Create donation</Button>
                         </StyledButtonWrapper>
 
                     </Well>

@@ -1,14 +1,16 @@
 import {Body, Cell, GroupRow, Table, Row} from "@zendeskgarden/react-tables";
 import {pricing} from "../utility/pricing";
 import {PALETTE} from "@zendeskgarden/react-theming";
-import React from "react";
+import React, {useEffect} from "react";
 import {Donation} from "../domain/Donation";
+import {DonationSpec} from "../domain/DonationSpec";
 
 type Props = {
-    donation: Donation
+    spec: DonationSpec
 }
 export const EstimateComponent = (props: Props) => {
-    const {donation} = props;
+    const {spec} = props;
+
     return (
         <Table>
             <Body>
@@ -18,17 +20,17 @@ export const EstimateComponent = (props: Props) => {
                     <Cell style={{textAlign: "right"}}>Price</Cell>
                 </GroupRow>
                 {pricingRow("Base price", pricing.base, 1)}
-                {pricingRow("Large items", pricing.largeItems, donation.spec.largeItems)}
-                {pricingRow("Small items", pricing.smallItems, donation.spec.smallItems)}
-                {pricingRow("Boxes", pricing.boxes, donation.spec.boxes)}
-                {pricingRow("Bags", pricing.bags, donation.spec.bags)}
-                {pricingRow("Appliances", pricing.appliances, donation.spec.appliances)}
-                {pricingRow("Hazardous", pricing.hazardous, donation.spec.hazardous)}
-                {pricingRow("Staircases", pricing.staircases, donation.spec.staircases)}
-                {pricingRow("Disassembly", pricing.disassembly, donation.spec.disassembly)}
+                {pricingRow("Large items", pricing.largeItems, spec.largeItems)}
+                {pricingRow("Small items", pricing.smallItems, spec.smallItems)}
+                {pricingRow("Boxes", pricing.boxes, spec.boxes)}
+                {pricingRow("Bags", pricing.bags, spec.bags)}
+                {pricingRow("Appliances", pricing.appliances, spec.appliances)}
+                {pricingRow("Hazardous", pricing.hazardous, spec.hazardous)}
+                {pricingRow("Staircases", pricing.staircases, spec.staircases)}
+                {pricingRow("Disassembly", pricing.disassembly, spec.disassembly)}
                 <Row style={{background: PALETTE.grey["100"]}}>
                     <Cell width={300}>Total</Cell>
-                    <Cell style={{textAlign: "right"}} colSpan={2}>${totalPrice(donation)}</Cell>
+                    <Cell style={{textAlign: "right"}} colSpan={2}>${totalPrice(spec)}</Cell>
                 </Row>
             </Body>
         </Table>
@@ -46,20 +48,20 @@ const pricingRow = (label: string, price: number, quantity: number) => {
     ) : null
 }
 
-export const totalPrice = (d: Donation) => {
-    return d.getEstimate(d.spec)
+export const totalPrice = (spec: DonationSpec) => {
+    return Donation.getEstimate(spec)
 }
 
-export const totalItems = (d: Donation) => {
+export const totalItems = (spec: DonationSpec) => {
     const count =
-        1 * (d.spec.largeItems || 0)
-        + 1 *  (d.spec.smallItems || 0)
-        + 1 *  (d.spec.boxes || 0)
-        + 1 *  (d.spec.bags || 0)
-        + 1 *  (d.spec.appliances || 0)
-        + 1 *  (d.spec.hazardous || 0)
-        + 1 *  (d.spec.staircases || 0)
-        + 1 *  (d.spec.disassembly || 0)
+        1 * (spec.largeItems || 0)
+        + 1 *  (spec.smallItems || 0)
+        + 1 *  (spec.boxes || 0)
+        + 1 *  (spec.bags || 0)
+        + 1 *  (spec.appliances || 0)
+        + 1 *  (spec.hazardous || 0)
+        + 1 *  (spec.staircases || 0)
+        + 1 *  (spec.disassembly || 0)
     return count
 }
 

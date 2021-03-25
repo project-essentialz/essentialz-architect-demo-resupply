@@ -60,7 +60,7 @@ export const CreateUserContainer = () => {
                             <FormTitle>User information</FormTitle>
                             <StyledField>
                                 <Label>Name</Label>
-                                <Input value={user.details.name} name={"name"} onChange={updateField}/>
+                                <Input value={user.details ? user.details.name : ''} name={"name"} onChange={updateField}/>
                             </StyledField>
                             <StyledField>
                                 <Label>Email</Label>

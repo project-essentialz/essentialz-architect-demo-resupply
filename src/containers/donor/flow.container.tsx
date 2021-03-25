@@ -43,13 +43,11 @@ const items = [
 export const FlowContainer = () => {
     const params = useParams<{ charityId: string }>()
     const {donationData, setDonationData} = useContext(DonorContext)
-    const {actions} = useContext(CharityContext)
+    const {charity, actions} = useContext(CharityContext)
 
     const history = useHistory();
     const [date, setDate] = useState(new Date());
     const [selectedItem, setSelectedItem] = useState(items[0]);
-
-    const [charity, setCharity] = useState<Charity>()
 
     const {charityId} = params;
 
@@ -57,7 +55,7 @@ export const FlowContainer = () => {
         updateDonation('date', date)
         updateDonation('formattedDate', moment(date).format('dddd MM/DD/yyyy'))
         updateDonation('timeSlot', selectedItem.label)
-        actions.getCharity(charityId).then(setCharity);
+        actions.getCharity(charityId);
     }, [])
 
     useEffect(() => {

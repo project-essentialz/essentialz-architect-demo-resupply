@@ -1,17 +1,23 @@
 import {createContext} from "react";
 import {Partner} from "../services/domain";
 import {ResolutionTarget} from "../services/entityResolver";
+import {Driver, TPLOrganization} from "../domain";
 
 export type PartnerContextType = {
-    partnerData: Partner
-    setPartnerData: (data: Partner) => void
+    partner: TPLOrganization
+    setPartner: (data: TPLOrganization) => void
 
-    partners: Partner[];
-    setPartners: (data: Partner[]) => void
+    partners: TPLOrganization[];
+    setPartners: (data: TPLOrganization[]) => void
+
+
 
     actions: {
         getAllPartners: () => Promise<void>
-        submitPartner: (data: Partner) => Promise<void>
+        getPartner: (id: string) => Promise<TPLOrganization>
+        submitPartner: (data: TPLOrganization) => Promise<TPLOrganization>
+        createPartner: (data: TPLOrganization) => Promise<TPLOrganization>
+        updatePartner: (data: TPLOrganization) => Promise<TPLOrganization>
     }
 
 }

@@ -1,5 +1,6 @@
 import {createContext} from "react";
-import {Auth, AuthRequest, User} from "../services/domain";
+import {Auth, AuthRequest} from "../services/domain";
+import {User} from "../domain";
 
 export type UserContextType = {
     authData: Auth
@@ -17,7 +18,7 @@ export type UserContextType = {
         getUserData: () => void,
 
         getUsers: () => void
-        createUser: (user: User) => Promise<void>
+        createUser: (user: User) => Promise<User>
 
         getUser: (id: string) => void
         resetUser: () => void

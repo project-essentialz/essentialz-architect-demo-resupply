@@ -10,14 +10,14 @@ export type CharityContextType = {
     setCharities: (data: Charity[]) => void
 
     actions: {
-        resetCharity: () => void
-        createCharity: (data: Charity) => Promise<void>
-        updateCharity: (data: Charity) => Promise<void>
-        getAllCharities: () => Promise<void>
-        getCharity: (id:string) => Promise<Charity>
-        removeCharity: (id:string) => Promise<void>
-        getUsers: () => Promise<User[]>
-        addUser: (user: User) => Promise<void>
+        getAllCharities: () => Promise<void>        // Preserves list of all charities in charities state variable
+        getCharity: (id:string) => Promise<void>    // Preserves single charity record in charity state variable
+
+        createCharity: (data: Charity) => Promise<Charity>  // Creates a charity returning the created record
+        updateCharity: (data: Charity) => Promise<Charity>  // Updates the charity returning the updated record
+        removeCharity: (id:string) => Promise<void>         // Removes the charity
+
+        addUser: (user: User) => Promise<void>      // Probably will be removed
     }
 
 }

@@ -30,7 +30,7 @@ export const ConfirmDonationContainer = () => {
             <StyledRow style={{marginBottom: 40}}>
                 <Col lg={12}>
                     <StyledTable>
-                        <EstimateComponent donation={donationData}/>
+                        <EstimateComponent spec={donationData.spec}/>
                     </StyledTable>
                 </Col>
             </StyledRow>

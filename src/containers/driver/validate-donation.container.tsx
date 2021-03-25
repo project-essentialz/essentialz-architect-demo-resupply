@@ -117,7 +117,7 @@ export const ValidateDonationContainer = () => {
                         <StyledModal onClose={() => setEstimateVisible(false)}>
                             <Header>Donation pickup quote</Header>
                             <Body>
-                                <EstimateComponent donation={donation}/>
+                                <EstimateComponent spec={donation.spec}/>
                             </Body>
                             <Footer>
                                 <FooterItem>

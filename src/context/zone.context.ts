@@ -1,5 +1,5 @@
 import {createContext} from "react";
-import {Zone} from "../domain/Zone";
+import {Zone} from "../domain";
 
 export type ZoneContextType = {
     zoneData: Zone

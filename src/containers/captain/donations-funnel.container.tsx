@@ -1,5 +1,5 @@
 import {BaseContainer} from "../base.container";
-import React, {useContext, useEffect} from "react";
+import React, {useContext} from "react";
 import {AutocompleteInput, TableComponent} from "../../components";
 import {Col, Row} from "@zendeskgarden/react-grid";
 import {Well} from "@zendeskgarden/react-notifications";
@@ -15,10 +15,6 @@ export const DonationsFunnelContainer = (props: Props) => {
     const history = useHistory();
     const {donations, actions} = useContext(DonationContext);
 
-    useEffect(() => {
-        actions.getAllDonations();
-    }, [])
-
     const openDonationDetailsView = (data: Donation) => {
         history.push(`/donations/${data!.id}`)
     }
@@ -29,9 +25,9 @@ export const DonationsFunnelContainer = (props: Props) => {
 
     const fields = [
         field('donationCode', 'Donation ID', true, onDonationIdClicked),
-        field('charityName', 'Charity name'),
-        field('donorName', 'Donor name'),
-        field('phone', 'phone'),
+        field('charity.name', 'Charity name'),
+        field('donor.name', 'Donor name'),
+        field('donor.phone', 'phone'),
         field('donationStatus', 'Status', true)
     ]
 

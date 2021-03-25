@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {Auth, AuthRequest, User} from "../services/domain";
+import {Auth, AuthRequest} from "../services/domain";
 import {UserContext} from "../context";
 import Api, {method} from "../services/api.service";
 import {routes} from "../services/api.routes";
+import {User} from "../domain";
 
 type Props = {
     children: any
@@ -65,7 +66,7 @@ export const UserProvider = (props: Props) => {
         Api.$<User>(routes.users).getAll().then(setUsers);
     }
 
-    const createUser = (user: User) : Promise<any> => {
+    const createUser = (user: User) : Promise<User> => {
         return Api.$<User>(routes.users).create(user)
     }
 

@@ -1,5 +1,6 @@
 import camelcaseKeys from "camelcase-keys";
 import snakecaseKeys from "snakecase-keys";
+import {TPLOrganization} from "../domain";
 
 type HTTPMethod = 'post' | 'put' | 'get' | 'delete';
 
@@ -50,11 +51,25 @@ const api = <T>(base: string, resource: string, token?: string) => {
     /**
      * Perform HTTP GET request to retrieve a resource
      * with the given ID
+     *
+     * Use parameter className optionally if you want
+     * the service to bring back the typed object.
+     *
      * @param id: string | number
+     * @param className: string
      */
-    const get = (id: string | number) => {
+    const get = (id: string | number, className?: string) => {
         return fetch(_getUrl(`/${id}`), _getOptions(method.get))
-            .then((response: Response) => response.json().then((json: any) => _camelCaseKeys(json) as T))
+            .then((response: Response) => response.json().then((json: any) => {
+                const data = _camelCaseKeys(json);
+                if (className){
+                    let object = new ClassStore[className]();
+                    Object.assign(object, data);
+                    return object as unknown as T;
+                }else{
+                    return data as T;
+                }
+            }));
     }
 
     /**
@@ -86,7 +101,14 @@ const api = <T>(base: string, resource: string, token?: string) => {
      */
     const create = (body: T) => {
         return fetch(_getUrl(), _getOptions(method.post, body))
-            .then((response: Response) => response.json().then((json: any) => _camelCaseKeys(json) as T))
+            .then((response: Response) => {
+                console.log(response);
+                if (response.ok){
+                    return response.json().then((json: any) => _camelCaseKeys(json) as T)
+                }else{
+                    throw new Error("Save error")
+                }
+            })
     }
 
     /**
@@ -179,3 +201,14 @@ export const method = {
 }
 export default Api;
 
+
+const ClassStore: any = {
+    TPLOrganization
+}
+class ObjectFactory {
+    static create(className: string) {
+        let obj;
+        eval("obj=new " + className + "()");
+        return obj;
+    }
+}

@@ -23,10 +23,10 @@ import {
     DonationContainer,
     DonationsFunnelContainer,
     LoginContainer,
-    TrucksContainer,
+    PartnersContainer,
     UsersContainer,
     ZonesContainer,
-    CreateDonationContainer
+    CreateDonationContainer, PartnerContainer
 } from "../containers/captain";
 import {DonationProvider, UserProvider, ZoneProvider} from "../providers";
 import {CaptainHeader} from "../components";
@@ -34,6 +34,7 @@ import {CharityProvider} from "../providers/charity.provider";
 import {PartnerProvider} from "../providers/partner.provider";
 import {captainTheme} from "../themes";
 import {Navigation} from '../containers/navigation';
+import {CreatePartnerContainer} from "../containers/captain/create-partner.container";
 
 const CaptainApp = () => {
 
@@ -88,8 +89,18 @@ const CaptainApp = () => {
                                                                     <CreateDonationContainer/>
                                                                 </Route>
                                                                 <Route exact path={'/partners'}>
-                                                                    <TrucksContainer/>
+                                                                    <PartnersContainer/>
                                                                 </Route>
+                                                                <Route exact path={'/create-partner'}>
+                                                                    <CreatePartnerContainer/>
+                                                                </Route>
+                                                                <Route exact path={'/partners/:id'}>
+                                                                    <PartnerContainer/>
+                                                                </Route>
+                                                                <Route exact path={'/edit-partner/:id'}>
+                                                                    <CreatePartnerContainer/>
+                                                                </Route>
+
                                                                 <Route exact path={'/charities'}>
                                                                     <CharitiesContainer/>
                                                                 </Route>
@@ -102,9 +113,7 @@ const CaptainApp = () => {
                                                                 <Route exact path={'/edit-charity/:id'}>
                                                                     <CreateCharityContainer/>
                                                                 </Route>
-                                                                <Route exact path={'/create-partner'}>
-                                                                    <CreateTruckContainer/>
-                                                                </Route>
+
                                                                 <Route exact path={'/zones'}>
                                                                     <ZonesContainer/>
                                                                 </Route>

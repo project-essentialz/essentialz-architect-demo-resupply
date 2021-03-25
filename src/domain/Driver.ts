@@ -1,6 +1,18 @@
 import {User} from "./User";
-import {TPLOgranization} from "./TPLOrganization";
 
-export class Driver extends User{
-    organization?: TPLOgranization
+export class Driver {
+    id?: string
+    name: string = ''
+    phone: string = ''
+    email: string = ''
+    user: User = new User();
+
+    scheduleId?: string
+
+    constructor() {
+        this.user.role = 'driver'
+    }
+
+
+
 }

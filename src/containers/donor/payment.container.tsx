@@ -67,7 +67,7 @@ export const PaymentContainer = () => {
             {donation && (
                 <>
                     <Well>
-                        <EstimateComponent donation={donation}/>
+                        <EstimateComponent spec={donation.adjustedSpec}/>
                         <Button
                             disabled={isPaymentCompleted()}
                             onClick={setupPayment}

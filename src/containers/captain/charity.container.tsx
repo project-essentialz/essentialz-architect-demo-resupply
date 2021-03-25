@@ -10,11 +10,11 @@ import {field} from "../../utility/field";
 import {Tab, TabList, TabPanel, Tabs} from "@zendeskgarden/react-tabs";
 import {Col, Row} from "@zendeskgarden/react-grid";
 import {Well} from "@zendeskgarden/react-notifications";
-import {TableComponent} from "../../components";
+import {Space, TableComponent} from "../../components";
 import {Body, Close, Footer, FooterItem, Header, Modal} from "@zendeskgarden/react-modals";
 import {Button} from "@zendeskgarden/react-buttons";
-import {User} from "../../domain/User";
-import {Donation} from "../../services/domain";
+import {Charity, CharityAdmin, Donation} from "../../domain";
+import {navigationRoutes} from "../../utility/navigationRoutes";
 
 const fields = [
     field('donationCode', 'Donation ID'),
@@ -32,30 +32,22 @@ const usersFields = [
 export const CharityContainer = () => {
     const [visible, setVisible] = useState(false);
     const [selectedTab, setSelectedTab] = useState('tab-1');
-    const [users, setUsers] = useState<User[]>([])
-    const [user, setUser] = useState<User>({} as User)
+
+    const [charityAdmin, setCharityAdmin] = useState<CharityAdmin>( new CharityAdmin())
 
     const history = useHistory()
     const params = useParams<{ id: string }>();
 
-    const {actions} = useContext(CharityContext)
-    const donationsActions = useContext(DonationContext).actions;
     const {donations} = useContext(DonationContext)
+    const donationsActions = useContext(DonationContext).actions;
+    const {charity, setCharity, actions} = useContext(CharityContext)
 
     const {id} = params;
 
-    const {charity, setCharity} = useContext(CharityContext)
-
     useEffect(() => {
-        actions.getCharity(id).then(setCharity)
+        actions.getCharity(id)
         donationsActions.getAllDonations(`charity_id=${id}`)
-    }, [])
-
-    useEffect(() => {
-        if (charity.id) {
-            actions.getUsers().then(setUsers);
-        }
-    }, [charity])
+    }, [id])
 
     const extraButtons = [
         {
@@ -72,165 +64,166 @@ export const CharityContainer = () => {
         }
     ]
 
-    const updateField = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const {value, name} = e.target;
-        if (name === 'name') {
-            setUser({
-                ...user,
-                details: {
-                    ...user.details,
-                    name: value,
-                    phone: '',
-                    email: ''
-                }
-            })
-        } else {
-            setUser({
-                ...user,
-                [name]: value
-            })
-        }
-    }
     const submitUser = () => {
-        actions.addUser(user).then(_ => {
-            actions.getUsers().then(setUsers)
-        })
+        // actions.addUser(user).then(_ => {
+        //     actions.getUsers().then(setUsers)
+        // })
     }
 
-    const openDonationDetails = (donation: Donation) => {
-        history.push(`/donations/${donation.id}`)
+    const updateField = () => {
+
     }
-    if (charity.id) {
-        return (
-            <BaseContainer showBackButton title={charity.name!} subtitle={"Charity details"}
-                           extraButtons={extraButtons}>
 
-                <Tabs selectedItem={selectedTab} onChange={setSelectedTab}>
-                    <TabList>
-                        <Tab item="tab-1">General</Tab>
-                        <Tab item="tab-2">User management</Tab>
-                    </TabList>
-                    <TabPanel item="tab-1">
-                        <>
-                            <Row>
-                                <Col xs={12} xl={4}>
-                                    <Well>
-                                        <FormTitle>Basic information</FormTitle>
-                                        {infoField(charity.name!, "Charity name")}
-                                        {infoField(charity.id, "Charity ID")}
-                                        {infoField(charity.address!, "Address")}
-                                        <Row>
-                                            <Col>
-                                                {infoField(charity.city!, "City")}
-                                            </Col>
-                                            <Col>
-                                                {infoField(charity.state!, "State")}
-                                            </Col>
-                                            <Col>
-                                                {infoField(charity.zip!, "Zip")}
-                                            </Col>
-                                        </Row>
-                                        <StyledField>
-                                            <Label>Working days</Label>
-                                            <Paragraph>Mon
-                                                - {charity.daysOfOperation.mon ? 'OPEN' : 'CLOSED'}</Paragraph>
-                                            <Paragraph>Tue
-                                                - {charity.daysOfOperation.tue ? 'OPEN' : 'CLOSED'}</Paragraph>
-                                            <Paragraph>Wed
-                                                - {charity.daysOfOperation.wed ? 'OPEN' : 'CLOSED'}</Paragraph>
-                                            <Paragraph>Thu
-                                                - {charity.daysOfOperation.thu ? 'OPEN' : 'CLOSED'}</Paragraph>
-                                            <Paragraph>Fri
-                                                - {charity.daysOfOperation.fri ? 'OPEN' : 'CLOSED'}</Paragraph>
-                                            <Paragraph>Sat
-                                                - {charity.daysOfOperation.sat ? 'OPEN' : 'CLOSED'}</Paragraph>
-                                            <Paragraph>Sun
-                                                - {charity.daysOfOperation.sun ? 'OPEN' : 'CLOSED'}</Paragraph>
-                                        </StyledField>
+    const openDonationDetails = (donation: Donation) => history.push(navigationRoutes.donationDetails(donation))
+    const openSecondaryDropOffDetails = () => history.push(navigationRoutes.charityDetails(charity.secondaryDropOff!))
 
-                                        {infoField(charity.closingBy!, "Closing by")}
-                                        {infoField(charity.salesforceId!, "Salesforce ID")}
-                                        {infoField(charity.notes, "Notes")}
-                                    </Well>
-                                </Col>
+    const renderCharityInfo = (charity: Charity, title: string) => (
+        <Well>
+            <FormTitle>{title}</FormTitle>
+            {infoField(charity.code, "Charity ID / Code")}
+            {infoField(charity.name!, "Charity name")}
+            {infoField(charity.address!, "Address")}
+            <Row>
+                <Col>
+                    {infoField(charity.city!, "City")}
+                </Col>
+                <Col>
+                    {infoField(charity.state!, "State")}
+                </Col>
+                <Col>
+                    {infoField(charity.zip!, "Zip")}
+                </Col>
+            </Row>
+            <StyledField>
+                <Label>Working days</Label>
+                <Paragraph>Mon
+                    - {charity.daysOfOperation.mon ? 'OPEN' : 'CLOSED'}</Paragraph>
+                <Paragraph>Tue
+                    - {charity.daysOfOperation.tue ? 'OPEN' : 'CLOSED'}</Paragraph>
+                <Paragraph>Wed
+                    - {charity.daysOfOperation.wed ? 'OPEN' : 'CLOSED'}</Paragraph>
+                <Paragraph>Thu
+                    - {charity.daysOfOperation.thu ? 'OPEN' : 'CLOSED'}</Paragraph>
+                <Paragraph>Fri
+                    - {charity.daysOfOperation.fri ? 'OPEN' : 'CLOSED'}</Paragraph>
+                <Paragraph>Sat
+                    - {charity.daysOfOperation.sat ? 'OPEN' : 'CLOSED'}</Paragraph>
+                <Paragraph>Sun
+                    - {charity.daysOfOperation.sun ? 'OPEN' : 'CLOSED'}</Paragraph>
+            </StyledField>
 
-                                <Col xs={12} xl={7}>
-                                    <Well>
-                                        <FormTitle>Donations</FormTitle>
-                                        <TableComponent fields={fields} onRowClicked={openDonationDetails}
-                                                        data={donations}/>
-                                    </Well>
-                                </Col>
-                            </Row>
+            {infoField(charity.closingBy!, "Closing by")}
+            {infoField(charity.salesforceId!, "Salesforce ID")}
+            {infoField(charity.notes, "Notes")}
+            {charity.secondaryDropOff && (
+                <StyledField>
+                    <Label>Secondary drop-off</Label>
+                    <Paragraph>{charity.secondaryDropOff.name}</Paragraph>
+                    <StyledButtonWrapper>
+                        <Button onClick={openSecondaryDropOffDetails}>
+                            View assigned charity
+                        </Button>
+                    </StyledButtonWrapper>
+                </StyledField>
+            )}
+        </Well>
+    )
 
-                            {visible && (
-                                <Modal onClose={() => setVisible(false)}>
-                                    <Header isDanger>Are you sure you want to delete this charity? </Header>
-                                    <Body>
-                                        This action is not reversible. Please make sure you want to remove this charity
-                                        record from your database.
-                                    </Body>
-                                    <Footer>
-                                        <FooterItem>
-                                            <Button onClick={() => setVisible(false)} isBasic>
-                                                Cancel
-                                            </Button>
-                                        </FooterItem>
-                                        <FooterItem>
-                                            <Button isPrimary isDanger onClick={() => {
-                                                actions.removeCharity(charity.id!)
-                                                    .then(r => {
-                                                        setVisible(false)
-                                                        history.goBack()
-                                                    })
-                                            }}>Remove charity
-                                            </Button>
-                                        </FooterItem>
-                                    </Footer>
-                                    <Close aria-label="Close modal"/>
-                                </Modal>
-                            )}
-                        </>
-                    </TabPanel>
-                    <TabPanel item="tab-2">
+    // Render
+    return charity ? (
+        <BaseContainer showBackButton title={charity.name!} subtitle={"Charity details"}
+                       extraButtons={extraButtons}>
+
+            <Tabs selectedItem={selectedTab} onChange={setSelectedTab}>
+                <TabList>
+                    <Tab item="tab-1">General</Tab>
+                    <Tab item="tab-2">Donations</Tab>
+                    <Tab item="tab-3">User management</Tab>
+                </TabList>
+                <TabPanel item="tab-1">
+                    <>
                         <Row>
-                            <Col md={4}>
-                                <Well>
-                                    <FormTitle>User information</FormTitle>
-                                    <StyledField>
-                                        <Label>Name</Label>
-                                        <Input value={user.details ? user.details.name : ''} name={"name"}
-                                               onChange={updateField}/>
-                                    </StyledField>
-                                    <StyledField>
-                                        <Label>Email</Label>
-                                        <Input value={user.username} name={"username"} onChange={updateField}/>
-                                    </StyledField>
-                                    <StyledField>
-                                        <Label>Password</Label>
-                                        <Input type='password' name={"password"} onChange={updateField}/>
-                                    </StyledField>
-
-                                    <StyledButtonWrapper>
-                                        <Button onClick={submitUser}>Add new user</Button>
-                                    </StyledButtonWrapper>
-                                </Well>
-                            </Col>
-                            <Col>
-                                <Well>
-                                    <TableComponent fields={usersFields} onRowClicked={() => {
-                                    }} data={users}/>
-                                </Well>
+                            <Col xs={5}>
+                                {renderCharityInfo(charity, "Basic information")}
                             </Col>
                         </Row>
-                    </TabPanel>
-                </Tabs>
 
-            </BaseContainer>
-        )
-    } else {
-        return (<></>)
-    }
+                        {visible && (
+                            <Modal onClose={() => setVisible(false)}>
+                                <Header isDanger>Are you sure you want to delete this charity? </Header>
+                                <Body>
+                                    This action is not reversible. Please make sure you want to remove this charity
+                                    record from your database.
+                                </Body>
+                                <Footer>
+                                    <FooterItem>
+                                        <Button onClick={() => setVisible(false)} isBasic>
+                                            Cancel
+                                        </Button>
+                                    </FooterItem>
+                                    <FooterItem>
+                                        <Button isPrimary isDanger onClick={() => {
+                                            actions.removeCharity(charity.id!)
+                                                .then(r => {
+                                                    setVisible(false)
+                                                    history.goBack()
+                                                })
+                                        }}>Remove charity
+                                        </Button>
+                                    </FooterItem>
+                                </Footer>
+                                <Close aria-label="Close modal"/>
+                            </Modal>
+                        )}
+                    </>
+                </TabPanel>
+                <TabPanel item="tab-2">
+                    <Row>
+                        <Col>
+                            <Well>
+                                <FormTitle>Donations</FormTitle>
+                                <TableComponent fields={fields} onRowClicked={openDonationDetails}
+                                                data={donations}/>
+                            </Well>
+                        </Col>
+                    </Row>
+                </TabPanel>
+                <TabPanel item="tab-3">
+                    <Row>
+                        <Col md={4}>
+                            <Well>
+                                <FormTitle>User information</FormTitle>
+                                <StyledField>
+                                    <Label>Name</Label>
+                                    <Input value={charityAdmin?.name} name={"name"}
+                                           onChange={updateField}/>
+                                </StyledField>
+                                <StyledField>
+                                    <Label>Email</Label>
+                                    <Input value={charityAdmin.user.username} name={"username"} onChange={updateField}/>
+                                </StyledField>
+                                <StyledField>
+                                    <Label>Password</Label>
+                                    <Input type='password' name={"password"} onChange={updateField}/>
+                                </StyledField>
+
+                                <StyledButtonWrapper>
+                                    <Button onClick={submitUser}>Add new user</Button>
+                                </StyledButtonWrapper>
+                            </Well>
+                        </Col>
+                        <Col>
+                            <Well>
+                                <TableComponent fields={usersFields} onRowClicked={() => {
+                                }} data={charity.charityAdmins}/>
+                            </Well>
+                        </Col>
+                    </Row>
+                </TabPanel>
+            </Tabs>
+
+        </BaseContainer>
+    ) : (<></>)
 
 }
 

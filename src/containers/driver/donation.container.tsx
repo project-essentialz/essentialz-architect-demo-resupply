@@ -21,11 +21,11 @@ export const DonationContainer = () => {
     const history = useHistory()
     const [rotated, setRotated] = useState<boolean>();
     const [donation, setDonation] = useState<Donation>()
-    const [charity, setCharity] = useState<Charity>()
     const [modalVisible, setModalVisible] = useState(false);
     const {actions} = useContext(DonationContext)
     const cContext = useContext(CharityContext)
 
+    const {charity} = cContext;
 
     const params = useParams<{ id: string }>()
     const {id} = params;
@@ -36,7 +36,7 @@ export const DonationContainer = () => {
 
     useEffect(() => {
         if (donation){
-            cContext.actions.getCharity(donation.charity?.id!).then(setCharity)
+            cContext.actions.getCharity(donation.charity?.id!)
         }
     }, [donation])
 
@@ -93,7 +93,7 @@ export const DonationContainer = () => {
 
                             <StyledWell>
                                 <StyledTitle>Donation information</StyledTitle>
-                                <Paragraph>Number of items : <Span isBold>{totalItems(donation)}</Span></Paragraph>
+                                <Paragraph>Number of items : <Span isBold>{totalItems(donation.spec)}</Span></Paragraph>
                                 <SM>Address: </SM>
                                 <Paragraph>{donation.donor.address}</Paragraph>
                                 <SM>Special instructions: </SM>
@@ -102,7 +102,7 @@ export const DonationContainer = () => {
                             <StyledWell>
                                 <Row>
                                     <Col>Pickup estimate <small>Based on donor's input</small></Col>
-                                    <Col style={{textAlign: "right"}}><XXL>${totalPrice(donation)}</XXL></Col>
+                                    <Col style={{textAlign: "right"}}><XXL>${totalPrice(donation.spec)}</XXL></Col>
                                 </Row>
                             </StyledWell>
 
@@ -138,7 +138,7 @@ export const DonationContainer = () => {
                             )}
 
 
-                            <EstimateComponent donation={donation}/>
+                            <EstimateComponent spec={donation.spec}/>
 
                             <BottomControls>
                                 <StyledSplitButton>

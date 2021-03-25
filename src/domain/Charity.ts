@@ -1,22 +1,24 @@
 import {Zone} from "./Zone";
+import {CharityAdmin} from "./CharityAdmin";
 
 export class Charity {
+
     id?: string
-    name?: string
+    name: string = ''
 
-    ein?: string
-    code?: string
+    ein: string = ''
+    code: string = ''
 
-    logoUrl?: string
+    logoUrl: string = ''
 
-    pocName?: string
-    phone?: string
-    email?: string
+    pocName: string = ''
+    phone: string = ''
+    email: string = ''
 
-    address?: string
-    city?: string
-    state?: string
-    zip?: string
+    address: string = ''
+    city: string = ''
+    state: string = ''
+    zip: string = ''
 
     daysOfOperation: {
         mon: boolean
@@ -28,14 +30,23 @@ export class Charity {
         sun: boolean
     }
 
-    closingBy?: string
+    closingBy: string = ''
 
-    zone?: Zone
-    notes: string
+    zoneId?: string
+    /**
+     *
+     * @private field _zone
+     * See getter and setter named {@link zone}
+     */
+    private _zone?: Zone
+
+    notes: string = ''
     secondaryDropOff?: Charity
-    refId?: string
-    salesforceId?: string
 
+    refId: string = ''
+    salesforceId: string = ''
+
+    charityAdmins: CharityAdmin[] = []
 
     constructor() {
         this.daysOfOperation = {
@@ -47,6 +58,16 @@ export class Charity {
             sat: false,
             sun: false,
         }
-        this.notes = ''
+    }
+
+    get zone(): Zone | undefined {
+        return this._zone;
+    }
+
+    set zone(value: Zone | undefined) {
+        this._zone = value;
+        if (value) {
+            this.zoneId = value.id
+        }
     }
 }

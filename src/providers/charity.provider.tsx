@@ -1,86 +1,46 @@
-import React, {useState} from "react";
-
+import React, {useEffect, useState} from "react";
+import Api from "../services/api.service";
 import {CharityContext} from "../context/";
-import Api, {method} from "../services/api.service";
 import {routes} from "../services/api.routes";
-import {Charity} from "../domain/Charity";
-import {User} from "../domain/User";
-import {CharityAdmin} from "../domain/CharityAdmin";
+import {Charity, User} from "../domain";
 
 type Props = {
     children: any
 }
 
-const emptyCharity = {
-    id: '',
-    refId: '',
-    charityNumber: '',
-    charityName: '',
-    charityEin: '',
-    logoUrl: '',
-    address: '',
-    city: '',
-    state: '',
-    zip: '',
-    daysOfOperation: {
-        mon: false,
-        tue: false,
-        wed: false,
-        thu: false,
-        fri: false,
-        sat: false,
-        sun: false
-    },
-    closingTime: '',
-    pointOfContact: '',
-    email: '',
-    phone: '',
-    zoneId: '',
-    notes: '',
-    salesforceId: '',
-    partner: '',
-    secondaryDropLocation: ''
-}
 export const CharityProvider = (props: Props) => {
-    const [charity, setCharity] = useState<Charity>(emptyCharity as Charity)
+    const [charity, setCharity] = useState<Charity>(new Charity())
     const [charities, setCharities] = useState<Charity[]>([] as Charity[])
 
-    const createCharity = (data: Charity): Promise<void> => {
-        return Api.$<Charity>(routes.charities).create(data).then(
-            result => {
-                return;
-            }
-        )
-    }
-    const updateCharity = (data: Charity): Promise<void> => {
-        return Api.$<Charity>(routes.charities).update(data.id!, data).then(
-            result => {
-                return
-            }
-        )
-    }
+    useEffect(() => {
+        getAllCharities()
+    }, [])
+
+
     const getAllCharities = () => {
         return Api.$<Charity>(routes.charities).getAll().then(setCharities)
     }
 
-    const getCharity = (id: string) => {
-        return Api.$<Charity>(routes.charities).get(id)
-    }
-
-    const removeCharity = (id:string) => {
-        return Api.$<Charity>(routes.charities).remove(id)
-    }
-
-    const resetCharity = () => {
-        setCharity(emptyCharity)
-    }
-
-    const getUsers = () => {
-        return Api.$<CharityAdmin>(routes.users).getAll().then(users => {
-            return users.filter((user) => {
-                return user.details && user.details.charity.id === charity.id
-            })
+    const createCharity = (data: Charity): Promise<Charity> => {
+        return Api.$<Charity>(routes.charities).create(data).then((charity) => {
+            getAllCharities()
+            return charity
         })
+    }
+
+    const updateCharity = (data: Charity): Promise<Charity> => {
+        return Api.$<Charity>(routes.charities).update(data.id!, data).then((charity) => {
+            getAllCharities()
+            return charity
+        })
+    }
+
+    const getCharity = (id: string) => {
+        return Api.$<Charity>(routes.charities).get(id).then(setCharity)
+    }
+
+    const removeCharity = (id: string) => {
+        return Api.$<Charity>(routes.charities).remove(id)
     }
 
     const addUser = (user: User) => {
@@ -109,8 +69,6 @@ export const CharityProvider = (props: Props) => {
                     getAllCharities,
                     getCharity,
                     removeCharity,
-                    resetCharity,
-                    getUsers,
                     addUser
                 }
             }

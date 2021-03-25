@@ -1,3 +1,4 @@
+//TODO: Potentially remove
 export class AuthResponse{
     authorization?: {
         token: string

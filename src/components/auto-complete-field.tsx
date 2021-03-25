@@ -1,0 +1,93 @@
+import React, {useEffect, useState} from 'react';
+import {Autocomplete, Dropdown, Field, Item, Label, Menu} from '@zendeskgarden/react-dropdowns';
+import {ReactComponent as SearchIcon} from '@zendeskgarden/svg-icons/src/16/search-stroke.svg';
+import {Button} from "@zendeskgarden/react-buttons";
+import {Col, Row} from "@zendeskgarden/react-grid";
+
+
+type Props = {
+    label: string;
+    options: any[]
+    disabled?: boolean
+    onValueSelected?: (value: any) => void
+    valueResolver: (value: any) => string
+    value?: any
+    hasClear?: boolean
+    hideLabel?: boolean
+    hideSearchIcon?: boolean
+}
+export const AutocompleteField = (props: Props) => {
+    const {label, options, disabled, onValueSelected, value, hasClear, hideLabel, hideSearchIcon, valueResolver} = props;
+
+    const [selectedItem, setSelectedItem] = useState(value || null);
+    const [inputValue, setInputValue] = useState(valueResolver(value) || '');
+    const [matchingOptions, setMatchingOptions] = useState<any[]>(options);
+
+    const filterMatchingOptions = (value: string) => {
+        const matchedOptions = options.filter(
+            option => valueResolver(option).trim().toLowerCase().indexOf(value.trim().toLowerCase()) !== -1
+        );
+        setMatchingOptions(matchedOptions);
+    }
+
+    useEffect(() => {
+        setMatchingOptions(options)
+    }, [options])
+
+    useEffect(() => {
+        if (onValueSelected && selectedItem) {
+            onValueSelected(selectedItem);
+        }
+    }, [selectedItem])
+
+    useEffect(() => {
+        filterMatchingOptions(inputValue);
+    }, [inputValue]);
+
+    return (
+        <Dropdown
+            inputValue={inputValue}
+            selectedItem={selectedItem}
+            onSelect={item => setSelectedItem(item)}
+            onInputValueChange={value => setInputValue(value)}
+            downshiftProps={{
+                defaultHighlightedIndex: 0,
+                itemToString: valueResolver
+            }}
+        >
+            <Field>
+                {!hideLabel && (<Label>{label}</Label>)}
+                <Autocomplete
+                    disabled={disabled}
+                    start={hideSearchIcon ? <></> : <SearchIcon/>}>
+                    {valueResolver(selectedItem)}
+                </Autocomplete>
+            </Field>
+            {hasClear && (
+                <Row style={{marginTop: 10}}>
+                    <Col textAlign={'end'}>
+                        <Button
+                            onClick={() => {
+                                setSelectedItem(null)
+                            }}
+                            size={"small"}>
+                            Clear
+                        </Button>
+                    </Col>
+                </Row>
+            )}
+            <Menu>
+                {matchingOptions.length ? (
+                    matchingOptions.map((option, index) => (
+                        <Item key={`${valueResolver(option)}-${index + 1}`} value={option}>
+                            <span>{valueResolver(option)}</span>
+                        </Item>
+                    ))
+                ) : (
+                    <Item disabled>No matches found</Item>
+                )}
+            </Menu>
+        </Dropdown>
+    );
+};
+
