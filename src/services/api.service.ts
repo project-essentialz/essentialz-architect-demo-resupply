@@ -1,6 +1,7 @@
 import camelcaseKeys from "camelcase-keys";
 import snakecaseKeys from "snakecase-keys";
 import {TPLOrganization} from "../domain";
+import {Deserialize, GenericDeserialize} from 'cerialize';
 
 type HTTPMethod = 'post' | 'put' | 'get' | 'delete';
 
@@ -56,17 +57,16 @@ const api = <T>(base: string, resource: string, token?: string) => {
      * the service to bring back the typed object.
      *
      * @param id: string | number
-     * @param className: string
+     * @param clazz: string
      */
-    const get = (id: string | number, className?: string) => {
+    const get = (id: string | number, clazz?: any) => {
         return fetch(_getUrl(`/${id}`), _getOptions(method.get))
             .then((response: Response) => response.json().then((json: any) => {
-                const data = _camelCaseKeys(json);
-                if (className){
-                    let object = new ClassStore[className]();
-                    Object.assign(object, data);
-                    return object as unknown as T;
+                if (clazz){
+                    let object = GenericDeserialize(json, clazz);
+                    return object as T;
                 }else{
+                    const data = _camelCaseKeys(json);
                     return data as T;
                 }
             }));

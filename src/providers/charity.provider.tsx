@@ -10,7 +10,7 @@ type Props = {
 
 export const CharityProvider = (props: Props) => {
     const [charity, setCharity] = useState<Charity>(new Charity())
-    const [charities, setCharities] = useState<Charity[]>([] as Charity[])
+    const [charities, setCharities] = useState<Charity[]>([])
 
     useEffect(() => {
         getAllCharities()
@@ -36,7 +36,7 @@ export const CharityProvider = (props: Props) => {
     }
 
     const getCharity = (id: string) => {
-        return Api.$<Charity>(routes.charities).get(id).then(setCharity)
+        return Api.$<Charity>(routes.charities).get(id, Charity).then(setCharity)
     }
 
     const removeCharity = (id: string) => {

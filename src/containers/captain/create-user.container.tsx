@@ -9,6 +9,8 @@ import {Button} from "@zendeskgarden/react-buttons";
 import {AutocompleteInput} from "../../components";
 import {UserContext} from "../../context";
 import {useHistory, useParams} from "react-router-dom";
+import {User} from "../../domain";
+import _ from "lodash";
 
 export const CreateUserContainer = () => {
     const [mode, setMode] = useState<string>('new')
@@ -29,20 +31,10 @@ export const CreateUserContainer = () => {
 
     const updateField = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const {value, name} = e.target;
-        if (name === 'name') {
-            setUser({
-                ...user,
-                details: {
-                    ...user.details,
-                    name: value
-                }
-            })
-        } else {
-            setUser({
-                ...user,
-                [name]: value
-            })
-        }
+        const u = new User();
+        Object.assign(u, user);
+        _.set(u, name, value);
+        setUser(u);
     }
 
     const submitUser = () => {
@@ -60,7 +52,7 @@ export const CreateUserContainer = () => {
                             <FormTitle>User information</FormTitle>
                             <StyledField>
                                 <Label>Name</Label>
-                                <Input value={user.details ? user.details.name : ''} name={"name"} onChange={updateField}/>
+                                <Input value={user.details ? user.details.name : ''} name={"details.name"} onChange={updateField}/>
                             </StyledField>
                             <StyledField>
                                 <Label>Email</Label>

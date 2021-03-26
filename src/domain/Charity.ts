@@ -1,73 +1,82 @@
 import {Zone} from "./Zone";
 import {CharityAdmin} from "./CharityAdmin";
+import {autoserialize, autoserializeAs} from "cerialize";
+
+class DaysOfOperation{
+    mon: boolean = true
+    tue: boolean = true
+    wed: boolean = true
+    thu: boolean = true
+    fri: boolean = true
+    sat: boolean = false
+    sun: boolean = false
+}
 
 export class Charity {
-
+    @autoserialize
     id?: string
+
+    @autoserialize
     name: string = ''
 
+    @autoserialize
     ein: string = ''
+
+    @autoserialize
     code: string = ''
 
+    @autoserializeAs('logo_url')
     logoUrl: string = ''
 
+    @autoserializeAs('poc_name')
     pocName: string = ''
+
+    @autoserialize
     phone: string = ''
+
+    @autoserialize
     email: string = ''
 
+    @autoserialize
     address: string = ''
+
+    @autoserialize
     city: string = ''
+
+    @autoserialize
     state: string = ''
+
+    @autoserialize
     zip: string = ''
 
-    daysOfOperation: {
-        mon: boolean
-        tue: boolean
-        wed: boolean
-        thu: boolean
-        fri: boolean
-        sat: boolean
-        sun: boolean
-    }
+    @autoserializeAs('days_of_operation')
+    daysOfOperation: DaysOfOperation = new DaysOfOperation()
 
+    @autoserializeAs('closing_by')
     closingBy: string = ''
 
-    zoneId?: string
-    /**
-     *
-     * @private field _zone
-     * See getter and setter named {@link zone}
-     */
-    private _zone?: Zone
+    @autoserializeAs(Zone)
+    zones: Zone[] = []
 
+    @autoserialize
     notes: string = ''
+
+    @autoserializeAs('secondary_drop_off')
     secondaryDropOff?: Charity
 
+    @autoserializeAs('ref_id')
     refId: string = ''
+
+    @autoserializeAs('salesforce_id')
     salesforceId: string = ''
 
+    @autoserializeAs('charity_admins')
     charityAdmins: CharityAdmin[] = []
 
+
     constructor() {
-        this.daysOfOperation = {
-            mon: true,
-            tue: true,
-            wed: true,
-            thu: true,
-            fri: true,
-            sat: false,
-            sun: false,
-        }
-    }
-
-    get zone(): Zone | undefined {
-        return this._zone;
-    }
-
-    set zone(value: Zone | undefined) {
-        this._zone = value;
-        if (value) {
-            this.zoneId = value.id
-        }
+        this.daysOfOperation = new DaysOfOperation();
     }
 }
+
+

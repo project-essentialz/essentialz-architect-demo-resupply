@@ -44,6 +44,7 @@
     "@zendeskgarden/react-typography": "^8.31.1",
     "@zendeskgarden/svg-icons": "^6.28.0",
     "camelcase-keys": "^6.2.2",
+    "cerialize": "^0.1.18",
     "google-map-react": "^2.1.9",
     "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",

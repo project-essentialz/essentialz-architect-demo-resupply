@@ -49,6 +49,9 @@ export const CharityContainer = () => {
         donationsActions.getAllDonations(`charity_id=${id}`)
     }, [id])
 
+    useEffect(() => {
+        console.log(charity);
+    }, [charity])
     const extraButtons = [
         {
             title: "Edit charity",

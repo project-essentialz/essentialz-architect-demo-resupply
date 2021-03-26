@@ -5,13 +5,9 @@ import {User} from "./User";
  * and the {@link User} object allowing this entity to be able to access the platform.
  */
 export class CharityAdmin {
-    name?: string
-    phone?: string
-    email?: string
-    user: User
+    name: string = ''
+    phone: string = ''
+    email: string = ''
+    user: User = new User();
 
-
-    constructor() {
-        this.user = new User();
-    }
 }

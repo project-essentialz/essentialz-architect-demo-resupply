@@ -20,6 +20,7 @@ import {Charity, Zone} from "../../domain";
 import * as _ from 'lodash';
 import {AutocompleteField} from "../../components/auto-complete-field";
 import {DayString, EntityRouteParams} from "../../types";
+import {MultiSelectField} from "../../components/multi-select-field";
 
 const weekDays: DayString[] = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 
@@ -35,7 +36,7 @@ export const CreateCharityContainer = () => {
 
 
     useEffect(() => {
-        console.log("CHARITY", charity);
+        console.log("Charity", charity);
     }, [charity])
 
     useEffect(() => {
@@ -64,8 +65,8 @@ export const CreateCharityContainer = () => {
         const {name, checked} = e.target;
         updateCharityEntry(checked, name)
     }
-    const updateZone = (zone: Zone) => {
-        updateCharityEntry(zone, 'zone')
+    const updateZones = (zones: Zone[]) => {
+        updateCharityEntry(zones, 'zones')
     }
     const updateSecondaryDropOff = (charity: Charity) => {
         updateCharityEntry(charity, 'secondaryDropOff')
@@ -223,12 +224,12 @@ export const CreateCharityContainer = () => {
                             <Input name={"closingBy"} value={charity.closingBy} onChange={updateField}/>
                         </StyledField>
                         <StyledField>
-                            <AutocompleteField
-                                label={"Zone"}
+                            <MultiSelectField
+                                label={"Zones"}
                                 options={zones}
-                                value={charity.zone}
+                                value={charity.zones}
                                 valueResolver={resolveZoneName}
-                                onValueSelected={updateZone}
+                                onValueSelected={updateZones}
                             />
                         </StyledField>
 

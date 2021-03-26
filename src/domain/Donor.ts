@@ -6,5 +6,4 @@ export class Donor {
     city?: string
     state?: string
     zip?: string
-
 }

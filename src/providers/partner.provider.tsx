@@ -3,6 +3,7 @@ import {PartnerContext} from "../context";
 import Api from "../services/api.service";
 import {routes} from "../services/api.routes";
 import {Driver, TPLOrganization} from "../domain";
+import {Schedule} from "../domain/Schedule";
 
 type Props = {
     children: any
@@ -16,8 +17,21 @@ export const PartnerProvider = (props: Props) => {
     }, [])
 
     const getPartner = (id: string): Promise<TPLOrganization> => {
-        return Api.$<TPLOrganization>(routes.partners).get(id, "TPLOrganization").then((data) => {
+        return Api.$<TPLOrganization>(routes.partners).get(id, TPLOrganization).then((data) => {
             setPartner(data);
+            const schedules = data.drivers.map(d => {
+                return Api.$<Schedule>(routes.schedules).get(d.scheduleId!).then(schedule => {
+                    return {
+                        driver: d,
+                        schedule: schedule
+                    }
+                });
+
+            })
+
+            Promise.all(schedules).then((results) => {
+
+            })
             return data;
         });
     }

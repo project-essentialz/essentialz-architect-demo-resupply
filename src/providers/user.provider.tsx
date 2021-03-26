@@ -9,18 +9,10 @@ type Props = {
     children: any
 }
 
-const emptyUser = {
-    username: '',
-    password: '',
-    role: '',
-    details: {
-        name: ''
-    }
-}
 export const UserProvider = (props: Props) => {
     const [authData, setAuthData] = useState<Auth>({} as Auth)
     const [users, setUsers] = useState<User[]>([])
-    const [user, setUser] = useState<User>(emptyUser)
+    const [user, setUser] = useState<User>(new User())
 
     const [dataRetrieved, setDataRetrieved] = useState<boolean>(false);
 
@@ -75,7 +67,7 @@ export const UserProvider = (props: Props) => {
     }
 
     const resetUser = () => {
-        setUser(emptyUser);
+        setUser(new User());
     }
 
     return (

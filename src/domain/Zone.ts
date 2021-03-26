@@ -1,11 +1,11 @@
+import {autoserialize} from "cerialize";
 
 export class Zone {
+    @autoserialize
     id?: string
+    @autoserialize
     name?: string
-    zips: string[]
+    @autoserialize
+    zips: string[] = []
 
-
-    constructor() {
-        this.zips = []
-    }
 }

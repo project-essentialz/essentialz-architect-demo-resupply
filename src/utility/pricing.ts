@@ -1,3 +1,4 @@
+//Todo: Move pricing to the server
 export const pricing = {
     base: 99.00,
     largeItems: 24.99,

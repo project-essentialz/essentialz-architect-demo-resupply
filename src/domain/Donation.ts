@@ -30,8 +30,6 @@ export enum DonationItemType {
 
 }
 
-
-
 class DonationItem {
     type?: DonationItemType
     photos: StaticContent[] = []
@@ -45,6 +43,7 @@ class DropOffOutcome {
 }
 
 export class Donation extends Eventful {
+    versionNo: string = '1.0' // TODO: Think about this convention
 
     id?: string
     donationStatus: DonationStatus = DonationStatus.submitted
@@ -54,7 +53,7 @@ export class Donation extends Eventful {
      * Donation Request Fields
      */
 
-    private _date?: string               // Specified by the donor
+    private _date?: string      // Specified by the donor
     partOfDay: string = 'am'    // Specified by the donor
     spec: DonationSpec          // Specified by the donor
 
@@ -134,6 +133,7 @@ export class Donation extends Eventful {
          * Define DonationCode based on the DonationCode anatomy
          */
         if (value && value.code && value.state){
+            //TODO: Keep in TD list
             this.donationCode = getDonationCode(value.state, value.code)
         }
 
