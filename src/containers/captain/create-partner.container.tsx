@@ -14,6 +14,7 @@ import {TPLOrganization, Zone} from "../../domain";
 import {AutocompleteField} from "../../components/auto-complete-field";
 import _ from 'lodash'
 import {EntityRouteParams} from "../../types";
+import {MultiSelectField} from "../../components/multi-select-field";
 
 export const CreatePartnerContainer = () => {
     const [mode, setMode] = useState('new')
@@ -42,8 +43,8 @@ export const CreatePartnerContainer = () => {
         updatePartner(name, value)
     }
 
-    const updateZone = (zone: Zone) => {
-        updatePartner('zone', zone);
+    const updateZones = (zones: Zone[]) => {
+        updatePartner('zones', zones);
     }
 
     const goBack = () => history.goBack();
@@ -114,12 +115,12 @@ export const CreatePartnerContainer = () => {
                         </Row>
 
                         <StyledField>
-                            <AutocompleteField
+                            <MultiSelectField
                                 options={zones}
                                 label={"Zone"}
                                 valueResolver={resolveZoneName}
-                                onValueSelected={updateZone}
-                                value={partner.zone}
+                                onValueSelected={updateZones}
+                                value={partner.zones}
                             />
                         </StyledField>
 

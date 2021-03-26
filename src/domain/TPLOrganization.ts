@@ -3,15 +3,6 @@ import {Zone} from "./Zone";
 import {autoserialize, autoserializeAs} from "cerialize";
 
 export class TPLOrganization{
-    get zone(): Zone | undefined {
-        return this._zone;
-    }
-
-    set zone(value: Zone | undefined) {
-        this._zone = value;
-        this.zoneId = value?.id
-    }
-
     @autoserialize
     id?: string
 
@@ -30,9 +21,8 @@ export class TPLOrganization{
     @autoserialize
     email: string = ''
 
-    @autoserializeAs('zone_id')
-    zoneId?: string
+    @autoserializeAs(Zone)
+    zones: Zone[] = []
 
-    private _zone?: Zone
 
 }

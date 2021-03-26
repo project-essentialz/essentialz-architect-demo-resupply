@@ -11,13 +11,9 @@ import {Field, Label} from "@zendeskgarden/react-forms";
 import {Paragraph} from "@zendeskgarden/react-typography";
 import styled from "styled-components";
 import {Well} from "@zendeskgarden/react-notifications";
-import {Button} from "@zendeskgarden/react-buttons";
 import {DriverCreationModal} from "../../components/driver-creation-modal.c";
 import {TableComponent} from "../../components";
 import {field} from "../../utility/field";
-import Api from "../../services/api.service";
-import {routes} from "../../services/api.routes";
-import {Schedule} from "../../domain/Schedule";
 
 export const PartnerContainer = () => {
     const [selectedTab, setSelectedTab] = useState('general')
@@ -32,7 +28,7 @@ export const PartnerContainer = () => {
         if (id) {
             actions.getPartner(id).then((result) => {
                 console.log(result);
-            }) ;
+            });
         }
     }, [id])
 
@@ -55,7 +51,6 @@ export const PartnerContainer = () => {
         extraButton("Add a driver", () => openAddDriverModal())
     ]
 
-    const openZoneDetails = () => history.push(navigationRoutes.zoneDetails(partner.zone!))
     const openAddDriverModal = () => {
         setDriverModalVisible(true)
     }
@@ -94,19 +89,12 @@ export const PartnerContainer = () => {
                                 {infoField(partner.phone, "Phone")}
                                 {infoField(partner.accountManagerName!, "Account manager")}
                                 {infoField(partner.email, "Email")}
-                                {partner.zone && (
-                                    <StyledField>
-                                        <StyledButtonWrapper>
-                                            <div>
-                                                <Label>Zone</Label>
-                                                <Paragraph>{partner.zone.name}</Paragraph>
-                                            </div>
-                                            <Button size={"small"} onClick={openZoneDetails}>
-                                                View assigned zone
-                                            </Button>
-                                        </StyledButtonWrapper>
-                                    </StyledField>
-                                )}
+                                <StyledField>
+                                    <Label>Zones</Label>
+                                    {partner.zones.map(zone => (
+                                        <Paragraph key={zone.id}>{zone.name}</Paragraph>
+                                    ))}
+                                </StyledField>
                             </Well>
                         </Col>
                     </Row>
@@ -114,7 +102,8 @@ export const PartnerContainer = () => {
                 <TabPanel item="tab-2">
                 </TabPanel>
                 <TabPanel item="drivers">
-                    <TableComponent fields={fields} onRowClicked={() => {}} data={partner.drivers}/>
+                    <TableComponent fields={fields} onRowClicked={() => {
+                    }} data={partner.drivers}/>
                 </TabPanel>
             </Tabs>
             {driverModalVisible && (
