@@ -11,6 +11,8 @@ import * as _ from "lodash";
 import {Paragraph} from "@zendeskgarden/react-typography";
 import {PALETTE} from "@zendeskgarden/react-theming";
 import {Inline} from "@zendeskgarden/react-loaders";
+import Api from "../services/api.service";
+import {routes} from "../services/api.routes";
 
 type Props = {
     partner: TPLOrganization
@@ -42,10 +44,19 @@ export const DriverCreationModal = (props: Props) => {
         setLoading(true);
         userContext.actions.createUser(driver.user).then((user) => {
             console.log("Created User", user);
-            const p = new TPLOrganization();
-            Object.assign(p, partner);
-            p.drivers.push(driver);
-            actions.updatePartner(p).then(onClose);
+            type Schedule = {
+                id: string
+            }
+            Api.$<Schedule>(routes.schedules).create({} as Schedule).then(schedule => {
+                console.log("Created Schedule", schedule);
+                driver.scheduleId = schedule.id;
+
+                const p = new TPLOrganization();
+                Object.assign(p, partner);
+                p.drivers.push(driver);
+                actions.updatePartner(p).then(onClose);
+            })
+
         }).catch(e => {
             setError('It seems that driver with this username already exists. Please try with a different one.')
         }).finally(() => {

@@ -84,12 +84,22 @@ const api = <T>(base: string, resource: string, token?: string) => {
     /**
      * Performs HTTP GET request to retrieve all resources from the given type
      * @param q: string
+     * @param clazz: Class to deserialize to
      */
-    const getAll = (q?: string) => {
+    const getAll = (q?: string, clazz?: any) => {
         return fetch(_getUrl(q ? `?${q} `: ''), _getOptions(method.get))
             .then((response: Response) => {
                 if (response.ok){
-                    return response.json().then((json: any) => _camelCaseKeys(json) as T[])
+                    return response.json().then((json: any) => {
+                        if (clazz){
+                            let objects = GenericDeserialize(json, clazz);
+                            return objects as T[];
+                        }else{
+                            return _camelCaseKeys(json) as T[];
+                        }
+
+                    })
+
                 }
                 return [];
             })

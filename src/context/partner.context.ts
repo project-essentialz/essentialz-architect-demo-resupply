@@ -18,6 +18,7 @@ export type PartnerContextType = {
         submitPartner: (data: TPLOrganization) => Promise<TPLOrganization>
         createPartner: (data: TPLOrganization) => Promise<TPLOrganization>
         updatePartner: (data: TPLOrganization) => Promise<TPLOrganization>
+
     }
 
 }

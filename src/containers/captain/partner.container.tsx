@@ -32,20 +32,6 @@ export const PartnerContainer = () => {
         }
     }, [id])
 
-    // useEffect(() => {
-    //     if (partner.id){
-    //         partner.drivers.forEach((driver) => {
-    //             Api.$<Schedule>(routes.schedules).create({}).then(result => {
-    //                 driver.scheduleId = result.id
-    //             })
-    //         })
-    //         setTimeout(() => {
-    //             console.log(partner);
-    //             actions.updatePartner(partner);
-    //         }, 5000);
-    //     }
-    // }, [partner])
-
     const extraButtons = [
         extraButton("Edit 3PL", () => history.push(navigationRoutes.editTPL(partner))),
         extraButton("Add a driver", () => openAddDriverModal())

@@ -1,6 +1,5 @@
 import {User} from "./User";
 import {autoserialize, autoserializeAs} from "cerialize";
-import {Schedule} from "./Schedule";
 
 export class Driver {
     @autoserialize
@@ -21,7 +20,7 @@ export class Driver {
     @autoserializeAs('schedule_id')
     scheduleId?: string
 
-    schedule?: Schedule     // Ignored in serialization
+    schedule?: any     // Ignored in serialization
 
     constructor() {
         this.user.role = 'driver'

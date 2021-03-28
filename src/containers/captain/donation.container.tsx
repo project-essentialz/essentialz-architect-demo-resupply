@@ -12,18 +12,28 @@ import {EstimateWidget} from "../../components/estimate-widget.c";
 import {ServiceRequestTreeWidget} from "../../components/service-request-tree-widget.c";
 import {EntityRouteParams} from "../../types";
 import {Well} from '@zendeskgarden/react-notifications';
-import {Button} from "@zendeskgarden/react-buttons";
 import {LG} from "@zendeskgarden/react-typography";
 import {AutocompleteField} from "../../components/auto-complete-field";
+
+import Api from "../../services/api.service";
+import {routes} from "../../services/api.routes";
+import {DonationAssignmentWidget} from "../../components/donation-assignmment-widget.c";
+import {DriverScheduleWidget} from "../../components/driver-schedule-widget.c";
+import {DriverProfileWidget} from "../../components/driver-profile-widget.c";
+import {DonationStatus} from "../../domain/Donation";
 
 export const DonationContainer = () => {
     const [selectedTab, setSelectedTab] = useState('general');
     const {id} = useParams<EntityRouteParams>()
     const {donation, actions} = useContext(DonationContext)
-    const {partners} = useContext(PartnerContext)
+    const partnerContext = useContext(PartnerContext)
+
+    const {partners} = partnerContext;
 
     const [selectedPartner, setSelectedPartner] = useState<TPLOrganization>()
+    const [selectedPartnerResolved, setSelectedPartnerResolved] = useState<TPLOrganization>()
     const [selectedDriver, setSelectedDriver] = useState<Driver>()
+    const [selectedPartOfDay, setSelectedPartOfDay] = useState('')
 
     useEffect(() => {
         if (id) {
@@ -32,15 +42,40 @@ export const DonationContainer = () => {
     }, [id])
 
     useEffect(() => {
-        console.log(selectedPartner);
+        if (selectedPartner) {
+            partnerContext.actions.getPartner(selectedPartner.id!).then(partner => {
+                setSelectedPartnerResolved(partner);
+            })
+        }
     }, [selectedPartner])
 
     const resolvePartnerName = (p: TPLOrganization) => p ? p.name : ''
     const resolveDriverName = (d: Driver) => d ? d.name : ''
-    const availableDrivers = (p?: TPLOrganization) => p ? p.drivers : []
+    const availableDrivers = (p?: TPLOrganization) => p ? p.getAvailableDrivers(donation.date!.replaceAll("-", 'X')) : []
+    const getDriverAvailability = (d: Driver) => {}
 
-    const assignDriver = () =>{
+    const assignDriver = (slot: string) => {
+        //Todo: Change this and move it to Provider
+        const schedule = selectedDriver!.schedule;
+        const date = donation.date!.replaceAll("-", 'X')
+        console.log(schedule, date, schedule[date])
+        const selectedDateSchedule = schedule[date] || {};
 
+        Api.$(routes.schedules).update(schedule.id, {
+            ...schedule,
+            [date]: {
+                ...selectedDateSchedule,
+                [slot]: donation
+            }
+        }).then(result => {
+            donation.timeSlot = slot;
+            donation.tplOrganization = selectedPartner;
+            donation.driver = selectedDriver;
+            donation.donationStatus = DonationStatus.driver_assigned
+            actions.updateDonation(donation).then(() => {
+                actions.getDonation(donation.id!);
+            })
+        })
     }
 
     return (donation && donation.primaryDropOff) ? (
@@ -74,44 +109,51 @@ export const DonationContainer = () => {
                     {donation.driver ? (
                         <Row>
                             <Col>
-                                <Well>
-                                </Well>
+                                <DonationAssignmentWidget donation={donation} title={"Summary"}/>
                             </Col>
                             <Col>
-                                <Well></Well>
+
                             </Col>
                             <Col>
-                                <Well></Well>
+                                <DriverProfileWidget driver={donation.driver}/>
                             </Col>
                         </Row>
                     ) : (
                         <Row>
-                            <Col xs={6}>
-                                <LG>No driver has been assigned</LG>
-                                <Space size={10}/>
-                                <AutocompleteField
-                                    label={"3PL"}
-                                    options={partners}
-                                    valueResolver={resolvePartnerName}
-                                    onValueSelected={setSelectedPartner}
-                                />
-                                <Space size={10}/>
-                                <AutocompleteField
-                                    label={"Driver"}
-                                    options={availableDrivers(selectedPartner)}
-                                    valueResolver={resolveDriverName}
-                                    onValueSelected={setSelectedDriver}
-                                />
-                                <Space size={10}/>
-                                <Button
-                                    disabled={!selectedDriver}
-                                    onClick={assignDriver}
-                                >
-                                    Assign a driver
-                                </Button>
+                            <Col xs={5}>
+                                <Well>
+                                    <LG>No driver has been assigned</LG>
+                                    <Space size={10}/>
+                                    <AutocompleteField
+                                        label={"3PL"}
+                                        options={partners}
+                                        valueResolver={resolvePartnerName}
+                                        onValueSelected={setSelectedPartner}
+                                    />
+                                    <Space size={10}/>
+                                    <AutocompleteField
+                                        label={"Driver"}
+                                        options={availableDrivers(selectedPartnerResolved)}
+                                        valueResolver={resolveDriverName}
+                                        onValueSelected={setSelectedDriver}
+                                    />
+                                    <Space size={10}/>
+                                    {selectedDriver && (
+                                        <DriverScheduleWidget
+                                            title={"Pick a slot"}
+                                            isStandalone={false}
+                                            onSlotPicked={assignDriver}
+                                            donation={donation}/>
+                                    )}
+                                    <Space size={10}/>
+                                </Well>
+                                <Space size={50}/>
                             </Col>
+
                         </Row>
+
                     )}
+
                 </TabPanel>
             </Tabs>
 
