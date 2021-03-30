@@ -10,6 +10,7 @@ import {NotifyArrivalDonationContainer} from "./notify-arrival-donation.containe
 import {AdjustTheQuoteDonationContainer} from "./adjust-the-quote-donation.container";
 import {QuoteCalculatorDonationContainer} from "./quote-calculator-donation.container";
 import {AwaitDonorAcceptanceDonationContainer} from "./await-donor-acceptance-donation.container";
+import {QuoteAcceptedDonationContainer} from "./quote-accepted-donation.container";
 
 export const Driver = {
     BaseContainer,
@@ -23,5 +24,6 @@ export const Driver = {
     NotifyArrivalDonationContainer,
     AdjustTheQuoteDonationContainer,
     QuoteCalculatorDonationContainer,
-    AwaitDonorAcceptanceDonationContainer
+    AwaitDonorAcceptanceDonationContainer,
+    QuoteAcceptedDonationContainer
 }

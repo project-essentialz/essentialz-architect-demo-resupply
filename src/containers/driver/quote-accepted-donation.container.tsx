@@ -3,12 +3,12 @@ import {BaseContainer} from "./base.container";
 import React, {useContext, useEffect, useState} from "react";
 import {DonationContext} from "../../context";
 import {useHistory, useParams} from "react-router-dom";
-import {Paragraph, Span, XL} from "@zendeskgarden/react-typography";
+import {Span, XL} from "@zendeskgarden/react-typography";
 import {Space} from "../../components";
 import {Button} from "@zendeskgarden/react-buttons";
-import QRCode from "react-qr-code";
+import Tick from '../../assets/images/tick.png'
 
-export const AwaitDonorAcceptanceDonationContainer = () => {
+export const QuoteAcceptedDonationContainer = () => {
     const history = useHistory();
     const [donation, setDonation] = useState<Donation>()
     const {actions} = useContext(DonationContext)
@@ -18,26 +18,23 @@ export const AwaitDonorAcceptanceDonationContainer = () => {
 
     useEffect(() => {
         actions.getDonation(id).then(setDonation);
-
-        setTimeout(() => {
-            history.replace(`/donations/${id}/quote-accepted`)
-        }, 5000)
     }, [])
 
-
+    const progress = () => {
+        history.push(`/donations/${id}/quote-calculator`)
+    }
 
     return (
-        <BaseContainer title={"Awaiting donor acceptance!"} showBackButton showAsModal>
+        <BaseContainer title={"Quote is Accepted!"} showBackButton showAsModal>
             <>
-                <Paragraph>
-                    We are waiting on your donor to accept the quote!
-                </Paragraph>
-                <Paragraph>
-                    If they are having trouble, help them by having them scan this QR code to take them to their quote!
-                </Paragraph>
-
                 <Space size={50}/>
-                <QRCode value="https://resupplyme.com" />
+                <img src={Tick}/>
+                <Space size={50}/>
+                <XL><Span isBold>Up next:</Span> Adjust the quote</XL>
+                <Space size={50}/>
+                <Button
+                    onClick={progress}
+                    isStretched> Add pictures</Button>
             </>
         </BaseContainer>
     )

@@ -34,7 +34,7 @@ export const QuoteCalculatorDonationContainer = () => {
         if (donation){
             donation.adjustedSpec = spec!;
             actions.updateDonation(donation).then(() => {
-                history.replace("/")
+                history.push(`/donations/${id}/awaiting-user-acceptance`)
             })
         }
     }
