@@ -21,21 +21,25 @@ export enum DonationStatus {
 }
 
 export enum DonationItemType {
-    largeItem = 'largeItem',
-    smallItem = 'smallItem',
-    bag = 'bag',
-    box = 'boxes',
-    appliance = 'appliance',
-    hazardousItem = 'hazardousItem'
+    largeItems = 'largeItems',
+    smallItems = 'smallItems',
+    bags = 'bags',
+    boxes = 'boxes',
+    appliances = 'appliances',
+    hazardousItems = 'hazardousItems'
 
 }
 
-class DonationItem {
+export class DonationItem {
     type?: DonationItemType
-    photos: StaticContent[] = []
+    photos: string[] = []
+
+    constructor(type: DonationItemType) {
+        this.type = type;
+    }
 }
 
-class DropOffOutcome {
+export class DropOffOutcome {
     acceptedItems: DonationItem[] = []
     pocName?: string
     pocPhone?: string

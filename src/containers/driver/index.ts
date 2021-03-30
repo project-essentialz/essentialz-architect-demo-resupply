@@ -11,6 +11,11 @@ import {AdjustTheQuoteDonationContainer} from "./adjust-the-quote-donation.conta
 import {QuoteCalculatorDonationContainer} from "./quote-calculator-donation.container";
 import {AwaitDonorAcceptanceDonationContainer} from "./await-donor-acceptance-donation.container";
 import {QuoteAcceptedDonationContainer} from "./quote-accepted-donation.container";
+import {AddPicturesDonationContainer} from "./add-pictures-donation.container";
+import {PictureGaleryDonationContainer} from "./picture-gallery-donation.container";
+import {LoadUpAndMoveOutDonationContainer} from "./load-up-and-move-out-donation.container";
+import {PrimaryDropOffDonationContainer} from "./primary-drop-off-donation.container";
+import {CompletedPrimaryDropOffDonationContainer} from "./completed-primary-drop-off-donation.container";
 
 export const Driver = {
     BaseContainer,
@@ -25,5 +30,10 @@ export const Driver = {
     AdjustTheQuoteDonationContainer,
     QuoteCalculatorDonationContainer,
     AwaitDonorAcceptanceDonationContainer,
-    QuoteAcceptedDonationContainer
+    QuoteAcceptedDonationContainer,
+    AddPicturesDonationContainer,
+    PictureGaleryDonationContainer,
+    LoadUpAndMoveOutDonationContainer,
+    PrimaryDropOffDonationContainer,
+    CompletedPrimaryDropOffDonationContainer
 }
