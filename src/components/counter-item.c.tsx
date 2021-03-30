@@ -8,10 +8,17 @@ import {ReactComponent as PlusIcon} from "../assets/icons/plus-light.svg";
 type CounterItemProps = {
     title: string,
     field: string,
+    value?: any,
     onChange: (field: string, count: number) => void
 }
 export const CounterItem = (props: CounterItemProps) => {
     const [count, setCount] = useState(0);
+
+    useEffect(() => {
+        if (props.value) {
+            setCount(parseInt(props.value, 10));
+        }
+    }, [props.value])
 
     useEffect(() => {
         props.onChange(props.field, count);
@@ -19,7 +26,7 @@ export const CounterItem = (props: CounterItemProps) => {
 
     return (
         <Row style={{marginBottom: 10}}>
-            <Col>
+            <Col style={{display: "flex", alignItems: "center"}}>
                 <Label>{props.title}</Label>
             </Col>
             <Col>
@@ -31,7 +38,7 @@ export const CounterItem = (props: CounterItemProps) => {
                     <PlusIcon/>
                 </IconButton>
             </Col>
-            <Col xs={1}><Label>{count}</Label></Col>
+            <Col style={{display: "flex", alignItems: "center"}} xs={1}><Label>{count}</Label></Col>
         </Row>
     )
 }

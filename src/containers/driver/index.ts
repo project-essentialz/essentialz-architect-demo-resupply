@@ -6,6 +6,10 @@ import {DonationPhotosContainer} from './donation-photos.container'
 import {DropOffContainer} from "./drop-off.container";
 import {LoginContainer} from "./login.container";
 import {StartDonationContainer} from "./start-donation.container";
+import {NotifyArrivalDonationContainer} from "./notify-arrival-donation.container";
+import {AdjustTheQuoteDonationContainer} from "./adjust-the-quote-donation.container";
+import {QuoteCalculatorDonationContainer} from "./quote-calculator-donation.container";
+import {AwaitDonorAcceptanceDonationContainer} from "./await-donor-acceptance-donation.container";
 
 export const Driver = {
     BaseContainer,
@@ -16,4 +20,8 @@ export const Driver = {
     DropOffContainer,
     LoginContainer,
     StartDonationContainer,
+    NotifyArrivalDonationContainer,
+    AdjustTheQuoteDonationContainer,
+    QuoteCalculatorDonationContainer,
+    AwaitDonorAcceptanceDonationContainer
 }

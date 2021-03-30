@@ -66,6 +66,18 @@ const DriverApp = () => {
                                                         <Route exact path={'/donations/:id/start-donation'}>
                                                             <Driver.StartDonationContainer/>
                                                         </Route>
+                                                        <Route exact path={'/donations/:id/notify-arrival'}>
+                                                            <Driver.NotifyArrivalDonationContainer/>
+                                                        </Route>
+                                                        <Route exact path={'/donations/:id/adjust-the-quote'}>
+                                                            <Driver.AdjustTheQuoteDonationContainer/>
+                                                        </Route>
+                                                        <Route exact path={'/donations/:id/quote-calculator'}>
+                                                            <Driver.QuoteCalculatorDonationContainer/>
+                                                        </Route>
+                                                        <Route exact path={'/donations/:id/awaiting-user-acceptance'}>
+                                                            <Driver.AwaitDonorAcceptanceDonationContainer/>
+                                                        </Route>
                                                         <Route exact path={'/donations/:id/validate'}>
                                                             <Driver.ValidateDonationContainer/>
                                                         </Route>

@@ -7,7 +7,7 @@ import {Paragraph, Span, XL} from "@zendeskgarden/react-typography";
 import {Space} from "../../components";
 import {Button} from "@zendeskgarden/react-buttons";
 
-export const StartDonationContainer = () => {
+export const AdjustTheQuoteDonationContainer = () => {
     const history = useHistory();
     const [donation, setDonation] = useState<Donation>()
     const {actions} = useContext(DonationContext)
@@ -20,27 +20,30 @@ export const StartDonationContainer = () => {
     }, [])
 
     const progress = () => {
-        history.push(`/donations/${id}/notify-arrival`)
+        history.push(`/donations/${id}/quote-calculator`)
     }
 
     return (
-        <BaseContainer title={"Start the job"} showBackButton showAsModal>
+        <BaseContainer title={"Adjust the quote"} showBackButton showAsModal>
             <>
                 <Paragraph>
-                    Once you hit the start jub button the donor will know that you are on the way!
+                    Now that you've done your walk-through, its time to make sure the quote is accurate!
                 </Paragraph>
                 <Paragraph>
-                    You can go back by pressing the close button in the top right corner to view donation details at any point.
+                    Hit the button below to open our pricing calculator that will help you make the changes!
+                </Paragraph>
+                <Paragraph>
+                    Once completed, you will send the updated quote to the donor!
                 </Paragraph>
 
                 <Space size={50}/>
-                <XL><Span isBold>Up next:</Span> Notify of arrival</XL>
+                <XL><Span isBold>Up next:</Span> Donor Acceptance</XL>
 
                 <Space size={50}/>
 
                 <Button
                     onClick={progress}
-                    isStretched> Start job</Button>
+                    isStretched> Adjust</Button>
             </>
         </BaseContainer>
     )

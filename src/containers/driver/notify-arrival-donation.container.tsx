@@ -7,7 +7,7 @@ import {Paragraph, Span, XL} from "@zendeskgarden/react-typography";
 import {Space} from "../../components";
 import {Button} from "@zendeskgarden/react-buttons";
 
-export const StartDonationContainer = () => {
+export const NotifyArrivalDonationContainer = () => {
     const history = useHistory();
     const [donation, setDonation] = useState<Donation>()
     const {actions} = useContext(DonationContext)
@@ -20,27 +20,30 @@ export const StartDonationContainer = () => {
     }, [])
 
     const progress = () => {
-        history.push(`/donations/${id}/notify-arrival`)
+        history.push(`/donations/${id}/adjust-the-quote`)
     }
 
     return (
-        <BaseContainer title={"Start the job"} showBackButton showAsModal>
+        <BaseContainer title={"Notify Arrival!"} showBackButton showAsModal>
             <>
                 <Paragraph>
-                    Once you hit the start jub button the donor will know that you are on the way!
+                    We let the donor know that you are almost there!.
                 </Paragraph>
                 <Paragraph>
-                    You can go back by pressing the close button in the top right corner to view donation details at any point.
+                    Use the contact information provided to contact the donor if needed!.
+                </Paragraph>
+                <Paragraph>
+                    Don't forget to look for special instructions before you arrive!
                 </Paragraph>
 
                 <Space size={50}/>
-                <XL><Span isBold>Up next:</Span> Notify of arrival</XL>
+                <XL><Span isBold>Up next:</Span> Adjust the quote</XL>
 
                 <Space size={50}/>
 
                 <Button
                     onClick={progress}
-                    isStretched> Start job</Button>
+                    isStretched> Notify Arrival</Button>
             </>
         </BaseContainer>
     )
