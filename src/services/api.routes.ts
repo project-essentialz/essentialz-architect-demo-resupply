@@ -4,7 +4,7 @@ export const routes = {
 
     donations: 'api/donations',
     charities: 'api/charities',
-    partners: 'api/partners',
+    partners: 'api/tpls',
     zones: 'api/zones',
     schedules: 'api/schedules',
 

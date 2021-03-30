@@ -9,72 +9,91 @@ import {
     HeaderItemText,
     Main
 } from '@zendeskgarden/react-chrome';
-import {DEFAULT_THEME, PALETTE} from '@zendeskgarden/react-theming';
+import {DEFAULT_THEME, PALETTE, ThemeProvider} from '@zendeskgarden/react-theming';
 
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 
-import {ReactComponent as ProductIcon} from './assets/icons/pictogram.svg';
+import {ReactComponent as ProductIcon} from '../assets/icons/pictogram.svg';
 import {ReactComponent as PersonIcon} from '@zendeskgarden/svg-icons/src/16/user-solo-stroke.svg';
 
 import styled from "styled-components";
 import {Driver} from '../containers/driver';
 import {DonationProvider, UserProvider} from "../providers";
 import {CharityProvider} from "../providers/charity.provider";
+import {Navigation} from '../containers/navigation';
+import {captainTheme} from "../themes";
+import {DriverScopeProvider} from "../providers/driver-scope.provider";
 
 const DriverApp = () => {
 
     return (
-        <Router>
+        <ThemeProvider focusVisibleRef={null} theme={captainTheme as any}>
             <UserProvider>
                 <DonationProvider>
-                    <CharityProvider>
-                        <StyledChrome isFluid>
-                            <StyledChromeBody>
-                                <Header isStandalone>
-                                    <HeaderItem hasLogo>
-                                        <HeaderItemIcon>
-                                            <ProductIcon style={{color: PALETTE.red[400]}}/>
-                                        </HeaderItemIcon>
-                                        <HeaderItemText>ReSupply Captain Portal</HeaderItemText>
-                                    </HeaderItem>
-                                    <HeaderItem isRound>
-                                        <HeaderItemIcon>
-                                            <PersonIcon/>
-                                        </HeaderItemIcon>
-                                        <HeaderItemText isClipped>User</HeaderItemText>
-                                    </HeaderItem>
-                                </Header>
-                                <Content>
-                                    <StyledMain style={{padding: DEFAULT_THEME.space.md, boxSizing: "border-box"}}>
-                                        <Switch>
-                                            <Route exact path={'/'}>
-                                                <Driver.DonationsContainer/>
-                                            </Route>
-                                            <Route exact path={'/queue'}>
-                                                <Driver.DonationsContainer/>
-                                            </Route>
-                                            <Route exact path={'/donations/:id'}>
-                                                <Driver.DonationContainer/>
-                                            </Route>
-                                            <Route exact path={'/donations/:id/validate'}>
-                                                <Driver.ValidateDonationContainer/>
-                                            </Route>
-                                            <Route exact path={'/donations/:id/photos'}>
-                                                <Driver.DonationPhotosContainer/>
-                                            </Route>
-                                            <Route exact path={'/donations/:id/primary-drop'}>
-                                                <Driver.DropOffContainer/>
-                                            </Route>
-                                        </Switch>
-                                    </StyledMain>
-                                </Content>
-                            </StyledChromeBody>
-                        </StyledChrome>
-                    </CharityProvider>
+                    <DriverScopeProvider>
+                        <CharityProvider>
+                            <Router>
+                                <Navigation.PrivateStack>
+                                    <StyledChrome isFluid>
+                                        <StyledChromeBody>
+                                            <Header isStandalone>
+                                                <HeaderItem hasLogo>
+                                                    <HeaderItemIcon>
+                                                        <ProductIcon style={{color: PALETTE.red[400]}}/>
+                                                    </HeaderItemIcon>
+                                                    <HeaderItemText>ReSupply Captain Portal</HeaderItemText>
+                                                </HeaderItem>
+                                                <HeaderItem isRound>
+                                                    <HeaderItemIcon>
+                                                        <PersonIcon/>
+                                                    </HeaderItemIcon>
+                                                    <HeaderItemText isClipped>User</HeaderItemText>
+                                                </HeaderItem>
+                                            </Header>
+                                            <Content>
+                                                <StyledMain
+                                                    style={{padding: DEFAULT_THEME.space.md, boxSizing: "border-box"}}>
+                                                    <Switch>
+                                                        <Route exact path={'/'}>
+                                                            <Driver.DonationsContainer/>
+                                                        </Route>
+                                                        <Route exact path={'/queue'}>
+                                                            <Driver.DonationsContainer/>
+                                                        </Route>
+                                                        <Route exact path={'/donations/:id'}>
+                                                            <Driver.DonationContainer/>
+                                                        </Route>
+                                                        <Route exact path={'/donations/:id/start-donation'}>
+                                                            <Driver.StartDonationContainer/>
+                                                        </Route>
+                                                        <Route exact path={'/donations/:id/validate'}>
+                                                            <Driver.ValidateDonationContainer/>
+                                                        </Route>
+                                                        <Route exact path={'/donations/:id/photos'}>
+                                                            <Driver.DonationPhotosContainer/>
+                                                        </Route>
+                                                        <Route exact path={'/donations/:id/primary-drop'}>
+                                                            <Driver.DropOffContainer/>
+                                                        </Route>
+                                                    </Switch>
+                                                </StyledMain>
+                                            </Content>
+                                        </StyledChromeBody>
+                                    </StyledChrome>
+                                </Navigation.PrivateStack>
+                                <Navigation.PublicStack>
+                                    <Switch>
+                                        <Route exact path={'/access'}>
+                                            <Driver.LoginContainer/>
+                                        </Route>
+                                    </Switch>
+                                </Navigation.PublicStack>
+                            </Router>
+                        </CharityProvider>
+                    </DriverScopeProvider>
                 </DonationProvider>
             </UserProvider>
-        </Router>
-
+        </ThemeProvider>
     );
 }
 

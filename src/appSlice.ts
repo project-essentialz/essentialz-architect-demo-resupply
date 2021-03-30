@@ -5,6 +5,7 @@ const appSlice = () => {
 export default {
     captain: appSlice() === 'captain',
     charity: appSlice() === 'charity',
+    driver: appSlice() === 'driver',
 
 
 }

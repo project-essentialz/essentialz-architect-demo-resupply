@@ -3,7 +3,7 @@ import {createContext} from "react";
 
 
 type AppContextActionsType = {
-
+    donations: () => void
 }
 export type AppContextType = {
     currentUser: User | undefined

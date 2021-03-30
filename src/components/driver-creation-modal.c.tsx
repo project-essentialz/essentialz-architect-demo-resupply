@@ -1,10 +1,10 @@
-import {Charity, Driver, TPLOrganization} from "../domain";
+import {Driver, TPLOrganization} from "../domain";
 import {Body, Close, Footer, FooterItem, Header, Modal} from "@zendeskgarden/react-modals";
 import {Space} from "./space";
 import {Field, Input, Label} from "@zendeskgarden/react-forms";
 import ReactInputMask from "react-input-mask";
 import {Button} from "@zendeskgarden/react-buttons";
-import React, {ChangeEvent, useContext, useEffect, useState} from "react";
+import React, {ChangeEvent, useContext, useState} from "react";
 import styled from "styled-components";
 import {PartnerContext, UserContext} from "../context";
 import * as _ from "lodash";
@@ -42,26 +42,25 @@ export const DriverCreationModal = (props: Props) => {
     const submitDriver = () => {
         setError('')
         setLoading(true);
-        userContext.actions.createUser(driver.user).then((user) => {
-            console.log("Created User", user);
-            type Schedule = {
-                id: string
-            }
-            Api.$<Schedule>(routes.schedules).create({} as Schedule).then(schedule => {
-                console.log("Created Schedule", schedule);
-                driver.scheduleId = schedule.id;
 
-                const p = new TPLOrganization();
-                Object.assign(p, partner);
-                p.drivers.push(driver);
-                actions.updatePartner(p).then(onClose);
+        type Schedule = { id: string }
+        Api.$<Schedule>(routes.schedules).create({} as Schedule).then(schedule => {
+            console.log("SCHEDULE CREATED", schedule);
+            _.set(driver, "scheduleId", schedule.id)
+            _.set(driver, "user.details.tplOrganizationId", partner.id)
+            _.set(driver, "user.details.scheduleId", schedule.id)
+            userContext.actions.createUser(driver.user).then((user) => {
+                driver.user = user;
+                partner.drivers.push(driver);
+                actions.updatePartner(partner).then(onClose);
+            }).catch(e => {
+                setError('It seems that driver with this username already exists. Please try with a different one.')
+            }).finally(() => {
+                setLoading(false);
             })
-
-        }).catch(e => {
-            setError('It seems that driver with this username already exists. Please try with a different one.')
-        }).finally(() => {
-            setLoading(false);
         })
+
+
     }
 
     return (driver && driver.user) ? (
@@ -73,17 +72,18 @@ export const DriverCreationModal = (props: Props) => {
                 <Space size={10}/>
                 <StyledField>
                     <Label>Driver name</Label>
-                    <Input name={'name'} value={driver.name} onChange={updateField}/>
+                    <Input name={'user.details.name'} value={driver.user.details.name} onChange={updateField}/>
                 </StyledField>
                 <StyledField>
                     <Label>Phone number</Label>
-                    <ReactInputMask mask={'+19999999999'} name={'phone'} value={driver.phone} onChange={updateField}>
+                    <ReactInputMask mask={'+19999999999'} name={'user.details.phone'} value={driver.user.details.phone}
+                                    onChange={updateField}>
                         <Input/>
                     </ReactInputMask>
                 </StyledField>
                 <StyledField>
                     <Label>Email</Label>
-                    <Input name={'email'} value={driver.email} onChange={updateField}/>
+                    <Input name={'user.details.email'} value={driver.user.details.email} onChange={updateField}/>
                 </StyledField>
                 <StyledField>
                     <Label>Username</Label>
@@ -115,7 +115,7 @@ export const DriverCreationModal = (props: Props) => {
                     </Button>
                 </FooterItem>
             </Footer>
-            <Close aria-label="Close modal" />
+            <Close aria-label="Close modal"/>
         </Modal>
     ) : (<></>)
 }

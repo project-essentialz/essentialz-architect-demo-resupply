@@ -7,85 +7,54 @@ import {Button} from "@zendeskgarden/react-buttons";
 import {Col, Row} from "@zendeskgarden/react-grid";
 import {PALETTE} from "@zendeskgarden/react-theming";
 import {useHistory, useParams} from "react-router-dom";
-import {DonationContext} from "../../context";
 import {Skeleton} from "@zendeskgarden/react-loaders";
 import moment from "moment";
-import {Donation} from "../../domain/Donation";
+import {DriverScopeContext} from "../../context/driver-scope.context";
 
 export const DonationsContainer = () => {
     const params = useParams()
     const history = useHistory()
-    const [currentView, setCurrentView] = useState('upcoming')
-    const [isLoading, setLoading] = useState(false)
+    const [isLoading, setLoading] = useState(true)
 
-    const {donations, actions} = useContext(DonationContext)
+    const {donations, actions} = useContext(DriverScopeContext)
+
 
     useEffect(() => {
-        setLoading(true);
-        switch (currentView) {
-            case 'queue':
-                actions.getAllDonations("driver_id=");
-                return
-            case 'upcoming':
-                actions.getAllDonations("driver_id=4737eb58-542e-42fe-b46e-3cdd0db78d99");
-                return
-            default:
-                actions.getAllDonations("driver_id=");
-                return
+        if (donations && donations?.length > 0) {
+            console.log(donations);
+            setLoading(false);
         }
-    }, [currentView])
-
-    useEffect(() => {
-        setLoading(false);
     }, [donations])
 
-    useEffect(() => {
-        console.log(params);
-        console.log(history.location)
+    const renderPlaceholder = () => (
+        <Row justifyContent="center">
+            <Col sm={5}>
+                <XXL>
+                    <Skeleton/>
+                </XXL>
+                <MD>
+                    <Skeleton/>
+                    <Skeleton/>
+                    <Skeleton/>
+                </MD>
+            </Col>
+        </Row>
+    )
 
-        actions.getAllDonations("driver_id=4737eb58-542e-42fe-b46e-3cdd0db78d99");
-    }, [])
-
-    const acceptDonation = (donation: Donation) => {
-        actions.acceptDonation(donation).then(_ => {
-            setCurrentView('upcoming')
-            actions.getAllDonations()
-        })
+    const getSlotText = (slot: string) => {
+        switch (slot){
+            case 'slot1': return '8am - 10am'
+            case 'slot2': return '10am - 12pm'
+            case 'slot3': return '12pm - 2pm'
+            case 'slot4': return '2pm - 4pm'
+            default: return 'Unassigned'
+        }
     }
-
 
     return (
         <BaseContainer title={"Donations"} subtitle={"All of your donations"}>
             <>
-                <Row>
-                    <ButtonsWrapper>
-                        {/*<StyledSelectionButton onClick={() => {*/}
-                        {/*    setCurrentView('today')*/}
-                        {/*}} isPrimary={currentView === 'today'} isStretched>Today</StyledSelectionButton>*/}
-                        <StyledSelectionButton onClick={() => {
-                            setCurrentView('upcoming')
-                        }} isPrimary={currentView === 'upcoming'} isStretched>My donations</StyledSelectionButton>
-                        <StyledSelectionButtonWithNotification onClick={() => {
-                            setCurrentView('queue')
-                        }} isPrimary={currentView === 'queue'} isStretched>Queue</StyledSelectionButtonWithNotification>
-                    </ButtonsWrapper>
-                </Row>
-                {isLoading ? (
-                    <Row justifyContent="center">
-                        <Col sm={5}>
-                            <XXL>
-                                <Skeleton/>
-                            </XXL>
-                            <MD>
-                                <Skeleton/>
-                                <Skeleton/>
-                                <Skeleton/>
-                            </MD>
-                        </Col>
-                    </Row>
-
-                ) : (
-
+                {donations ? (
                     <>
                         {donations.map(donation => (
                             <StyledWell key={donation.id}
@@ -100,11 +69,12 @@ export const DonationsContainer = () => {
                                     <Span isBold>Donation status:</Span>
                                     <Address
                                         style={{color: donation.donationStatus === 'completed' ? PALETTE.crimson.M600 : "black"}}
-                                    >{donation.donationStatus}</Address>
+                                    >{donation.donationStatus.replaceAll("_", " ").toUpperCase()}</Address>
                                     <Span isBold>Pickup location:</Span>
                                     <Address>{donation.donor.address}</Address>
-                                    <Date><Span isBold>Pickup date: </Span>{moment(donation.date).format("dddd MM/DD/yyyy")}</Date>
-                                    <Time><Span isBold>Pickup time: </Span>{donation.timeSlot}</Time>
+                                    <Date><Span isBold>Pickup
+                                        date: </Span>{moment(donation.date).format("dddd MM/DD/yyyy")}</Date>
+                                    <Time><Span isBold>Pickup time: </Span>{getSlotText(donation.timeSlot!)}</Time>
                                 </StyledWellTop>
                                 <BottomControls>
                                     {donation.driver ? (
@@ -116,7 +86,7 @@ export const DonationsContainer = () => {
                                     ) : (
                                         <>
                                             <Button onClick={() => {
-                                                acceptDonation(donation)
+                                                // acceptDonation(donation)
                                             }}>Accept</Button>
                                             <Button isDanger>Decline</Button>
                                         </>
@@ -125,13 +95,16 @@ export const DonationsContainer = () => {
                             </StyledWell>
                         ))}
                     </>
-                )}
+                ) : renderPlaceholder}
 
             </>
         </BaseContainer>
     )
 }
-const StyledWellTop = styled.div``
+
+const StyledWellTop = styled.div`
+`
+
 const StyledWell = styled(Well)`
   padding: 20px;
   margin-bottom: 10px;
@@ -143,12 +116,15 @@ const CharityName = styled.p`
   font-weight: 600;
   color: black;
 `
+
 const Address = styled.p`
   margin-bottom: 5px;
 `
+
 const Date = styled.p`
   margin-bottom: 5px;
 `
+
 const Time = styled.p`
   margin-bottom: 5px;
 `
@@ -159,6 +135,7 @@ const WellHeader = styled.div`
   justify-content: space-between;
   margin-bottom: 10px;
 `
+
 const WellContent = styled.div`
   padding: 20px;
 `
@@ -178,6 +155,7 @@ const ButtonsWrapper = styled(Col)`
   justify-content: space-around;
   margin-bottom: 20px;
 `
+
 const StyledSelectionButton = styled(Button)`
   margin: 0 10px;
   user-select: none !important;

@@ -146,7 +146,6 @@ const CaptainApp = () => {
                                             </Route>
                                         </Switch>
                                     </Navigation.PublicStack>
-
                                 </Router>
                             </ZoneProvider>
                         </DonationProvider>

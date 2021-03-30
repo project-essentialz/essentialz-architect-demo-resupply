@@ -12,7 +12,7 @@ import {EstimateWidget} from "../../components/estimate-widget.c";
 import {ServiceRequestTreeWidget} from "../../components/service-request-tree-widget.c";
 import {EntityRouteParams} from "../../types";
 import {Well} from '@zendeskgarden/react-notifications';
-import {LG} from "@zendeskgarden/react-typography";
+import {LG, XL} from "@zendeskgarden/react-typography";
 import {AutocompleteField} from "../../components/auto-complete-field";
 
 import Api from "../../services/api.service";
@@ -21,6 +21,7 @@ import {DonationAssignmentWidget} from "../../components/donation-assignmment-wi
 import {DriverScheduleWidget} from "../../components/driver-schedule-widget.c";
 import {DriverProfileWidget} from "../../components/driver-profile-widget.c";
 import {DonationStatus} from "../../domain/Donation";
+import {DonationDateWidget} from "../../components/donation-date-widget.c";
 
 export const DonationContainer = () => {
     const [selectedTab, setSelectedTab] = useState('general');
@@ -52,13 +53,13 @@ export const DonationContainer = () => {
     const resolvePartnerName = (p: TPLOrganization) => p ? p.name : ''
     const resolveDriverName = (d: Driver) => d ? d.name : ''
     const availableDrivers = (p?: TPLOrganization) => p ? p.getAvailableDrivers(donation.date!.replaceAll("-", 'X')) : []
-    const getDriverAvailability = (d: Driver) => {}
+    const getDriverAvailability = (d: Driver) => {
+    }
 
     const assignDriver = (slot: string) => {
         //Todo: Change this and move it to Provider
         const schedule = selectedDriver!.schedule;
         const date = donation.date!.replaceAll("-", 'X')
-        console.log(schedule, date, schedule[date])
         const selectedDateSchedule = schedule[date] || {};
 
         Api.$(routes.schedules).update(schedule.id, {
@@ -96,6 +97,7 @@ export const DonationContainer = () => {
                             <CharityWidget charity={donation.primaryDropOff} spacing={10}/>
                         </Col>
                         <Col xs={4}>
+                            <DonationDateWidget donation={donation} spacing={0}/>
                             <DonationAddressWidget donation={donation} spacing={0}/>
                             <DonationSpecWidget spec={donation.spec} spacing={10}/>
                         </Col>
@@ -112,10 +114,15 @@ export const DonationContainer = () => {
                                 <DonationAssignmentWidget donation={donation} title={"Summary"}/>
                             </Col>
                             <Col>
-
+                                <DriverProfileWidget driver={donation.driver}/>
                             </Col>
                             <Col>
-                                <DriverProfileWidget driver={donation.driver}/>
+                                <DriverScheduleWidget
+                                    readonly
+                                    donation={donation}
+                                    
+                                    onSlotPicked={() => {
+                                    }}/>
                             </Col>
                         </Row>
                     ) : (
@@ -142,6 +149,7 @@ export const DonationContainer = () => {
                                         <DriverScheduleWidget
                                             title={"Pick a slot"}
                                             isStandalone={false}
+                                            driver={selectedDriver}
                                             onSlotPicked={assignDriver}
                                             donation={donation}/>
                                     )}
@@ -149,7 +157,11 @@ export const DonationContainer = () => {
                                 </Well>
                                 <Space size={50}/>
                             </Col>
-
+                            <Col xs={6}>
+                                <XL>Keep in mind</XL>
+                                <DonationDateWidget donation={donation}/>
+                                <CharityWidget charity={donation.charity!}/>
+                            </Col>
                         </Row>
 
                     )}

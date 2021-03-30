@@ -38,8 +38,8 @@ export const CreateDonationContainer = () => {
     const history = useHistory();
 
     useEffect(() => {
-        console.log(donation);
-    }, [donation])
+        setDonation(new Donation());
+    }, [])
 
 
     const updateField = (field: string, value: any) => {

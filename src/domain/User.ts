@@ -1,7 +1,7 @@
 import {autoserialize, autoserializeAs} from "cerialize";
 
 
-class UserDetails {
+export class UserDetails {
     @autoserialize
     name: string = ''
 
@@ -10,6 +10,13 @@ class UserDetails {
 
     @autoserialize
     email: string = ''
+
+    @autoserialize
+    tplOrganizationId: string = ''
+
+    @autoserialize
+    scheduleId: string = ''
+
 }
 
 class UserAuthorization{
@@ -28,8 +35,12 @@ export class User{
     role?: string
 
     @autoserializeAs(UserDetails)
-    details?: UserDetails
+    details: UserDetails
 
     @autoserializeAs(UserAuthorization)
     authorization?: UserAuthorization
+
+    constructor() {
+        this.details = new UserDetails();
+    }
 }

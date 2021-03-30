@@ -4,14 +4,16 @@ import {MD, XXL} from "@zendeskgarden/react-typography";
 import styled from "styled-components";
 import {Button, IconButton} from "@zendeskgarden/react-buttons";
 import {ReactComponent as BackIcon} from "../../assets/icons/long-arrow-left-light.svg";
+import {ReactComponent as CloseIcon} from "../../assets/icons/minus-light.svg";
 import {useHistory} from "react-router-dom";
 
 type Props = {
     title: string,
-    subtitle: string
+    subtitle?: string
     children: JSX.Element
     showBackButton?: boolean
-    extraButtons?: {title: string, onClick: () => void}[]
+    extraButtons?: {title: string, onClick: () => void}[],
+    showAsModal?: boolean
 }
 export const BaseContainer = (props: Props) => {
     const history = useHistory()
@@ -30,7 +32,7 @@ export const BaseContainer = (props: Props) => {
         <Grid>
             <Row>
                 <HorizontalOrientedColumn>
-                    {props.showBackButton && (
+                    {(props.showBackButton && !props.showAsModal ) && (
                         <StyledIconButton
                             onClick={history.goBack}
                             aria-label="square back" isBasic={false} isPill={false}>
@@ -39,12 +41,20 @@ export const BaseContainer = (props: Props) => {
                     )}
                     <ContainerTitle>
                         <XXL>{props.title}</XXL>
-                        <MD>{props.subtitle}</MD>
+                        {props.subtitle && <MD>{props.subtitle}</MD>}
                     </ContainerTitle>
                 </HorizontalOrientedColumn>
                 <Col xs={1}>
                     <ExtraButtons>
                         {renderExtraButtons()}
+                        {props.showAsModal && (
+                            <StyledCloseIconButton
+                                isDanger
+                                onClick={() => history.replace("/")}
+                                aria-label="square back" isBasic={false} isPill={false}>
+                                <CloseIcon />
+                            </StyledCloseIconButton>
+                        )}
                     </ExtraButtons>
                 </Col>
             </Row>
@@ -73,6 +83,10 @@ const ContainerTitle = styled.div`
 const StyledIconButton = styled(IconButton)`
   margin-right: 20px;
 `
+
+const StyledCloseIconButton = styled(IconButton)`
+`
+
 const ExtraButtons = styled.div`
   display: flex;
   flex-direction: row;

@@ -31,10 +31,10 @@ export class TPLOrganization {
                 const scheduleForDate = schedule[date];
                 if (scheduleForDate) {
                     // Driver has some assignments for specified date
-                    const slot1 = scheduleForDate.slot1 || 0;
-                    const slot2 = scheduleForDate.slot2 || 0;
-                    const slot3 = scheduleForDate.slot3 || 0;
-                    const slot4 = scheduleForDate.slot4 || 0;
+                    const slot1 = scheduleForDate.slot1 ? 1 : 0;
+                    const slot2 = scheduleForDate.slot2 ? 1 : 0;
+                    const slot3 = scheduleForDate.slot3 ? 1 : 0;
+                    const slot4 = scheduleForDate.slot4 ? 1 : 0;
                     // One of 3 available slots is not filled so driver has availability
                     return (slot1 + slot2 + slot3 + slot4) < 3
                 } else {

@@ -21,6 +21,7 @@ export const UserProvider = (props: Props) => {
         if (authDataJson) {
             let authDataParsed = JSON.parse(authDataJson);
             setAuthData(authDataParsed)
+            setUser(authDataParsed)
             Api.setToken(authDataParsed.authorization.token)
         }
         setDataRetrieved(true);

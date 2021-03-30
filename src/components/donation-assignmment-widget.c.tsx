@@ -2,10 +2,11 @@ import {Col, Row} from "@zendeskgarden/react-grid";
 import {Paragraph} from "@zendeskgarden/react-typography";
 import {Anchor} from "@zendeskgarden/react-buttons";
 import {Title, Well} from "@zendeskgarden/react-notifications";
-import React from "react";
+import React, {useContext} from "react";
 import {Donation, Donor, Driver, TPLOrganization} from "../domain";
 import styled from "styled-components";
 import {Body, Cell, Row as TRow, Table} from '@zendeskgarden/react-tables';
+import {ZoneContext} from "../context";
 
 type Props = {
     donation: Donation,
@@ -15,6 +16,10 @@ type Props = {
 export const DonationAssignmentWidget = (props: Props) => {
     const {donation, title = 'Donor info', spacing = 5} = props;
 
+    const getZone = () => {
+        const z = (donation.charity!.zones || []).find(zone => zone.zips.indexOf(donation.donor.zip!) >= 0);
+        return z ? z.name : "Zone unavailable"
+    }
     return (
         <Well style={{marginTop: spacing}}>
             <StiledTitle>{title}</StiledTitle>
@@ -23,15 +28,15 @@ export const DonationAssignmentWidget = (props: Props) => {
                     <Body>
                         <TRowNoBorder isReadOnly>
                             <Cell>Service area</Cell>
-                            <Cell>???</Cell>
+                            <Cell>N/A</Cell>
                         </TRowNoBorder>
                         <TRowNoBorder isReadOnly>
                             <Cell>Zone:</Cell>
-                            <Cell>???</Cell>
+                            <Cell>{getZone()}</Cell>
                         </TRowNoBorder>
                         <TRowNoBorder isReadOnly>
                             <Cell>Status:</Cell>
-                            <Cell>{donation.donationStatus}</Cell>
+                            <Cell>{donation.donationStatus.toUpperCase().replaceAll("_", " ")}</Cell>
                         </TRowNoBorder>
                         <TRowNoBorder isReadOnly>
                             <Cell>3PL:</Cell>

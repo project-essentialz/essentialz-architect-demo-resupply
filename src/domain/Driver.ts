@@ -1,18 +1,7 @@
 import {User} from "./User";
-import {autoserialize, autoserializeAs} from "cerialize";
+import {autoserializeAs} from "cerialize";
 
 export class Driver {
-    @autoserialize
-    id?: string
-
-    @autoserialize
-    name: string = ''
-
-    @autoserialize
-    phone: string = ''
-
-    @autoserialize
-    email: string = ''
 
     @autoserializeAs(User)
     user: User = new User();
@@ -26,4 +15,14 @@ export class Driver {
         this.user.role = 'driver'
     }
 
+
+    get phone(): string {
+        return this.user.details.phone;
+    }
+    get email(): string {
+        return this.user.details.email;
+    }
+    get name(): string {
+        return this.user.details.name;
+    }
 }
