@@ -7,6 +7,7 @@ import {Span, XL} from "@zendeskgarden/react-typography";
 import {Space} from "../../components";
 import {Button} from "@zendeskgarden/react-buttons";
 import Tick from '../../assets/images/tick.png'
+import {DonationStatus} from "../../domain/Donation";
 
 export const QuoteAcceptedDonationContainer = () => {
     const history = useHistory();
@@ -21,7 +22,12 @@ export const QuoteAcceptedDonationContainer = () => {
     }, [])
 
     const progress = () => {
-        history.push(`/donations/${id}/add-pictures`)
+        if (donation){
+            donation.donationStatus = DonationStatus.payment_successful;
+            actions.updateDonation(donation).then(() => {
+                history.push(`/donations/${id}/add-pictures`)
+            })
+        }
     }
 
     return (

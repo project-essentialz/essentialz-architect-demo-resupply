@@ -3,9 +3,8 @@ import {BaseContainer} from "./base.container";
 import React, {useContext, useEffect, useState} from "react";
 import {DonationContext} from "../../context";
 import {useHistory, useParams} from "react-router-dom";
-import {Paragraph, Span, XL} from "@zendeskgarden/react-typography";
+import {Paragraph} from "@zendeskgarden/react-typography";
 import {Space} from "../../components";
-import {Button} from "@zendeskgarden/react-buttons";
 import QRCode from "react-qr-code";
 
 export const AwaitDonorAcceptanceDonationContainer = () => {
@@ -18,12 +17,11 @@ export const AwaitDonorAcceptanceDonationContainer = () => {
 
     useEffect(() => {
         actions.getDonation(id).then(setDonation);
-
         setTimeout(() => {
+
             history.replace(`/donations/${id}/quote-accepted`)
         }, 5000)
     }, [])
-
 
 
     return (
@@ -37,7 +35,7 @@ export const AwaitDonorAcceptanceDonationContainer = () => {
                 </Paragraph>
 
                 <Space size={50}/>
-                <QRCode value="https://resupplyme.com" />
+                <QRCode value={`http://localhost:3001/d/${donation?.donationCode}`}/>
             </>
         </BaseContainer>
     )

@@ -9,6 +9,7 @@ import {Well} from "@zendeskgarden/react-notifications";
 import {XL} from "@zendeskgarden/react-typography";
 import {CounterItem} from "../../components/counter-item.c";
 import {DonationSpec} from "../../domain/DonationSpec";
+import {DonationStatus} from "../../domain/Donation";
 
 export const QuoteCalculatorDonationContainer = () => {
     const history = useHistory();
@@ -33,6 +34,7 @@ export const QuoteCalculatorDonationContainer = () => {
     const progress = () => {
         if (donation){
             donation.adjustedSpec = spec!;
+            donation.donationStatus = DonationStatus.quote_sent;
             actions.updateDonation(donation).then(() => {
                 history.push(`/donations/${id}/awaiting-user-acceptance`)
             })

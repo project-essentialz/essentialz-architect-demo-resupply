@@ -13,7 +13,7 @@ import {Col, Row} from "@zendeskgarden/react-grid";
 import {ReactComponent as PlusIcon} from "../../assets/icons/plus-light.svg";
 import {ReactComponent as MinusIcon} from "../../assets/icons/minus-light.svg";
 import {Well} from "@zendeskgarden/react-notifications";
-import {DonationItem, DropOffOutcome} from "../../domain/Donation";
+import {DonationItem, DonationStatus, DropOffOutcome} from "../../domain/Donation";
 import _ from "lodash";
 
 
@@ -40,8 +40,10 @@ export const PrimaryDropOffDonationContainer = () => {
             setDisabled(true);
         }else{
             if (outcome.pocName && outcome.pocPhone){
-                if (outcome.pocPhone.indexOf("+1") === 0 && outcome.pocPhone.indexOf("_") === -1){
+                if (outcome.pocPhone?.match(/^(\+1)\d{10}/g)){
                     setDisabled(false);
+                }else{
+                    setDisabled(true);
                 }
             }else{
                 setDisabled(true);
@@ -58,7 +60,13 @@ export const PrimaryDropOffDonationContainer = () => {
     }
 
     const progress = () => {
-        history.push(`/donations/${id}/completed-primary-drop-off`)
+        if(donation){
+            donation.donationStatus = DonationStatus.completed;
+            actions.updateDonation(donation!).then(() => {
+                history.push(`/donations/${id}/completed-primary-drop-off`)
+            })
+        }
+
     }
     const reset = () => {
         setAcceptedIndexes([]);
@@ -157,7 +165,7 @@ export const PrimaryDropOffDonationContainer = () => {
                     <Row>
                         {
                             donation.content?.map((item, index) => (
-                                <Col xs={6} style={{marginBottom: 10}}>
+                                <Col xs={6} style={{marginBottom: 10}} key={`${item.type}-${index}`}>
                                     <Well style={{padding: 5}}>
                                         <img src={item.photos[0]} alt=""/>
                                         {itemPicked(index) ? renderPickedItem(item, index) : renderAvailableItem(item, index)}

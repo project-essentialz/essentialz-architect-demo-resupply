@@ -16,6 +16,7 @@ export enum DonationStatus {
     driver_arrived = 'driver_arrived',
     quote_sent = 'quote_sent',
     payment_successful = 'payment_successful',
+    photos_taken = 'photos_taken',
     primary_drop = 'primary_drop',
     completed = 'completed'
 }

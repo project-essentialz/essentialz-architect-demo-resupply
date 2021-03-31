@@ -6,6 +6,7 @@ import {useHistory, useParams} from "react-router-dom";
 import {Paragraph, Span, XL} from "@zendeskgarden/react-typography";
 import {Space} from "../../components";
 import {Button} from "@zendeskgarden/react-buttons";
+import {DonationStatus} from "../../domain/Donation";
 
 export const StartDonationContainer = () => {
     const history = useHistory();
@@ -20,7 +21,13 @@ export const StartDonationContainer = () => {
     }, [])
 
     const progress = () => {
-        history.push(`/donations/${id}/notify-arrival`)
+        if (donation){
+            donation.donationStatus = DonationStatus.driver_en_route;
+            actions.updateDonation(donation).then(() => {
+                history.push(`/donations/${id}/notify-arrival`)
+            })
+        }
+
     }
 
     return (

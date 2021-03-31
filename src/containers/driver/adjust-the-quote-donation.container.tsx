@@ -6,6 +6,7 @@ import {useHistory, useParams} from "react-router-dom";
 import {Paragraph, Span, XL} from "@zendeskgarden/react-typography";
 import {Space} from "../../components";
 import {Button} from "@zendeskgarden/react-buttons";
+import {DonationStatus} from "../../domain/Donation";
 
 export const AdjustTheQuoteDonationContainer = () => {
     const history = useHistory();

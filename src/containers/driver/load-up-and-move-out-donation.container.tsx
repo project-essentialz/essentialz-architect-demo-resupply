@@ -29,7 +29,7 @@ export const LoadUpAndMoveOutDonationContainer = () => {
         <BaseContainer title={"Load up & Move out!"} showBackButton showAsModal>
             <>
                 <Paragraph>
-                    You're heading to {donation?.primaryDropOff?.name} at {donation?.primaryDropOff?.address}!
+                    You're heading to {donation?.primaryDropOff?.name} at <Span isBold>{donation?.primaryDropOff?.address}</Span>!
                 </Paragraph>
                 <Paragraph>
                     Remember, taking care of these items will help to keep them from being rejected at the loading dock!

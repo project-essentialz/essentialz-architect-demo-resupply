@@ -12,6 +12,7 @@ import {EstimateComponent} from "../../components";
 import {totalItems, totalPrice} from "../../components/estimate.component";
 import {Modal} from "@zendeskgarden/react-modals";
 import {Donation} from "../../domain";
+import {DonationStatus} from "../../domain/Donation";
 
 export const DonationContainer = () => {
     const history = useHistory();
@@ -35,7 +36,22 @@ export const DonationContainer = () => {
 
 
     const openNextStep = () => {
-        history.push(`/donations/${id}/start-donation`)
+        if (donation){
+            let step = '';
+            switch (donation.donationStatus){
+                case DonationStatus.driver_assigned: step = 'start-donation'; break;
+                case DonationStatus.driver_en_route: step = 'notify-arrival'; break;
+                case DonationStatus.driver_arrived: step = 'adjust-the-quote'; break;
+                case DonationStatus.quote_sent: step = 'awaiting-user-acceptance'; break;
+                case DonationStatus.payment_successful: step = 'quote-accepted'; break;
+                case DonationStatus.photos_taken: step = 'load-up-and-move-out'; break;
+                case DonationStatus.primary_drop: step = 'primary-drop-off'; break;
+                case DonationStatus.completed: step = 'completed-primary-drop-off'; break;
+                default: step = 'start-donation'
+            }
+
+            history.push(`/donations/${id}/${step}`)
+        }
     }
 
     if (donation) {

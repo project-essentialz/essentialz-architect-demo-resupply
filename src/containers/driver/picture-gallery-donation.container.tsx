@@ -1,15 +1,14 @@
 import {Donation, StaticContent} from "../../domain";
 import {BaseContainer} from "./base.container";
-import React, {SyntheticEvent, useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {DonationContext} from "../../context";
 import {useHistory, useParams} from "react-router-dom";
 import {Button} from "@zendeskgarden/react-buttons";
-import {DonationItem, DonationItemType} from "../../domain/Donation";
+import {DonationItem, DonationItemType, DonationStatus} from "../../domain/Donation";
 import _ from "lodash";
-import {LG, Paragraph} from "@zendeskgarden/react-typography";
-import {FileUpload, Input} from "@zendeskgarden/react-forms";
+import {LG} from "@zendeskgarden/react-typography";
+import {Input} from "@zendeskgarden/react-forms";
 import Api from "../../services/api.service";
-import {DropEvent, FileRejection, useDropzone} from "react-dropzone";
 import {Space} from "../../components";
 
 export const PictureGaleryDonationContainer = () => {
@@ -60,6 +59,7 @@ export const PictureGaleryDonationContainer = () => {
     const progress = () => {
         if(donation){
             donation.content = donationContent;
+            donation.donationStatus = DonationStatus.photos_taken;
             actions.updateDonation(donation!).then(() => {
                 history.push(`/donations/${id}/load-up-and-move-out`)
             })
