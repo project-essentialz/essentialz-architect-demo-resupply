@@ -3,11 +3,12 @@ import {mediaQuery, PALETTE} from "@zendeskgarden/react-theming";
 import React, {useEffect, useState} from "react";
 import {ReactComponent as PlusIcon} from "../assets/icons/plus-light.svg";
 import {ReactComponent as MinusIcon} from "../assets/icons/minus-light.svg";
-import {MD, XXL} from "@zendeskgarden/react-typography";
+import {MD, SM, XXL} from "@zendeskgarden/react-typography";
 
 type Props = {
     icon: () => JSX.Element,
     name: string,
+    description?: string
     field: string,
     onValueChanged?: (key:string, value: number) => void
 }
@@ -28,13 +29,16 @@ export const DonationCategoryTileComponent = (props: Props) => {
     }
     return (
         <DonationTypeBox>
+            <MD style={{color: "#2c3b64"}} isBold>{props.name}</MD>
+            {props.description && (
+                <SM>{props.description}</SM>
+            )}
             <BoxContent>
                 <StyledIcon isactive={value > 0}>
                     {props.icon()}
                 </StyledIcon>
                 <Value isactive={value > 0}>x {value}</Value>
             </BoxContent>
-            <MD style={{color: "white"}} isBold>{props.name}</MD>
             <BoxContentBottom>
                 <StyledBoxButtonAdd onClick={inc}><PlusIcon/></StyledBoxButtonAdd>
                 <StyledBoxButtonRemove onClick={dec}><MinusIcon/></StyledBoxButtonRemove>
@@ -47,28 +51,29 @@ type ValueProps = {
 }
 
 const BoxContentBottom = styled.div`
-  border-top: 1px solid ${PALETTE.white};
+  //border-top: 1px solid #2c3b64;
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   margin-top: 10px;
 `
 
 const StyledBoxButton = styled.div`
-  flex: 1;
   text-align: center;
   height: 40px;
+  width: 40px;
+  border-radius: 20px;
   padding: 10px;
-
+  margin-bottom: 10px;
 `
 const StyledBoxButtonAdd = styled(StyledBoxButton)`
-  background-color: ${PALETTE.green["400"]};
-  color: ${PALETTE.white};
+  color: ${PALETTE.green["400"]};
+  background-color: ${PALETTE.grey["300"]};
 `
 const StyledBoxButtonRemove = styled(StyledBoxButton)`
-  background-color: ${PALETTE.red["400"]};
-  color: ${PALETTE.white};
+  color: ${PALETTE.red["400"]};
+  background-color: ${PALETTE.grey["300"]};
 `
 
 
@@ -87,13 +92,13 @@ const Value = styled(XXL)`
   transition: 150ms all ease-in-out;
   right: ${(props: ValueProps) => props.isactive ? 0 : -200}px;
   opacity: ${(props: ValueProps) => props.isactive ? 1 : 0}px;;
-  color: white
+  //color: white
 `
 
 const StyledIcon = styled.div`
   width: 100px;
   height: 70px;
-  color: white;
+  color: #2c3b64;
   transition: all 100ms ease-in-out;
   position: relative;
   right: ${(props: ValueProps) => props.isactive ? 0 : -30}px;
@@ -110,9 +115,10 @@ const DonationTypeBox = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 1px solid ${PALETTE.white};
+  border: 1px solid ${PALETTE.grey["400"]};
   border-radius: 8px;
   flex: 1;
+  padding-top: 10px;
   height: 200px;
   margin: 10px 0;
   overflow: hidden;

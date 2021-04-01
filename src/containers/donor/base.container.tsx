@@ -1,6 +1,6 @@
 import React from "react";
 import {Col, Grid, Row} from "@zendeskgarden/react-grid";
-import {LG, MD, XXL, XXXL} from "@zendeskgarden/react-typography";
+import {MD, XXL} from "@zendeskgarden/react-typography";
 import styled from "styled-components";
 import {IconButton} from "@zendeskgarden/react-buttons";
 import {ReactComponent as BackIcon} from "../../assets/icons/long-arrow-left-light.svg";
@@ -17,19 +17,12 @@ export const BaseContainer = (props: Props) => {
     return (
         <StyledGrid>
             <Row>
-                <HorizontalOrientedColumn>
-                    {props.showBackButton && (
-                        <StyledIconButton
-                            onClick={history.goBack}
-                            aria-label="square back" isBasic={false} isPill={false}>
-                            <BackIcon />
-                        </StyledIconButton>
-                    )}
+                <Col xs={12}>
                     <ContainerTitle>
-                        <XXXL isBold>{props.title}</XXXL>
-                        <LG>{props.subtitle}</LG>
+                        <XXL isBold>{props.title}</XXL>
+                        <MD>{props.subtitle}</MD>
                     </ContainerTitle>
-                </HorizontalOrientedColumn>
+                </Col>
             </Row>
             <Row>
                 <Col>
@@ -56,7 +49,8 @@ const HorizontalOrientedColumn = styled(Col)`
   align-items: center;
 `
 const ContainerTitle = styled.div`
-    color: white;
+  color: #2c3b64;
+  text-align: center;
 `
 const StyledIconButton = styled(IconButton)`
   margin-right: 20px;

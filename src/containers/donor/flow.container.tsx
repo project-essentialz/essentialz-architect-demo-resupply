@@ -1,31 +1,31 @@
-import React, {ChangeEvent, useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {BaseContainer} from "./base.container";
-import {DonationCategoryTileComponent} from "../../components";
+import {DonationCategoryTileComponent, Space} from "../../components";
 import {Col, Row} from "@zendeskgarden/react-grid";
 
 import {ReactComponent as SofaIcon} from "../../assets/icons/couch-light.svg";
 import {ReactComponent as ChairIcon} from "../../assets/icons/chair-light.svg";
 import {ReactComponent as BoxIcon} from "../../assets/icons/box-light.svg";
 import {ReactComponent as BagIcon} from "../../assets/icons/sack-light.svg";
-import {ReactComponent as FridgeIcon} from "../../assets/icons/refrigerator-light.svg";
-import {ReactComponent as HazardIcon} from "../../assets/icons/radiation-light.svg";
-import {ReactComponent as SearchIcon} from '../../assets/icons/search-light.svg';
+import {ReactComponent as StairsIcon} from "../../assets/icons/walking-light.svg";
+import {ReactComponent as ToolsIcon} from "../../assets/icons/tools-light.svg";
 import {ReactComponent as CalendarIcon} from '../../assets/icons/calendar-alt-light.svg';
-import {ReactComponent as ArrowIcon} from '../../assets/icons/arrow-right-regular.svg';
 
 import styled from "styled-components";
-import {Span, XL} from "@zendeskgarden/react-typography";
-import {Field, Input, MediaInput} from "@zendeskgarden/react-forms";
-import {Datepicker} from '@zendeskgarden/react-datepickers';
+import {MD, Paragraph, SM, Span, XL} from "@zendeskgarden/react-typography";
+import {Field, MediaInput} from "@zendeskgarden/react-forms";
 import {Dropdown, Field as DropdownField, Item, Menu, Select} from '@zendeskgarden/react-dropdowns';
 import {Button} from "@zendeskgarden/react-buttons";
 import {useHistory, useParams} from "react-router-dom";
 import {DonorContext} from "../../context/donor.context";
 import {CharityContext} from "../../context";
-
-import {getDonationCode} from "../../utility/donation-code";
 import moment from "moment";
-import {Charity} from "../../domain/Charity";
+import {PALETTE} from "@zendeskgarden/react-theming";
+import {Well} from "@zendeskgarden/react-notifications";
+import {getDonationCode} from "../../utility/donation-code";
+import _ from "lodash";
+import {Donation} from "../../domain";
+import {DatePicker} from "../../components/date-picker.c";
 
 interface IItem {
     label: string;
@@ -33,205 +33,190 @@ interface IItem {
 }
 
 const items = [
-    {label: '8 AM - 10 AM', value: '8 AM - 10 AM'},
-    {label: '10AM - 12 PM', value: '10AM - 12 PM'},
-    {label: '12 PM - 2 PM', value: '12 PM - 2 PM'},
-    {label: '2 PM - 4 PM' , value: '2 PM - 4 PM'},
-    {label: '4 PM - 6 PM', value: '4 PM - 6 PM'},
+    {label: 'No preference', value: ''},
+    {label: 'AM', value: 'am'},
+    {label: 'PM', value: 'pm'},
 ];
 
 export const FlowContainer = () => {
     const params = useParams<{ charityId: string }>()
+
     const {donationData, setDonationData} = useContext(DonorContext)
     const {charity, actions} = useContext(CharityContext)
 
     const history = useHistory();
-    const [date, setDate] = useState(new Date());
     const [selectedItem, setSelectedItem] = useState(items[0]);
 
     const {charityId} = params;
 
     useEffect(() => {
-        updateDonation('date', date)
-        updateDonation('formattedDate', moment(date).format('dddd MM/DD/yyyy'))
         updateDonation('timeSlot', selectedItem.label)
         actions.getCharity(charityId);
     }, [])
 
     useEffect(() => {
         if (charity) {
-            // setDonationData({
-            //     ...donationData,
-            //     charityName: charity.name,
-            //     charityId: charity.id,
-            //     donationCode: getDonationCode(charity.state, charity.charityNumber)
-            // })
+            donationData.charity = charity;
+            donationData.donationCode = getDonationCode(charity.state, charity.code)
+            setDonationData(donationData);
         }
     }, [charity])
 
     useEffect(() => {
-        updateDonation('timeSlot', selectedItem.label)
+        updateDonation('partOfDay', selectedItem.value)
     }, [selectedItem])
 
-    useEffect(() => {
-        updateDonation('date', date)
-        updateDonation('formattedDate', moment(date).format('dddd MM/DD/yyyy'))
-    }, [date])
-
     const updateDonation = (key: string, value: any) => {
-        // setDonationData({
-        //     ...donationData,
-        //     [key]: value
-        // })
+        const d = new Donation();
+        Object.assign(d, donationData);
+        _.set(d, key, value)
+        setDonationData(d);
     }
 
-    const fieldChanged = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const {value, name} = e.target;
-        updateDonation(name, value);
-    }
+    useEffect(() => {
+        console.log(donationData.date);
+    }, [donationData])
 
-    return <BaseContainer title={"ReSupply"} subtitle={"Giving made simple"}>
-        <>
+    return <BaseContainer title={"Tell us about your donation"} subtitle={"If you have any questions visit our FAQ section."}>
+        <ContentWrapper>
             <StyledRow>
                 <Col xs={12}>
-                    <Question>What would you like to donate to
+                    <Question>
                         {charity && (<Span isBold> {charity.name}</Span>)}
                     </Question>
                 </Col>
-                <Col xs={6}>
+                <Col xs={6} sm={4}>
                     <DonationCategoryTileComponent
-                        field={"largeItems"}
+                        field={"spec.largeItems"}
                         name={"Large items"}
+                        description={'2-person lift'}
                         onValueChanged={updateDonation}
                         icon={() => (<SofaIcon/>)}
                     />
                 </Col>
-                <Col xs={6}>
+                <Col xs={6} sm={4}>
                     <DonationCategoryTileComponent
-                        field={"smallItems"}
+                        field={"spec.smallItems"}
                         name={"Small items"}
+                        description={'1-person lift'}
                         onValueChanged={updateDonation}
                         icon={() => (<ChairIcon/>)}
                     />
                 </Col>
-                <Col xs={6}>
+                <Col xs={6} sm={4}>
                     <DonationCategoryTileComponent
-                        field={"bags"}
+                        field={"spec.bags"}
                         name={"Bags of clothes"}
+                        description={'1-person lift'}
                         onValueChanged={updateDonation}
                         icon={() => (<BagIcon/>)}
                     />
                 </Col>
-                <Col xs={6}>
+                <Col xs={6} sm={4}>
                     <DonationCategoryTileComponent
-                        field={"boxes"}
+                        field={"spec.boxes"}
                         name={"Boxes"}
+                        description={'1-person lift'}
                         onValueChanged={updateDonation}
                         icon={() => (<BoxIcon/>)}
                     />
                 </Col>
-                <Col xs={6}>
+                <Col xs={6} sm={4}>
                     <DonationCategoryTileComponent
-                        field={"appliances"}
-                        name={"Appliances"}
+                        field={"spec.staircases"}
+                        name={"Stair cases"}
+                        description={'If no elevator'}
                         onValueChanged={updateDonation}
-                        icon={() => (<FridgeIcon/>)}
+                        icon={() => (<StairsIcon/>)}
                     />
                 </Col>
-                <Col xs={6}>
+                <Col xs={6} sm={4}>
                     <DonationCategoryTileComponent
-                        field={"hazardous"}
-                        name={"Hazardous"}
+                        field={"spec.disassembly"}
+                        name={"Disassembly"}
+                        description={'Requiring tooling'}
                         onValueChanged={updateDonation}
-                        icon={() => (<HazardIcon/>)}
+                        icon={() => (<ToolsIcon/>)}
                     />
                 </Col>
             </StyledRow>
+
+            <Line/>
             <StyledRow>
                 <Col>
-                    <StyledField>
-                        <Question>What is your address?</Question>
-                        <MediaInput
-                            onChange={fieldChanged}
-                            start={<SearchIcon/>} name={"address"}/>
-                    </StyledField>
+                    <XL>Schedule your Priority Pick-up</XL>
+                    <Paragraph>Choose the day and time slot of your pick-up!</Paragraph>
                 </Col>
             </StyledRow>
+
             <StyledRow>
-                <Col>
-                    <StyledField>
-                        <Question>City</Question>
-                        <Input onChange={fieldChanged} name={"city"}/>
-                    </StyledField>
+                <Col xs={12}>
+                    <Row>
+                        <Col sm={8} offsetSm={2}>
+                            <Row>
+                                <Col>
+                                    <StyledField>
+                                        <MD>Pick a date</MD>
+                                        <DatePicker
+                                            value={donationData.date}
+                                            name="date"
+                                            minValue={moment(new Date()).add(2, 'd').toDate()}
+                                            onChange={updateDonation}
+                                        />
+                                    </StyledField>
+                                </Col>
+                                <Col>
+                                    <StyledField>
+                                        <MD>Arrival window</MD>
+                                        <Dropdown
+                                            selectedItem={selectedItem}
+                                            onSelect={setSelectedItem}
+                                            downshiftProps={{itemToString: (item: IItem) => item && item.label}}
+                                        >
+                                            <DropdownField>
+                                                <Select>{selectedItem.label}</Select>
+                                            </DropdownField>
+                                            <Menu>
+                                                {items.map(option => (
+                                                    <Item key={option.value} value={option}>
+                                                        {option.label}
+                                                    </Item>
+                                                ))}
+                                            </Menu>
+                                        </Dropdown>
+                                    </StyledField>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
                 </Col>
-                <Col>
-                    <StyledField>
-                        <Question>State</Question>
-                        <Input onChange={fieldChanged} name={"state"}/>
-                    </StyledField>
-                </Col>
-                <Col>
-                    <StyledField>
-                        <Question>Zip</Question>
-                        <Input onChange={fieldChanged} name={"zip"}/>
-                    </StyledField>
+
+                <Col sm={6} offsetSm={3}>
+                    <Row style={{textAlign: 'center'}}>
+                        <Col>
+                            <SM style={{color: PALETTE.grey["500"]}}>
+                                Your exact 4 hour time window will be sent to you via email or text once a driver is
+                                assigned
+                            </SM>
+                        </Col>
+                    </Row>
                 </Col>
             </StyledRow>
+
+            <Line/>
+
             <StyledRow>
-                <Col>
-                    <StyledField>
-                        <Question>Pick a date</Question>
-                        <Datepicker value={date} onChange={setDate}>
-                            <MediaInput start={<CalendarIcon/>} name={"date"}/>
-                        </Datepicker>
-                    </StyledField>
-                </Col>
-                <Col>
-                    <StyledField>
-                        <Question>Arrival window</Question>
-                        <Dropdown
-                            selectedItem={selectedItem}
-                            onSelect={setSelectedItem}
-                            downshiftProps={{itemToString: (item: IItem) => item && item.label}}
-                        >
-                            <DropdownField>
-                                <Select>{selectedItem.label}</Select>
-                            </DropdownField>
-                            <Menu>
-                                {items.map(option => (
-                                    <Item key={option.value} value={option}>
-                                        {option.label}
-                                    </Item>
-                                ))}
-                            </Menu>
-                        </Dropdown>
-                    </StyledField>
+                <Col sm={6} offsetSm={3}>
+                    <Well>
+                        <XL>Total: <Span>${Donation.getEstimate(donationData.spec)}</Span></XL>
+                    </Well>
                 </Col>
             </StyledRow>
-            <StyledRow>
-                <Col>
-                    <StyledField>
-                        <Question>What is your name?</Question>
-                        <Input onChange={fieldChanged} name={"donorName"} placeholder={"Your first and last name"}/>
-                    </StyledField>
-                </Col>
-            </StyledRow>
-            <StyledRow>
-                <Col>
-                    <StyledField>
-                        <Question>What is your phone number?</Question>
-                        <Input onChange={fieldChanged} name={"phone"} placeholder={"Your phone number"}/>
-                    </StyledField>
-                </Col>
-            </StyledRow>
-            <StyledRow>
-                <Col>
-                    <StyledField>
-                        <Question>What is your email?</Question>
-                        <Input onChange={fieldChanged} type={"email"} name={"email"} placeholder={"Your email"}/>
-                    </StyledField>
-                </Col>
-            </StyledRow>
+
+            <Line/>
+
+            <Space size={30}/>
+
             <StyledRow>
                 <Col>
                     <StyledButton
@@ -240,41 +225,41 @@ export const FlowContainer = () => {
                         }}
                         isStretched>
                         Continue
-                        <StyledArrowIcon/>
                     </StyledButton>
                 </Col>
             </StyledRow>
-        </>
+        </ContentWrapper>
     </BaseContainer>
 }
 
-const StyledArrowIcon = styled(ArrowIcon)`
-  width: 30px;
-  margin-left: 30px;
+const ContentWrapper = styled.div`
+  color: #2c3b64;
+`
+
+const Line = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: ${PALETTE.grey["200"]};
 `
 const StyledField = styled(Field)`
   margin-bottom: 15px;
+  text-align: left;
 `
 const Question = styled(XL)`
   margin-bottom: 10px;
-  color: white
+  text-align: center;
 `
 const StyledRow = styled(Row)`
   margin-bottom: 20px;
+  margin-top: 20px;
+  text-align: center;
 `
 
 const StyledButton = styled(Button)`
-  border-color: white;
-  color: white;
   transition: all 100ms ease-in-out;
-  font-size: 30px;
-  height: 55px;
-  border-width: 5px;
   background-color: rgba(255, 255, 255, 0.4);
 
   &:hover {
     opacity: 0.8;
-    border-color: white;
-    color: white;
   }
 `

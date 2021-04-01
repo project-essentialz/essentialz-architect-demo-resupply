@@ -6,6 +6,7 @@ export default {
     captain: appSlice() === 'captain',
     charity: appSlice() === 'charity',
     driver: appSlice() === 'driver',
+    donor: appSlice() === 'donor',
 
 
 }

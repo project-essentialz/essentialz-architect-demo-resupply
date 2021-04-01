@@ -8,10 +8,11 @@ type DatePickerProps = {
     name: string
     value: string | undefined
     format?: string
-    onChange: (field: string, value: string) => void
+    onChange: (field: string, value: string) => void,
+    minValue?: Date
 }
 export const DatePicker = (props: DatePickerProps) => {
-    const {name, value, format = "MM-DD-YYYY", onChange} = props;
+    const {name, value, format = "MM-DD-YYYY", onChange, minValue} = props;
     const [date, setDate] = useState<Date>(new Date())
 
     useEffect(() => {
@@ -26,7 +27,7 @@ export const DatePicker = (props: DatePickerProps) => {
     }, [date])
 
     return (
-        <Datepicker value={date} onChange={setDate}>
+        <Datepicker value={date} onChange={setDate} minValue={minValue}>
             <MediaInput start={<CalendarIcon/>} name={name}/>
         </Datepicker>
     )

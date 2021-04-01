@@ -7,6 +7,7 @@ import {TPLOrganization} from "./TPLOrganization";
 import {StaticContent} from "./StaticContent";
 import {getDonationCode} from "../utility/donation-code";
 import {DonationSpec} from "./DonationSpec";
+import moment from "moment";
 
 export enum DonationStatus {
     submitted = 'submitted',
@@ -88,6 +89,7 @@ export class Donation extends Eventful {
         this.donor = new Donor();
         this.spec = new DonationSpec()
         this.adjustedSpec = new DonationSpec()
+        this.date = moment(new Date()).add(2, 'd').format("MM-DD-YYYY")
     }
 
     /**
@@ -121,7 +123,7 @@ export class Donation extends Eventful {
     set date(value: string | undefined) {
         this._date = value;
         if (value) {
-            this.formattedDate = value
+            this.formattedDate = moment(value).format('dddd MM/DD/yyyy')
         }
     }
 

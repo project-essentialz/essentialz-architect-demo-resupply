@@ -68,7 +68,7 @@ const Main = styled.main`
     box-sizing: border-box;
   }
 
-  background-color: #2c3b64;
+  //background-color: #2c3b64;
 `
 
 const Content = styled.div`
@@ -78,7 +78,7 @@ const Content = styled.div`
   margin: auto;
 
   ${p => mediaQuery('up', 'lg', p.theme)} {
-    max-width: 600px;
+    max-width: 900px;
     align-items: center;
     display: flex;
     justify-content: center;

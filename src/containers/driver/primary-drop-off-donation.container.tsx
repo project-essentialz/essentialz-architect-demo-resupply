@@ -15,7 +15,13 @@ import {ReactComponent as MinusIcon} from "../../assets/icons/minus-light.svg";
 import {Well} from "@zendeskgarden/react-notifications";
 import {DonationItem, DonationStatus, DropOffOutcome} from "../../domain/Donation";
 import _ from "lodash";
+import * as yup from "yup";
 
+
+const schema = yup.object().shape({
+    pocName: yup.string().required(),
+    pocPhone: yup.string().matches(/^(\+1)\d{10}/g).required(),
+})
 
 export const PrimaryDropOffDonationContainer = () => {
     const history = useHistory();
@@ -39,15 +45,11 @@ export const PrimaryDropOffDonationContainer = () => {
         if (acceptedIndexes.length + declinedIndexes.length !== donation?.content?.length){
             setDisabled(true);
         }else{
-            if (outcome.pocName && outcome.pocPhone){
-                if (outcome.pocPhone?.match(/^(\+1)\d{10}/g)){
-                    setDisabled(false);
-                }else{
-                    setDisabled(true);
-                }
-            }else{
-                setDisabled(true);
-            }
+            schema.validate(outcome).then((result) => {
+                setDisabled(false)
+            }).catch(() => {
+                setDisabled(true)
+            })
         }
     }, [outcome, acceptedIndexes, declinedIndexes])
 

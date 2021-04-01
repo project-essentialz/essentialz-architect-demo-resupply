@@ -3,54 +3,45 @@ import {BaseContainer} from "./base.container";
 import {Col, Row} from "@zendeskgarden/react-grid";
 
 import styled from "styled-components";
-import {XL} from "@zendeskgarden/react-typography";
-import {Field, Input, Label} from "@zendeskgarden/react-forms";
-import {Dropdown, Field as DropdownField, Item, Menu, Select} from '@zendeskgarden/react-dropdowns';
+import {MD, XL} from "@zendeskgarden/react-typography";
+import {Field, Input, Label, MediaInput, Message, Textarea} from "@zendeskgarden/react-forms";
 import {Button} from "@zendeskgarden/react-buttons";
 import {useHistory} from "react-router-dom";
 import {DonorContext} from "../../context/donor.context";
+import {PALETTE} from "@zendeskgarden/react-theming";
+import ReactInputMask from "react-input-mask";
+import {Donation} from "../../domain";
+import _ from "lodash";
+import * as yup from 'yup';
 
-interface IItem {
-    label: string;
-    value: string;
-}
-
-const floorOptions = [
-    {label: 'Yes', value: 'yes'},
-    {label: 'No', value: 'no'},
-    {label: 'Yes, but there is an elevator', value: 'yes-elevator'},
-    {label: 'Yes, but I will bring the items to the ground floor', value: 'yes-curbside'}
-];
-
-const disassembleOptions = [
-    {label: 'Yes', value: 'yes'},
-    {label: 'No', value: 'no'}
-];
-
-const heightOptions = [
-    {label: '1', value: '1'},
-    {label: '2', value: '2'},
-    {label: '3', value: '3'},
-    {label: '4', value: '4'},
-    {label: '5', value: '5'}
-];
+const schema = yup.object().shape({
+    name: yup.string().required(),
+    address: yup.string().required(),
+    city: yup.string().required(),
+    state: yup.string().required(),
+    zip: yup.string().required(),
+    phone: yup.string().matches(/^(\+1)\d{10}/g).required(),
+    email: yup.string().email().required(),
+})
 
 export const DonationInformationContainer = () => {
     const {donationData, setDonationData} = useContext(DonorContext)
-
+    const [disabled, setDisabled] = useState(true)
     const history = useHistory();
-    const [floorOptionSelected, setFloorOptionSelected] = useState(floorOptions[1]);
-    const [disassembleOptionSelected, setDisassembleOptionSelected] = useState(floorOptions[1]);
-    const [height, setHeight] = useState(heightOptions[1]);
 
     useEffect(() => {
+        schema.validate(donationData.donor).then((result) => {
+            setDisabled(false)
+        }).catch(() => {
+            setDisabled(true)
+        })
     }, [donationData])
 
     const updateDonation = (key: string, value: any) => {
-        // setDonationData({
-        //     ...donationData,
-        //     [key]: value
-        // })
+        const d = new Donation();
+        Object.assign(d, donationData);
+        _.set(d, key, value);
+        setDonationData(d);
     }
 
     const fieldChanged = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -58,147 +49,138 @@ export const DonationInformationContainer = () => {
         updateDonation(name, value);
     }
 
-    useEffect(() => {
-        updateDonation("aboveTheGroundFloor", floorOptionSelected.value)
-        if (floorOptionSelected.value !== 'yes'){
-            setHeight({label: 'No staircases', value: '0'})
-        }
-    }, [floorOptionSelected])
-
-    useEffect(() => {
-        updateDonation("staircases", height.value)
-    }, [height])
-
-    useEffect(() => {
-        // if (disassembleOptionSelected.value === 'no'){
-        //     setDonationData({
-        //         ...donationData,
-        //         'disassembly': 0
-        //     })
-        // }
-    }, [disassembleOptionSelected])
-
+    const progress = () => {
+        schema.validate(donationData.donor).then((result) => {
+            history.push(`/-/success`)
+        })
+    }
 
     return <BaseContainer title={"Let's lock in your spot"} subtitle={"Confirm your donation"}>
-        <>
+        <ContentWrapper>
             <StyledRow>
-                <Col lg={12}>
+                <Col xs={12}>
+                    <Question>Tell us about you</Question>
+                </Col>
+
+                <Col>
                     <StyledField>
-                        <Question>Are any of your items above or below the ground floor?</Question>
-                        <StyledLabel>For insurance and labor purposes, a small fee is added if items must be moved up or down staircases</StyledLabel>
-                        <Dropdown
-                            selectedItem={floorOptionSelected}
-                            onSelect={setFloorOptionSelected}
-                            downshiftProps={{itemToString: (item: IItem) => item && item.label}}
-                        >
-                            <DropdownField>
-                                <Select>{floorOptionSelected.label}</Select>
-                            </DropdownField>
-                            <Menu>
-                                {floorOptions.map(option => (
-                                    <Item key={option.value} value={option}>
-                                        {option.label}
-                                    </Item>
-                                ))}
-                            </Menu>
-                        </Dropdown>
+                        <MD>What is your name?</MD>
+                        <Input onChange={fieldChanged} name={"donor.name"} placeholder={"Your first and last name"}/>
                     </StyledField>
                 </Col>
             </StyledRow>
-            {floorOptionSelected.value === 'yes' && (<StyledRow>
-                <Col lg={12}>
-                    <StyledField>
-                        <Question>How many staircases will we have to use?</Question>
-                        <Dropdown
-                            selectedItem={height}
-                            onSelect={setHeight}
-                            downshiftProps={{itemToString: (item: IItem) => item && item.label}}
-                        >
-                            <DropdownField>
-                                <Select>{height.label}</Select>
-                            </DropdownField>
-                            <Menu>
-                                {heightOptions.map(option => (
-                                    <Item key={option.value} value={option}>
-                                        {option.label}
-                                    </Item>
-                                ))}
-                            </Menu>
-                        </Dropdown>
-                    </StyledField>
-                </Col>
-            </StyledRow>)}
             <StyledRow>
-                <Col lg={12}>
+                <Col>
                     <StyledField>
-                        <Question>Will any of your items need to be disassembled BEFORE we remove them from your location?</Question>
-                        <StyledLabel>Please select ‘yes’ or ‘no’ if we will need to disassemble items, either manually or with tools.</StyledLabel>
-                        <Dropdown
-                            selectedItem={disassembleOptionSelected}
-                            onSelect={setDisassembleOptionSelected}
-                            downshiftProps={{itemToString: (item: IItem) => item && item.label}}
-                        >
-                            <DropdownField>
-                                <Select>{disassembleOptionSelected.label}</Select>
-                            </DropdownField>
-                            <Menu>
-                                {disassembleOptions.map(option => (
-                                    <Item key={option.value} value={option}>
-                                        {option.label}
-                                    </Item>
-                                ))}
-                            </Menu>
-                        </Dropdown>
+                        <MD>What is your phone number?</MD>
+                        <ReactInputMask mask={'+19999999999'} onChange={fieldChanged} name={"donor.phone"}
+                                        placeholder={"Your phone number"}>
+                            <Input/>
+                        </ReactInputMask>
                     </StyledField>
                 </Col>
             </StyledRow>
-            {disassembleOptionSelected.value === 'yes' && (<StyledRow>
-                <Col lg={7}>
+            <StyledRow>
+                <Col>
                     <StyledField>
-                        <Question>How many of your items will need to be disassembled?</Question>
-                        <Input onChange={fieldChanged} name={'disassembly'} type={"number"} placeholder={"Enter the number of items"}/>
+                        <MD>What is your address?</MD>
+                        <MediaInput
+                            onChange={fieldChanged}
+                            name={"donor.address"}/>
                     </StyledField>
                 </Col>
-            </StyledRow>)}
+                <Col xs={12}>
+                    <Row>
+                        <Col>
+                            <StyledField>
+                                <MD>City</MD>
+                                <Input onChange={fieldChanged} name={"donor.city"}/>
+                            </StyledField>
+                        </Col>
+                        <Col>
+                            <StyledField>
+                                <MD>State</MD>
+                                <Input onChange={fieldChanged} name={"donor.state"}/>
+                            </StyledField>
+                        </Col>
+                        <Col>
+                            <StyledField>
+                                <MD>Zip</MD>
+                                <Input onChange={fieldChanged} name={"donor.zip"}/>
+                            </StyledField>
+                        </Col>
+                    </Row>
+                </Col>
+            </StyledRow>
+            <StyledRow>
+                <Col>
+                    <StyledField>
+                        <MD>What is your email?</MD>
+                        <Input onChange={fieldChanged} type={"email"} name={"donor.email"} placeholder={"Your email"}/>
+                    </StyledField>
+                </Col>
+            </StyledRow>
+
+            <StyledRow>
+                <Col>
+                    <StyledField>
+                        <MD>Do you have any special instructions?</MD>
+                        <StyledTextArea onChange={fieldChanged} name="spec.additionalInformation"
+                                        placeholder={"Enter any special instructions"}/>
+                    </StyledField>
+                </Col>
+            </StyledRow>
+
             <StyledRow>
                 <Col lg={12}>
                     <StyledButton
-                        onClick={() => {
-                            history.push(`/-/confirm`)
-                        }}
-                        isStretched>Continue</StyledButton>
+                        disabled={disabled}
+                        onClick={progress}
+                        isStretched>Finalize and Schedule your Donation Pick-up</StyledButton>
                 </Col>
             </StyledRow>
-        </>
+        </ContentWrapper>
     </BaseContainer>
 }
 
+const ContentWrapper = styled.div`
+  color: #2c3b64;
+`
+
+const Line = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: ${PALETTE.grey["200"]};
+`
 const StyledField = styled(Field)`
   margin-bottom: 15px;
+  text-align: left;
 `
 const Question = styled(XL)`
   margin-bottom: 10px;
-  color: white
+  text-align: center;
 `
 const StyledRow = styled(Row)`
   margin-bottom: 20px;
+  margin-top: 20px;
+  text-align: center;
 `
 
 const StyledButton = styled(Button)`
-  border-color: white;
-  color: white;
   transition: all 100ms ease-in-out;
+  background-color: rgba(255, 255, 255, 0.4);
 
   &:hover {
     opacity: 0.8;
-    border-color: white;
-    color: white;
   }
 `
+
 const StyledLabel = styled(Label)`
-  color: white;
   opacity: 0.9;
   font-weight: 400;
   display: block;
   margin-bottom: 10px;
+`
+
+const StyledTextArea = styled(Textarea)`
 `
