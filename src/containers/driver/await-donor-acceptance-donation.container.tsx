@@ -6,10 +6,14 @@ import {useHistory, useParams} from "react-router-dom";
 import {Paragraph} from "@zendeskgarden/react-typography";
 import {Space} from "../../components";
 import QRCode from "react-qr-code";
+import {Button} from "@zendeskgarden/react-buttons";
+import {Col, Row} from "@zendeskgarden/react-grid";
+import {DonationStatus} from "../../domain/Donation";
 
 export const AwaitDonorAcceptanceDonationContainer = () => {
     const history = useHistory();
     const [donation, setDonation] = useState<Donation>()
+    const [reloadInterval, setReloadInterval] = useState<any>()
     const {actions} = useContext(DonationContext)
 
     const params = useParams<{ id: string }>()
@@ -17,12 +21,31 @@ export const AwaitDonorAcceptanceDonationContainer = () => {
 
     useEffect(() => {
         actions.getDonation(id).then(setDonation);
-        setTimeout(() => {
+        const timeout = setInterval(() => {
+            actions.getDonation(id).then(setDonation);
+        }, 1000);
+        setReloadInterval(timeout);
 
-            history.replace(`/donations/${id}/quote-accepted`)
-        }, 5000)
     }, [])
 
+    useEffect(() => {
+        if (donation) {
+            if (donation.donationStatus === DonationStatus.payment_successful) {
+                progress();
+            }
+        }
+    }, [donation])
+
+    const progress = () => {
+        if (donation) {
+            clearInterval(reloadInterval);
+            donation.donationStatus = DonationStatus.payment_successful;
+            donation.eventType = `donation_${DonationStatus.payment_successful}`;
+            actions.updateDonation(donation).then(() => {
+                history.replace(`/donations/${id}/quote-accepted`)
+            })
+        }
+    }
 
     return (
         <BaseContainer title={"Awaiting donor acceptance!"} showBackButton showAsModal>
@@ -35,7 +58,15 @@ export const AwaitDonorAcceptanceDonationContainer = () => {
                 </Paragraph>
 
                 <Space size={50}/>
-                <QRCode value={`http://localhost:3001/d/${donation?.donationCode}`}/>
+                <QRCode value={`https://donation.rspl.dev/d/${donation?.donationCode}`}/>
+
+                <Space size={50}/>
+                <Row>
+                    <Col>
+                        <Button onClick={progress}>Simulate payment</Button>
+                    </Col>
+                </Row>
+
             </>
         </BaseContainer>
     )

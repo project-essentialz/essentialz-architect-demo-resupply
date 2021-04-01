@@ -9,5 +9,4 @@ export class CharityAdmin {
     phone: string = ''
     email: string = ''
     user: User = new User();
-
 }

@@ -5,9 +5,8 @@ import {DonationContext} from "../../context";
 import {BaseContainer} from "./base.container";
 import {Button} from "@zendeskgarden/react-buttons";
 import {Well} from "@zendeskgarden/react-notifications";
-import {donationStatus} from "../../utility/donation-status";
 import {Inline} from "@zendeskgarden/react-loaders";
-import {Donation} from "../../domain/Donation";
+import {Donation, DonationStatus} from "../../domain/Donation";
 
 export const PaymentOutcomeContainer = () => {
     const params = useParams<{ donationId: string, outcome: string }>();
@@ -38,13 +37,13 @@ export const PaymentOutcomeContainer = () => {
 
     const handleStatusUpdate = () => {
         if (outcome === 'success') {
-            // actions.updateDonation({
-            //     ...donation,
-            //     donationStatus: 'payment_successful',
-            //     eventType: 'donation_payment_successful'
-            // } as Donation).then(() => {
-            //     setLoading(false)
-            // })
+            actions.updateDonation({
+                ...donation,
+                donationStatus: DonationStatus.payment_successful,
+                eventType: 'donation_payment_successful'
+            } as Donation).then(() => {
+                setLoading(false)
+            })
         }else{
             setLoading(false);
         }

@@ -23,10 +23,7 @@ export const QuoteAcceptedDonationContainer = () => {
 
     const progress = () => {
         if (donation){
-            donation.donationStatus = DonationStatus.payment_successful;
-            actions.updateDonation(donation).then(() => {
-                history.push(`/donations/${id}/add-pictures`)
-            })
+            history.push(`/donations/${id}/add-pictures`)
         }
     }
 

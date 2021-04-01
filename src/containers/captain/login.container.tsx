@@ -31,8 +31,8 @@ export const LoginContainer = () => {
         setLoading(true);
         setAuthErrors(true);
         const authData = auth;
-        authData!.username = authData?.username + "@resupplyme.com";
-        actions.authenticate(authData)
+        // authData!.username = authData?.username + "@resupplyme.com";
+        actions.authenticate(authData, 'captain')
             .then(() => {
                 setAuthErrors(false);
                 setLoading(false)

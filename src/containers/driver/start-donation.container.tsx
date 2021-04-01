@@ -23,6 +23,7 @@ export const StartDonationContainer = () => {
     const progress = () => {
         if (donation){
             donation.donationStatus = DonationStatus.driver_en_route;
+            donation.eventType = `donation_${DonationStatus.driver_en_route}`
             actions.updateDonation(donation).then(() => {
                 history.push(`/donations/${id}/notify-arrival`)
             })

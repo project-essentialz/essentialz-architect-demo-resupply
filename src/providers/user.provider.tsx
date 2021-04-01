@@ -34,12 +34,21 @@ export const UserProvider = (props: Props) => {
         }
     }, [authData])
 
-    const authenticate = (authRequest: AuthRequest) => {
+    const authenticate = (authRequest: AuthRequest, restrict?: string) => {
         return Api.$<Auth>(routes.authenticate)
             .call(method.post, authRequest)
             .then((result: Auth) => {
-                Api.setToken(result.authorization.token)
-                setAuthData(result);
+                if (restrict){
+                    if (result.role === restrict){
+                        Api.setToken(result.authorization.token)
+                        setAuthData(result);
+                    }else{
+                        throw new Error("Authorization error")
+                    }
+                }else{
+                    Api.setToken(result.authorization.token)
+                    setAuthData(result);
+                }
                 return result;
             });
     }

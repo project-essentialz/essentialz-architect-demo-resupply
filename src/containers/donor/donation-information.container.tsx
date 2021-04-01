@@ -25,7 +25,7 @@ const schema = yup.object().shape({
 })
 
 export const DonationInformationContainer = () => {
-    const {donationData, setDonationData} = useContext(DonorContext)
+    const {donationData, setDonationData, actions} = useContext(DonorContext)
     const [disabled, setDisabled] = useState(true)
     const history = useHistory();
 
@@ -51,7 +51,9 @@ export const DonationInformationContainer = () => {
 
     const progress = () => {
         schema.validate(donationData.donor).then((result) => {
-            history.push(`/-/success`)
+            actions.submitDonation(donationData).then(() => {
+                history.push(`/-/success`)
+            })
         })
     }
 

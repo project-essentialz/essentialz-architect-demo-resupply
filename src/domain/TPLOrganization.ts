@@ -24,6 +24,9 @@ export class TPLOrganization {
     @autoserializeAs(Zone)
     zones: Zone[] = []
 
+    @autoserializeAs('stripe_account')
+    stripeAccount?: string
+
     public getAvailableDrivers(date: string) {
         return this.drivers.filter(driver => {
             const schedule = driver.schedule;

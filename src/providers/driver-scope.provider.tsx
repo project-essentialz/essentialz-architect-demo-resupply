@@ -64,7 +64,7 @@ export const DriverScopeProvider = (props: Props) => {
 
     useEffect(fetchOrganizationDetails, [userDetails])
     useEffect(fetchDriverDetails, [tplOrganization])
-    useEffect(fetchDriversDonations, [driver])
+    useEffect(fetchDriversDonations, [driver, donationContext.donations])
     useEffect(fetchDriverSchedule, [driver])
 
     return (

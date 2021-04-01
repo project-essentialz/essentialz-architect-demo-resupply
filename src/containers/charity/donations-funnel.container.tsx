@@ -3,7 +3,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {AutocompleteInput, TableComponent} from "../../components";
 import {Col, Row} from "@zendeskgarden/react-grid";
 import {Well} from "@zendeskgarden/react-notifications";
-import {DonationContext} from "../../context";
+import {DonationContext, UserContext} from "../../context";
 import {field} from "../../utility/field";
 import {Body, Close, Footer, FooterItem, Header, Modal} from "@zendeskgarden/react-modals";
 import {Button} from "@zendeskgarden/react-buttons";
@@ -11,6 +11,7 @@ import {useHistory} from "react-router-dom";
 import {CSVLink} from "react-csv";
 import {Checkbox, Field, Label} from "@zendeskgarden/react-forms";
 import {Donation} from "../../domain/Donation";
+import {CharityScopeContext} from "../../context/charity-scope.context";
 
 
 type Props = {}
@@ -35,8 +36,7 @@ const fieldsAvailableForExport = [
 
 export const DonationsFunnelContainer = (props: Props) => {
     const history = useHistory();
-
-    const {donations, actions} = useContext(DonationContext);
+    const {donations, actions} = useContext(CharityScopeContext);
 
     const [matchedDonations, setMatchedDonations] = useState<Donation[]>(donations)
     const [donors, setDonors] = useState<string[]>([])
@@ -48,13 +48,11 @@ export const DonationsFunnelContainer = (props: Props) => {
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
-        actions.getAllDonations('charity_id=af9de00f-77c8-40c0-bd80-8938fdb21d50');
-    }, [])
-    useEffect(() => {
         const extractedDonorNames = donations.map((donation: Donation) => donation.donor.name!);
         setDonors(extractedDonorNames)
         setMatchedDonations(donations);
     }, [donations])
+
     useEffect(() => {
         if (selectedDonor) {
             setMatchedDonations(donations.filter((donation) => donation.donor.name === selectedDonor))
@@ -86,8 +84,8 @@ export const DonationsFunnelContainer = (props: Props) => {
 
     const fields = [
         field('donationCode', 'Donation ID', true, onDonationIdClicked),
-        field('donorName', 'Donor name'),
-        field('phone', 'phone'),
+        field('donor.name', 'Donor name'),
+        field('donor.phone', 'phone'),
         field('donationStatus', 'Status', true)
     ]
     const extraButtons: { title: string, onClick: () => void }[] = [

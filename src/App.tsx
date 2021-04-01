@@ -8,6 +8,7 @@ import DriverApp from "./slices/DriverApp";
 import DonorApp from "./slices/DonorApp";
 
 Api.configure('https://architect.rspl.dev')
+// Api.configure('https://0b640465960f.ngrok.io')
 
 const App = () => {
     return (

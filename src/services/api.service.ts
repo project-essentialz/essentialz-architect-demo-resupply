@@ -3,7 +3,7 @@ import snakecaseKeys from "snakecase-keys";
 import {TPLOrganization} from "../domain";
 import {Deserialize, GenericDeserialize} from 'cerialize';
 
-type HTTPMethod = 'post' | 'put' | 'get' | 'delete';
+export type HTTPMethod = 'post' | 'put' | 'get' | 'delete';
 
 type ApiResponseError = {
     additionalData: any,
@@ -112,7 +112,6 @@ const api = <T>(base: string, resource: string, token?: string) => {
     const create = (body: T) => {
         return fetch(_getUrl(), _getOptions(method.post, body))
             .then((response: Response) => {
-                console.log(response);
                 if (response.ok){
                     return response.json().then((json: any) => _camelCaseKeys(json) as T)
                 }else{

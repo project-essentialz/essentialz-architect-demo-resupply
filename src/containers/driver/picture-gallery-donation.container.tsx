@@ -60,6 +60,7 @@ export const PictureGaleryDonationContainer = () => {
         if(donation){
             donation.content = donationContent;
             donation.donationStatus = DonationStatus.photos_taken;
+            donation.eventType = `donation_${DonationStatus.photos_taken}`
             actions.updateDonation(donation!).then(() => {
                 history.push(`/donations/${id}/load-up-and-move-out`)
             })

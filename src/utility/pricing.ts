@@ -1,6 +1,6 @@
 //Todo: Move pricing to the server
 export const pricing = {
-    base: 99.00,
+    base: 75.00,
     largeItems: 24.99,
     smallItems: 9.99,
     boxes: 7.99,

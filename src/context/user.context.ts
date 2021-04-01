@@ -13,7 +13,7 @@ export type UserContextType = {
     setUsers: (users: User[]) => void
 
     actions: {
-        authenticate: (data: AuthRequest) => Promise<Auth>
+        authenticate: (data: AuthRequest, restrict?: string) => Promise<Auth>
         logout: () => void,
         getUserData: () => void,
 

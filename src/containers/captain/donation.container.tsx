@@ -73,6 +73,7 @@ export const DonationContainer = () => {
             donation.tplOrganization = selectedPartner;
             donation.driver = selectedDriver;
             donation.donationStatus = DonationStatus.driver_assigned
+            donation.eventType = `donation_${DonationStatus.driver_assigned}`
             actions.updateDonation(donation).then(() => {
                 actions.getDonation(donation.id!);
             })
@@ -120,7 +121,7 @@ export const DonationContainer = () => {
                                 <DriverScheduleWidget
                                     readonly
                                     donation={donation}
-                                    
+
                                     onSlotPicked={() => {
                                     }}/>
                             </Col>

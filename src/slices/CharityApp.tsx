@@ -10,11 +10,13 @@ import {ReactComponent as HomeIcon} from '../assets/icons/parachute-box-light.sv
 
 import styled from "styled-components";
 import {DonationProvider, UserProvider, ZoneProvider} from "../providers";
-import {CaptainHeader, CharityHeader} from "../components";
+import {CharityHeader} from "../components";
 import {CharityProvider} from "../providers/charity.provider";
 import {PartnerProvider} from "../providers/partner.provider";
 import {Charity} from '../containers/charity';
 import {charityTheme} from "../themes/charity.theme";
+import {Navigation} from "../containers/navigation";
+import {CharityScopeProvider} from "../providers/charity-scope.provider";
 
 const CharityApp = () => {
 
@@ -23,50 +25,58 @@ const CharityApp = () => {
             <UserProvider>
                 <CharityProvider>
                     <PartnerProvider>
-                        <DonationProvider>
+                        <CharityScopeProvider>
                             <ZoneProvider>
                                 <Router>
-                                    <StyledChrome hue={PALETTE.blue["600"]} isFluid>
-                                        <Body>
-                                            <CharityHeader/>
-                                            <Content>
-                                                <StyledNav>
-                                                    <StyledLink to={"/"}>
-                                                        <StyledNavItm>
+                                    <Navigation.PrivateStack>
+                                        <StyledChrome hue={PALETTE.blue["600"]} isFluid>
+                                            <Body>
+                                                <CharityHeader/>
+                                                <Content>
+                                                    <StyledNav>
+                                                        <StyledLink to={"/"}>
+                                                            <StyledNavItm>
+                                                                <NavItemIcon>
+                                                                    <HomeIcon style={{color: '#ffffff'}}/>
+                                                                </NavItemIcon>
+                                                                <NavItemText>Home</NavItemText>
+
+                                                            </StyledNavItm>
+                                                        </StyledLink>
+
+                                                        <NavItem hasBrandmark title="ReSupply">
                                                             <NavItemIcon>
-                                                                <HomeIcon style={{color: '#ffffff'}}/>
+                                                                <ProductIcon/>
                                                             </NavItemIcon>
-                                                            <NavItemText>Home</NavItemText>
-
-                                                        </StyledNavItm>
-                                                    </StyledLink>
-
-                                                    <NavItem hasBrandmark title="ReSupply">
-                                                        <NavItemIcon>
-                                                            <ProductIcon/>
-                                                        </NavItemIcon>
-                                                        <NavItemText>ReSupply</NavItemText>
-                                                    </NavItem>
-                                                </StyledNav>
-                                                <Main>
-                                                    <div style={{padding: DEFAULT_THEME.space.lg}}>
-                                                        <Switch>
-                                                            <Route exact path={'/'}>
-                                                                <Charity.DonationsFunnelContainer/>
-                                                            </Route>
-                                                            <Route exact path={'/donations/:id'}>
-                                                                <Charity.DonationContainer/>
-                                                            </Route>
-                                                        </Switch>
-                                                    </div>
-                                                </Main>
-                                            </Content>
-                                        </Body>
-                                    </StyledChrome>
-
+                                                            <NavItemText>ReSupply</NavItemText>
+                                                        </NavItem>
+                                                    </StyledNav>
+                                                    <Main>
+                                                        <div style={{padding: DEFAULT_THEME.space.lg}}>
+                                                            <Switch>
+                                                                <Route exact path={'/'}>
+                                                                    <Charity.DonationsFunnelContainer/>
+                                                                </Route>
+                                                                <Route exact path={'/donations/:id'}>
+                                                                    <Charity.DonationContainer/>
+                                                                </Route>
+                                                            </Switch>
+                                                        </div>
+                                                    </Main>
+                                                </Content>
+                                            </Body>
+                                        </StyledChrome>
+                                    </Navigation.PrivateStack>
+                                    <Navigation.PublicStack>
+                                        <Switch>
+                                            <Route exact path={'/access'}>
+                                                <Charity.LoginContainer/>
+                                            </Route>
+                                        </Switch>
+                                    </Navigation.PublicStack>
                                 </Router>
                             </ZoneProvider>
-                        </DonationProvider>
+                        </CharityScopeProvider>
                     </PartnerProvider>
                 </CharityProvider>
             </UserProvider>

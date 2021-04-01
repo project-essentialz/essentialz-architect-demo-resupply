@@ -14,10 +14,12 @@ import {Well} from "@zendeskgarden/react-notifications";
 import {DriverCreationModal} from "../../components/driver-creation-modal.c";
 import {TableComponent} from "../../components";
 import {field} from "../../utility/field";
+import {MerchantModal} from "../../components/merchant-modal.c";
 
 export const PartnerContainer = () => {
     const [selectedTab, setSelectedTab] = useState('general')
     const [driverModalVisible, setDriverModalVisible] = useState<boolean>(false);
+    const [merchantModalVisible, setMerchantModalVisible] = useState<boolean>(false);
 
     const {partner, actions} = useContext(PartnerContext)
     const history = useHistory()
@@ -33,6 +35,7 @@ export const PartnerContainer = () => {
     }, [id])
 
     const extraButtons = [
+        extraButton("Get Merchant URL", () => openMerchantModal()),
         extraButton("Edit 3PL", () => history.push(navigationRoutes.editTPL(partner))),
         extraButton("Add a driver", () => openAddDriverModal())
     ]
@@ -42,6 +45,13 @@ export const PartnerContainer = () => {
     }
     const closeAddDriverModal = () => {
         setDriverModalVisible(false)
+    }
+
+    const openMerchantModal = () => {
+        setMerchantModalVisible(true)
+    }
+    const closeMerchantModal = () => {
+        setMerchantModalVisible(false)
     }
 
     const fields = [
@@ -96,6 +106,13 @@ export const PartnerContainer = () => {
                 <DriverCreationModal
                     partner={partner}
                     onClose={closeAddDriverModal}
+                />
+            )}
+
+            {merchantModalVisible && (
+                <MerchantModal
+                    partner={partner}
+                    onClose={closeMerchantModal}
                 />
             )}
 

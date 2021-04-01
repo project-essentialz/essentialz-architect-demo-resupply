@@ -17,6 +17,9 @@ export class UserDetails {
     @autoserialize
     scheduleId: string = ''
 
+    @autoserialize
+    charityId: string = ''
+
 }
 
 class UserAuthorization{

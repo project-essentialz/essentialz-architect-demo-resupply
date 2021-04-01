@@ -64,6 +64,8 @@ export const PrimaryDropOffDonationContainer = () => {
     const progress = () => {
         if(donation){
             donation.donationStatus = DonationStatus.completed;
+            donation.eventType = `donation_${DonationStatus.completed}`;
+            donation.primaryDropOffOutcome = outcome;
             actions.updateDonation(donation!).then(() => {
                 history.push(`/donations/${id}/completed-primary-drop-off`)
             })
@@ -73,7 +75,10 @@ export const PrimaryDropOffDonationContainer = () => {
     const reset = () => {
         setAcceptedIndexes([]);
         setDeclinedIndexes([])
-        setOutcome(new DropOffOutcome())
+        const newOutcome = new DropOffOutcome();
+        newOutcome.pocPhone = outcome.pocPhone
+        newOutcome.pocName = outcome.pocName
+        setOutcome(newOutcome)
     }
 
 

@@ -10,10 +10,13 @@ import {SM} from "@zendeskgarden/react-typography";
 import Api from "../../services/api.service";
 import {useStripe} from "@stripe/react-stripe-js";
 import {donationStatus} from "../../utility/donation-status";
-import {Donation} from "../../domain/Donation";
+import {Donation} from "../../domain";
+import {loadStripe} from "@stripe/stripe-js";
+
+const stripeKey = 'pk_live_51IbPzLION1witdQTAnASC69EjzZgS48HlVTFEleX2KSAZEbmng5Mo16WjaMk4LQ0BmXLniqxd90cDzeG5YXuL3vL00pG9KD8Hq';
 
 export const PaymentContainer = () => {
-    const stripe = useStripe();
+    // const stripe = useStripe();
     const params = useParams<{ donationCode: string }>()
     const {actions, donations} = useContext(DonationContext)
     const {donationCode} = params
@@ -34,48 +37,51 @@ export const PaymentContainer = () => {
         }
     }, [donations])
 
-    useEffect(() => {
-        if (donation){
-            if (donation.donationStatus !== 'quote_sent'){
-                window.location.href = "https://resupplyme.com"
-            }
-        }
-    }, [donation])
-
 
     const setupPayment = () => {
-        if (donation){
-            Api.$('functions/checkout_service_request').create({
+        if (donation) {
+            Api.$('functions/stripe_checkout').create({
                 success_url: `https://donation.rspl.dev/c/${donation.id}/success`,
                 cancel_url: `https://donation.rspl.dev/c/${donation.id}/error`,
                 donation_id: donation.id
             }).then((result: any) => {
-                stripe?.redirectToCheckout({sessionId: result.id})
+                loadStripe(stripeKey, {
+                    stripeAccount: result.account
+                })
+                    .then((value) => {
+                        value!.redirectToCheckout({sessionId: result.id})
+                    })
+
             })
+                .catch(e => {
+                    console.log("Error");
+                })
         }
     }
 
     const isPaymentCompleted = () => {
-        if (donation){
+        if (donation) {
             return donationStatus.indexOf(donation.donationStatus!) >= donationStatus.indexOf('payment_successful')
         }
         return false
     }
 
-    return (<BaseContainer title={"Confirm the donation"} subtitle={"Please follow the instruction to complete the payment"}>
+    return (<BaseContainer title={"Confirm the donation"}
+                           subtitle={"Please follow the instruction to complete the payment"}>
         <>
             {donation && (
                 <>
                     <Well>
                         <EstimateComponent spec={donation.adjustedSpec}/>
                         <Button
-                            disabled={isPaymentCompleted()}
+                            // disabled={isPaymentCompleted()}
                             onClick={setupPayment}
                             style={{marginTop: 70}}
                             isStretched>
                             {isPaymentCompleted() ? 'Payment completed' : 'Continue to payment'}
                         </Button>
-                        <SM style={{textAlign: 'center', marginTop: 10}}>By proceeding you agree with ReSupply's <Anchor target="_blank" href={"https://resupplyme.com/utility/terms"}>Terms of Service</Anchor></SM>
+                        <SM style={{textAlign: 'center', marginTop: 10}}>By proceeding you agree with ReSupply's <Anchor
+                            target="_blank" href={"https://resupplyme.com/utility/terms"}>Terms of Service</Anchor></SM>
                     </Well>
                 </>
             )}

@@ -33,8 +33,8 @@ export const LoginContainer = () => {
     const authenticate = () => {
         setLoading(true);
         setAuthErrors(true);
-        actions.authenticate(auth, 'driver')
-            .then(() => {
+        actions.authenticate(auth, 'charity_admin')
+            .then((res) => {
                 setAuthErrors(false);
                 setLoading(false)
             })
@@ -66,7 +66,7 @@ export const LoginContainer = () => {
                     <Col>
                         <Logo style={{width: 100, height: 100}}/>
                         <Space size={10}/>
-                        <Title>Login to your driver account</Title>
+                        <Title>Login to your ReSupply portal</Title>
                     </Col>
                 </Row>
                 <Row>

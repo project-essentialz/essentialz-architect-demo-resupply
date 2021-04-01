@@ -9,5 +9,6 @@ export const routes = {
     schedules: 'api/schedules',
 
     createServiceRequest: 'functions/create_service_request',
-    acceptServiceRequest: 'functions/accept_service_request'
+    acceptServiceRequest: 'functions/accept_service_request',
+    getMerchantUrl: 'functions/stripe_account'
 }

@@ -35,6 +35,7 @@ export const QuoteCalculatorDonationContainer = () => {
         if (donation){
             donation.adjustedSpec = spec!;
             donation.donationStatus = DonationStatus.quote_sent;
+            donation.eventType = `donation_${DonationStatus.quote_sent}`
             actions.updateDonation(donation).then(() => {
                 history.push(`/donations/${id}/awaiting-user-acceptance`)
             })
