@@ -20,7 +20,6 @@ export const DonationsContainer = () => {
 
 
     useEffect(() => {
-        console.log("DONATIONS", donations);
         if (donations && donations?.length > 0) {
             console.log(donations);
             setLoading(false);

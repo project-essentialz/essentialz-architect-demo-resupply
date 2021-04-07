@@ -7,6 +7,4 @@ export default {
     charity: appSlice() === 'charity',
     driver: appSlice() === 'driver',
     donor: appSlice() === 'donor',
-
-
 }

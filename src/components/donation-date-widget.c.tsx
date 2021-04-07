@@ -1,5 +1,5 @@
 import {Donation} from "../domain";
-import {Paragraph, XXL, XXXL} from "@zendeskgarden/react-typography";
+import {Paragraph, Span, XXL, XXXL} from "@zendeskgarden/react-typography";
 import {Title, Well} from "@zendeskgarden/react-notifications";
 import React from "react";
 import styled from "styled-components";
